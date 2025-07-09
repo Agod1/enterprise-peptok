@@ -2149,6 +2149,197 @@ class EnhancedApiService {
       `Failed to fetch pending invitations from backend database: ${lastError?.message || "All endpoints unavailable"}`,
     );
   }
+
+  // Matching Configuration API Methods
+  async getMatchingConfiguration(): Promise<any> {
+    try {
+      const response = await this.request<any>("/admin/matching-config");
+
+      analytics.trackAction({
+        action: "matching_config_retrieved",
+        component: "api_enhanced",
+        metadata: { source: "backend_api" },
+      });
+
+      return response.data;
+    } catch (error) {
+      console.warn(
+        "API not available, using cross-browser synchronized storage:",
+        error,
+      );
+
+      // Use centralized cross-browser sync service
+      const config = crossBrowserSync.load(SYNC_CONFIGS.MATCHING_CONFIG);
+
+      if (config) {
+        return config;
+      }
+
+      // Default matching configuration
+      const defaultConfig = {
+        weights: {
+          skillMatch: 30,
+          experience: 25,
+          rating: 20,
+          availability: 15,
+          price: 10,
+        },
+        algorithm: "python-ml",
+        confidenceThreshold: 0.7,
+        maxResults: 10,
+        lastUpdated: new Date().toISOString(),
+        version: "1.0",
+        createdBy: "system",
+      };
+
+      return defaultConfig;
+    }
+  }
+
+  async updateMatchingConfiguration(config: any): Promise<any> {
+    const user = checkAuthorization(["platform_admin"]);
+
+    try {
+      const response = await this.request<any>("/admin/matching-config", {
+        method: "PUT",
+        body: JSON.stringify({
+          ...config,
+          lastUpdated: new Date().toISOString(),
+          updatedBy: user.id,
+        }),
+      });
+
+      analytics.trackAction({
+        action: "matching_config_updated",
+        component: "api_enhanced",
+        metadata: {
+          source: "backend_api",
+          adminId: user.id,
+          algorithm: config.algorithm,
+          confidenceThreshold: config.confidenceThreshold,
+          weightTotal: Object.values(config.weights).reduce(
+            (a: number, b: number) => a + b,
+            0,
+          ),
+        },
+      });
+
+      return response.data;
+    } catch (error) {
+      console.warn(
+        "API not available, using cross-browser synchronized storage:",
+        error,
+      );
+
+      // Use centralized cross-browser sync service
+      const enhancedConfig = {
+        ...config,
+        lastUpdated: new Date().toISOString(),
+        version: "1.0",
+      };
+
+      crossBrowserSync.save(SYNC_CONFIGS.MATCHING_CONFIG, enhancedConfig, {
+        id: user.id,
+        name: user.name,
+      });
+
+      analytics.trackAction({
+        action: "matching_config_updated",
+        component: "api_enhanced",
+        metadata: {
+          adminId: user.id,
+          source: "local_storage",
+          algorithm: config.algorithm,
+          weightTotal: Object.values(config.weights).reduce(
+            (a: number, b: number) => a + b,
+            0,
+          ),
+        },
+      });
+
+      return { success: true, data: enhancedConfig };
+    }
+  }
+
+  async testMatchingConfiguration(
+    config: any,
+    testScenario: any,
+  ): Promise<any> {
+    const user = checkAuthorization(["platform_admin"]);
+
+    try {
+      const response = await this.request<any>("/admin/matching-config/test", {
+        method: "POST",
+        body: JSON.stringify({
+          config,
+          testScenario,
+          testId: `test_${Date.now()}`,
+          requestedBy: user.id,
+        }),
+      });
+
+      analytics.trackAction({
+        action: "matching_config_tested",
+        component: "api_enhanced",
+        metadata: {
+          source: "backend_api",
+          adminId: user.id,
+          testScenario: testScenario,
+          resultCount: response.data?.matches?.length || 0,
+        },
+      });
+
+      return response.data;
+    } catch (error) {
+      console.warn("API not available, simulating test results:", error);
+
+      // Simulate test results for demo purposes
+      const mockMatches = [
+        {
+          id: "coach_1",
+          name: "Sarah Wilson",
+          skills: ["JavaScript", "React", "Node.js"],
+          experience: "senior",
+          rating: 4.8,
+          availability: "immediate",
+          hourlyRate: 120,
+          matchScore: 0.89,
+        },
+        {
+          id: "coach_2",
+          name: "Michael Chen",
+          skills: ["React", "TypeScript", "Node.js"],
+          experience: "senior",
+          rating: 4.7,
+          availability: "next_week",
+          hourlyRate: 135,
+          matchScore: 0.84,
+        },
+        {
+          id: "coach_3",
+          name: "Emma Rodriguez",
+          skills: ["JavaScript", "Vue.js", "Node.js"],
+          experience: "mid-level",
+          rating: 4.6,
+          availability: "immediate",
+          hourlyRate: 95,
+          matchScore: 0.76,
+        },
+      ];
+
+      analytics.trackAction({
+        action: "matching_config_tested",
+        component: "api_enhanced",
+        metadata: {
+          adminId: user.id,
+          source: "mock_data",
+          resultCount: mockMatches.length,
+        },
+      });
+
+      return { success: true, data: { matches: mockMatches } };
+    }
+  }
 }
 
 // Export singleton instance
