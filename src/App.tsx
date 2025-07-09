@@ -61,225 +61,227 @@ const queryClient = new QueryClient();
 const App: React.FC = () => {
   return (
     <QueryClientProvider client={queryClient}>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <AuthProvider>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/pricing" element={<Pricing />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/coaches" element={<CoachDirectory />} />
-            <Route path="/coaches/:id" element={<CoachProfile />} />
+      <React.Suspense fallback={<div>Loading...</div>}>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+          <AuthProvider>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/pricing" element={<Pricing />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/coaches" element={<CoachDirectory />} />
+              <Route path="/coaches/:id" element={<CoachProfile />} />
 
-            {/* Auto-route authenticated users to their dashboard */}
-            <Route path="/app" element={<DashboardRouter />} />
+              {/* Auto-route authenticated users to their dashboard */}
+              <Route path="/app" element={<DashboardRouter />} />
 
-            {/* Protected Routes */}
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute requiredUserType="company_admin">
-                  <EnterpriseDashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/company/dashboard"
-              element={
-                <ProtectedRoute requiredUserType="company_admin">
-                  <CompanyDashboardEnhanced />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/company/dashboard/basic"
-              element={
-                <ProtectedRoute requiredUserType="company_admin">
-                  <EnterpriseDashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/platform-admin"
-              element={
-                <ProtectedRoute requiredUserType="platform_admin">
-                  <PlatformAdminDashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/onboarding"
-              element={
-                <ProtectedRoute>
-                  <BusinessOnboarding />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/coach/onboarding"
-              element={
-                <ProtectedRoute allowedRoles={["coach"]}>
-                  <CoachOnboarding />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/team-member/dashboard"
-              element={
-                <ProtectedRoute allowedRoles={["team_member"]}>
-                  <TeamMemberDashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/session/video"
-              element={
-                <ProtectedRoute
-                  allowedRoles={[
-                    "coach",
-                    "team_member",
-                    "company_admin",
-                    "platform_admin",
-                  ]}
-                >
-                  <VideoConference />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/messages/:conversationId?"
-              element={
-                <ProtectedRoute>
-                  <Messages />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/mentorship/new"
-              element={
-                <ProtectedRoute
-                  allowedRoles={["platform_admin", "company_admin"]}
-                >
-                  <CreateMentorshipRequest />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/mentorship/requests/:id"
-              element={
-                <ProtectedRoute>
-                  <MentorshipRequestDetails />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/mentorship/matching"
-              element={
-                <ProtectedRoute
-                  allowedRoles={["platform_admin", "company_admin"]}
-                >
-                  <CoachMatching />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/coach/dashboard"
-              element={
-                <ProtectedRoute allowedRoles={["coach"]}>
-                  <CoachDashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/coach/settings"
-              element={
-                <ProtectedRoute allowedRoles={["coach"]}>
-                  <CoachSettings />
-                </ProtectedRoute>
-              }
-            />
-            <Route path="/invitation/accept" element={<InvitationAccept />} />
-            <Route path="/invitations" element={<PendingInvitations />} />
-            <Route path="/test-permissions" element={<TestPermissions />} />
-            <Route path="/terms" element={<Terms />} />
-            <Route path="/privacy" element={<Privacy />} />
-            <Route path="/admin/pricing-config" element={<PricingConfig />} />
-            <Route
-              path="/admin/security-settings"
-              element={
-                <ProtectedRoute requiredUserType="platform_admin">
-                  <SecuritySettings />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/admin/analytics-settings"
-              element={
-                <ProtectedRoute requiredUserType="platform_admin">
-                  <AnalyticsSettings />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/admin/matching-settings"
-              element={
-                <ProtectedRoute requiredUserType="platform_admin">
-                  <MatchingSettings />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/analytics"
-              element={
-                <ProtectedRoute
-                  allowedRoles={["platform_admin", "company_admin", "coach"]}
-                >
-                  <AnalyticsDashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/connections"
-              element={
-                <ProtectedRoute
-                  allowedRoles={["company_admin", "coach", "platform_admin"]}
-                >
-                  <Connections />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/connections/:id"
-              element={
-                <ProtectedRoute>
-                  <ConnectionDetails />
-                </ProtectedRoute>
-              }
-            />
+              {/* Protected Routes */}
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute requiredUserType="company_admin">
+                    <EnterpriseDashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/company/dashboard"
+                element={
+                  <ProtectedRoute requiredUserType="company_admin">
+                    <CompanyDashboardEnhanced />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/company/dashboard/basic"
+                element={
+                  <ProtectedRoute requiredUserType="company_admin">
+                    <EnterpriseDashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/platform-admin"
+                element={
+                  <ProtectedRoute requiredUserType="platform_admin">
+                    <PlatformAdminDashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/onboarding"
+                element={
+                  <ProtectedRoute>
+                    <BusinessOnboarding />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/coach/onboarding"
+                element={
+                  <ProtectedRoute allowedRoles={["coach"]}>
+                    <CoachOnboarding />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/team-member/dashboard"
+                element={
+                  <ProtectedRoute allowedRoles={["team_member"]}>
+                    <TeamMemberDashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/session/video"
+                element={
+                  <ProtectedRoute
+                    allowedRoles={[
+                      "coach",
+                      "team_member",
+                      "company_admin",
+                      "platform_admin",
+                    ]}
+                  >
+                    <VideoConference />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/messages/:conversationId?"
+                element={
+                  <ProtectedRoute>
+                    <Messages />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/mentorship/new"
+                element={
+                  <ProtectedRoute
+                    allowedRoles={["platform_admin", "company_admin"]}
+                  >
+                    <CreateMentorshipRequest />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/mentorship/requests/:id"
+                element={
+                  <ProtectedRoute>
+                    <MentorshipRequestDetails />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/mentorship/matching"
+                element={
+                  <ProtectedRoute
+                    allowedRoles={["platform_admin", "company_admin"]}
+                  >
+                    <CoachMatching />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/coach/dashboard"
+                element={
+                  <ProtectedRoute allowedRoles={["coach"]}>
+                    <CoachDashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/coach/settings"
+                element={
+                  <ProtectedRoute allowedRoles={["coach"]}>
+                    <CoachSettings />
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="/invitation/accept" element={<InvitationAccept />} />
+              <Route path="/invitations" element={<PendingInvitations />} />
+              <Route path="/test-permissions" element={<TestPermissions />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/admin/pricing-config" element={<PricingConfig />} />
+              <Route
+                path="/admin/security-settings"
+                element={
+                  <ProtectedRoute requiredUserType="platform_admin">
+                    <SecuritySettings />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/analytics-settings"
+                element={
+                  <ProtectedRoute requiredUserType="platform_admin">
+                    <AnalyticsSettings />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/matching-settings"
+                element={
+                  <ProtectedRoute requiredUserType="platform_admin">
+                    <MatchingSettings />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/analytics"
+                element={
+                  <ProtectedRoute
+                    allowedRoles={["platform_admin", "company_admin", "coach"]}
+                  >
+                    <AnalyticsDashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/connections"
+                element={
+                  <ProtectedRoute
+                    allowedRoles={["company_admin", "coach", "platform_admin"]}
+                  >
+                    <Connections />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/connections/:id"
+                element={
+                  <ProtectedRoute>
+                    <ConnectionDetails />
+                  </ProtectedRoute>
+                }
+              />
 
-            {/* Catch-all route */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+              {/* Catch-all route */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
 
-          {/* Offline Sync Indicator */}
-          <OfflineIndicator />
+            {/* Offline Sync Indicator */}
+            <OfflineIndicator />
 
-          {/* Database Sync Monitor */}
-          <DatabaseSyncMonitor />
+            {/* Database Sync Monitor */}
+            <DatabaseSyncMonitor />
 
-          {/* Database Status Indicator */}
-          <DatabaseStatusIndicator />
+            {/* Database Status Indicator */}
+            <DatabaseStatusIndicator />
 
-          {/* localStorage Elimination Indicator */}
-          <LocalStorageEliminationIndicator />
+            {/* localStorage Elimination Indicator */}
+            <LocalStorageEliminationIndicator />
 
-          {/* Page Validator */}
-          <PageValidator />
-        </AuthProvider>
-      </BrowserRouter>
+            {/* Page Validator */}
+            <PageValidator />
+                    </AuthProvider>
+        </BrowserRouter>
     </QueryClientProvider>
   );
 };
