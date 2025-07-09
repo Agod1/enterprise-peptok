@@ -59,13 +59,13 @@ import("./services/localStorageElimination");
 const queryClient = new QueryClient();
 
 const App: React.FC = () => {
-  return (
+    return (
     <QueryClientProvider client={queryClient}>
-      <SafeTooltipProvider>
-        <Toaster />
-        <Sonner />
+            <SafeTooltipProvider>
+        <SafeToaster />
+        <SafeSonner />
         <BrowserRouter>
-          <AuthProvider>
+          <SafeAuthProvider>
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/pricing" element={<Pricing />} />
@@ -277,8 +277,8 @@ const App: React.FC = () => {
             {/* localStorage Elimination Indicator */}
             <LocalStorageEliminationIndicator />
 
-            {/* Page Validator */}
-            <PageValidator />
+                        {/* Page Validator */}
+                        <PageValidator />
           </AuthProvider>
         </BrowserRouter>
       </SafeTooltipProvider>
