@@ -12,6 +12,7 @@ import DatabaseSyncMonitor from "@/components/common/DatabaseSyncMonitor";
 import DatabaseStatusIndicator from "@/components/common/DatabaseStatusIndicator";
 import LocalStorageEliminationIndicator from "@/components/common/LocalStorageEliminationIndicator";
 import { PageValidator } from "@/components/common/PageValidator";
+import { HealthCheck } from "@/components/common/HealthCheck";
 import Index from "./pages/Index";
 import Pricing from "./pages/Pricing";
 import CoachDirectory from "./pages/CoachDirectory";
