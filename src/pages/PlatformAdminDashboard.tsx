@@ -898,6 +898,36 @@ export default function PlatformAdminDashboard() {
                 </div>
               </CardContent>
             </Card>
+
+            <Card
+              className="hover:shadow-md transition-shadow cursor-pointer"
+              onClick={() => navigate("/admin/matching-settings")}
+            >
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <Brain className="h-8 w-8 text-indigo-600" />
+                    <div className="ml-4">
+                      <h3 className="text-lg font-semibold text-gray-900">
+                        Matching Algorithm
+                      </h3>
+                      <p className="text-sm text-gray-600">
+                        Configure mentor-mentee matching weights
+                      </p>
+                      <div className="flex items-center gap-1 mt-1">
+                        <span className="inline-block w-2 h-2 rounded-full bg-indigo-500"></span>
+                        <span className="text-xs text-indigo-600">
+                          AI-powered matching
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <Button variant="outline" size="sm">
+                    Configure
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           </div>
 
           {/* Users Management */}
