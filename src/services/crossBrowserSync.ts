@@ -317,6 +317,12 @@ export const SYNC_CONFIGS = {
     broadcastChannel: "peptok_audit_sync",
     syncInterval: 10000,
   },
+  MATCHING_CONFIG: {
+    storageKey: "peptok_matching_config",
+    cookieKey: "peptok_matching",
+    broadcastChannel: "peptok_matching_sync",
+    syncInterval: 5000,
+  },
 } as const;
 
 // Auto-cleanup on page unload
