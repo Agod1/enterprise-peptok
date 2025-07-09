@@ -62,11 +62,8 @@ const queryClient = new QueryClient();
 const App: React.FC = () => {
   return (
     <QueryClientProvider client={queryClient}>
-      <SafeTooltipProvider>
-        <SafeToaster />
-        <SafeSonner />
-        <BrowserRouter>
-          <SafeAuthProvider>
+              <BrowserRouter>
+          <div>
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/pricing" element={<Pricing />} />
@@ -278,7 +275,7 @@ const App: React.FC = () => {
             {/* localStorage Elimination Indicator */}
             <LocalStorageEliminationIndicator />
 
-            {/* Page Validator */}
+                        {/* Page Validator */}
             <PageValidator />
 
             {/* Health Check */}
