@@ -68,6 +68,7 @@ import {
   XCircle,
   Clock,
   Search,
+  Brain,
 } from "lucide-react";
 
 interface User {
