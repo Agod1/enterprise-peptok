@@ -1,10 +1,7 @@
 import React from "react";
-import { SafeToaster } from "@/components/ui/safe-toaster";
-import { SafeSonner } from "@/components/ui/safe-sonner";
-import { SafeTooltipProvider } from "@/components/ui/safe-tooltip-provider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { SafeAuthProvider } from "@/contexts/SafeAuthContext";
+import { ReactReady } from "@/components/core/ReactReady";
+import { AppShell } from "@/components/core/AppShell";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import DashboardRouter from "@/components/auth/DashboardRouter";
 import OfflineIndicator from "@/components/common/OfflineIndicator";
