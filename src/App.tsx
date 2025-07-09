@@ -59,8 +59,8 @@ import("./services/localStorageElimination");
 const queryClient = new QueryClient();
 
 const App: React.FC = () => {
-  return (
-            <QueryClientProvider client={queryClient}>
+    return (
+    <QueryClientProvider client={queryClient}>
       <SafeTooltipProvider>
         <Toaster />
         <Sonner />
