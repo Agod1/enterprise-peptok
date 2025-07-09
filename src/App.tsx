@@ -39,6 +39,7 @@ import Privacy from "./pages/Privacy";
 import PricingConfig from "./pages/admin/PricingConfig";
 import SecuritySettings from "./pages/admin/SecuritySettings";
 import AnalyticsSettings from "./pages/admin/AnalyticsSettings";
+import MatchingSettings from "./pages/admin/MatchingSettings";
 import AnalyticsDashboard from "./components/analytics/AnalyticsDashboard";
 import PendingInvitations from "./pages/PendingInvitations";
 import Connections from "./pages/Connections";
