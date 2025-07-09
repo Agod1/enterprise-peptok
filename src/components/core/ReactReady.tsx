@@ -10,6 +10,7 @@ export const ReactReady: React.FC<ReactReadyProps> = ({
   fallback = <div>Initializing...</div>,
 }) => {
   const [isReady, setIsReady] = React.useState(false);
+  const [loadFullApp, setLoadFullApp] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
 
   React.useEffect(() => {
@@ -22,7 +23,17 @@ export const ReactReady: React.FC<ReactReadyProps> = ({
         typeof React.useEffect === "function"
       ) {
         setIsReady(true);
-        console.log("��� React is ready and hooks are working");
+        console.log("✅ React is ready and hooks are working");
+
+        // After a brief delay, try to load the full app
+        setTimeout(() => {
+          try {
+            setLoadFullApp(true);
+            console.log("✅ Loading full application features");
+          } catch (fullAppError) {
+            console.warn("⚠️ Full app loading failed, staying with basic app");
+          }
+        }, 100);
       } else {
         throw new Error("React hooks not available");
       }
@@ -56,5 +67,19 @@ export const ReactReady: React.FC<ReactReadyProps> = ({
     return <>{fallback}</>;
   }
 
-  return <>{children}</>;
+  // Progressive loading: start with basic app, then load full features
+  if (!loadFullApp) {
+    return <>{children}</>;
+  }
+
+  // Lazy load the full app
+  const LazyFullApp = React.lazy(() =>
+    import("./FullApp").then((module) => ({ default: module.FullApp })),
+  );
+
+  return (
+    <React.Suspense fallback={<>{children}</>}>
+      <LazyFullApp />
+    </React.Suspense>
+  );
 };
