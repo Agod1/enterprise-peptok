@@ -225,6 +225,14 @@ const App: React.FC = () => {
                 }
               />
               <Route
+                path="/admin/matching-settings"
+                element={
+                  <ProtectedRoute requiredUserType="platform_admin">
+                    <MatchingSettings />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
                 path="/analytics"
                 element={
                   <ProtectedRoute
