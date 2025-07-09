@@ -280,6 +280,9 @@ const App: React.FC = () => {
 
             {/* Page Validator */}
             <PageValidator />
+
+            {/* Health Check */}
+            <HealthCheck />
           </SafeAuthProvider>
         </BrowserRouter>
       </SafeTooltipProvider>
