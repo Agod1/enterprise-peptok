@@ -59,9 +59,10 @@ const queryClient = new QueryClient();
 const App: React.FC = () => {
   return (
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <div>
-          <Routes>
+      <ReactReady fallback={<div>Loading Peptok Platform...</div>}>
+        <AppShell />
+      </ReactReady>
+    </QueryClientProvider>
             <Route path="/" element={<Index />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/login" element={<Login />} />
