@@ -70,6 +70,7 @@ import {
   Search,
   Brain,
   Mail,
+  Settings,
 } from "lucide-react";
 
 interface User {
