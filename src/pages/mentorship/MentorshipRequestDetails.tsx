@@ -662,8 +662,8 @@ export default function MentorshipRequestDetails() {
                           <Avatar className="w-12 h-12">
                             <AvatarImage
                               src={
-                                coach.avatar ||
-                                `https://avatar.vercel.sh/${coach.email}`
+                                coach.profileImage ||
+                                `https://avatar.vercel.sh/${coach.name}`
                               }
                             />
                             <AvatarFallback>
