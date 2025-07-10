@@ -248,7 +248,7 @@ export default function CreateMentorshipRequest() {
           status: "draft" as const,
         };
 
-        await api.createMentorshipRequest(draftData);
+        await apiEnhanced.createMentorshipRequest(draftData);
         toast.success("Draft saved to server successfully!");
       } catch (backendError) {
         console.warn("Backend save failed, draft saved locally:", backendError);
