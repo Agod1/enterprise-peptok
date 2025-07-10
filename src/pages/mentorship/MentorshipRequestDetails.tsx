@@ -595,10 +595,59 @@ export default function MentorshipRequestDetails() {
             {/* Matched Coaches */}
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Users className="w-5 h-5" />
-                  Matched Coaches ({matchedCoaches.length})
-                </CardTitle>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle className="flex items-center gap-2">
+                      <Users className="w-5 h-5" />
+                      Matched Coaches ({matchedCoaches.length})
+                    </CardTitle>
+                    {matchingResults && (
+                      <p className="text-sm text-gray-600 mt-1">
+                        Algorithm: {matchingResults.algorithmVersion} • Updated:{" "}
+                        {new Date(matchingResults.timestamp).toLocaleString()}
+                      </p>
+                    )}
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => loadMatchingResults(id!)}
+                      disabled={loadingMatches}
+                    >
+                      {loadingMatches ? (
+                        <>
+                          <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                          Updating...
+                        </>
+                      ) : (
+                        <>
+                          <RefreshCw className="w-4 h-4 mr-2" />
+                          Refresh Matches
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </div>
+                {matchingResults && (
+                  <div className="flex flex-wrap gap-2 mt-3">
+                    <Badge variant="outline">
+                      Skill: {matchingResults.configUsed.skillMatch}%
+                    </Badge>
+                    <Badge variant="outline">
+                      Experience: {matchingResults.configUsed.experience}%
+                    </Badge>
+                    <Badge variant="outline">
+                      Rating: {matchingResults.configUsed.rating}%
+                    </Badge>
+                    <Badge variant="outline">
+                      Availability: {matchingResults.configUsed.availability}%
+                    </Badge>
+                    <Badge variant="outline">
+                      Price: {matchingResults.configUsed.price}%
+                    </Badge>
+                  </div>
+                )}
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
