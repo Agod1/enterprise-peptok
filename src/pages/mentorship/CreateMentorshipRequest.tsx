@@ -25,7 +25,7 @@ import {
   TeamMember,
 } from "@/types";
 import { toast } from "sonner";
-import { api } from "@/services/api";
+import { apiEnhanced } from "@/services/apiEnhanced";
 import { emailService } from "@/services/email";
 import { useAuth } from "@/contexts/AuthContext";
 import { BackendStatus } from "@/components/ui/BackendStatus";
