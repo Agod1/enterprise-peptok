@@ -37,8 +37,12 @@ export default function MentorshipRequestDetails() {
   const { user } = useAuth();
   const [request, setRequest] = useState<MentorshipRequest | null>(null);
   const [matchedCoaches, setMatchedCoaches] = useState<MatchedCoach[]>([]);
+  const [matchingResults, setMatchingResults] = useState<MatchingResult | null>(
+    null,
+  );
   const [teamMembers, setTeamMembers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMatches, setLoadingMatches] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleUpdateTeamMembers = async (updatedMembers: any[]) => {
@@ -55,7 +59,7 @@ export default function MentorshipRequestDetails() {
       // Persist team members to backend database
       try {
         await api.updateMentorshipRequest(request.id, updatedRequest);
-        console.log("✅ Team members updated in backend database");
+        console.log("��� Team members updated in backend database");
       } catch (error) {
         console.error("Failed to update team members in backend:", error);
         // Don't show error toast as team members are still updated in UI
