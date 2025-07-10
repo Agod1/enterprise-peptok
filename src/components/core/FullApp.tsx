@@ -11,6 +11,7 @@ import DatabaseSyncMonitor from "@/components/common/DatabaseSyncMonitor";
 import DatabaseStatusIndicator from "@/components/common/DatabaseStatusIndicator";
 import LocalStorageEliminationIndicator from "@/components/common/LocalStorageEliminationIndicator";
 import { PageValidator } from "@/components/common/PageValidator";
+import { QuickNav } from "@/components/common/QuickNav";
 
 // Import all page components
 import Index from "@/pages/Index";
