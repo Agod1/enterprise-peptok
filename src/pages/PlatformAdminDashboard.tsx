@@ -854,18 +854,18 @@ export default function PlatformAdminDashboard() {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
-                    <Shield className="h-8 w-8 text-blue-600" />
+                    <Settings className="h-8 w-8 text-blue-600" />
                     <div className="ml-4">
                       <h3 className="text-lg font-semibold text-gray-900">
-                        Platform Security
+                        Platform Settings
                       </h3>
                       <p className="text-sm text-gray-600">
-                        Security settings and access controls
+                        Security, AI, and system configuration
                       </p>
                       <div className="flex items-center gap-1 mt-1">
                         <span className="inline-block w-2 h-2 rounded-full bg-blue-500"></span>
                         <span className="text-xs text-blue-600">
-                          Advanced security features
+                          Security & AI controls
                         </span>
                       </div>
                     </div>
