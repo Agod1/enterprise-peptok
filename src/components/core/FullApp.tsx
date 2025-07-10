@@ -200,7 +200,7 @@ export const FullApp: React.FC = () => {
               path="/admin/security-settings"
               element={
                 <ProtectedRoute requiredUserType="platform_admin">
-                  <SecuritySettings />
+                  <PlatformSettings />
                 </ProtectedRoute>
               }
             />
