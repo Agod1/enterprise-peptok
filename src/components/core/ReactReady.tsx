@@ -25,15 +25,9 @@ export const ReactReady: React.FC<ReactReadyProps> = ({
         setIsReady(true);
         console.log("✅ React is ready and hooks are working");
 
-        // After a brief delay, try to load the full app
-        setTimeout(() => {
-          try {
-            setLoadFullApp(true);
-            console.log("✅ Loading full application features");
-          } catch (fullAppError) {
-            console.warn("⚠️ Full app loading failed, staying with basic app");
-          }
-        }, 100);
+        // Load the full app immediately after React is ready
+        setLoadFullApp(true);
+        console.log("✅ Loading full application features");
       } else {
         throw new Error("React hooks not available");
       }
