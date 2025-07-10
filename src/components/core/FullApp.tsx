@@ -285,6 +285,9 @@ export const FullApp: React.FC = () => {
 
           {/* Page Validator */}
           <PageValidator />
+
+          {/* Development Quick Navigation */}
+          <QuickNav />
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
