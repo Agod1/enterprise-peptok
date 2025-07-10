@@ -929,6 +929,36 @@ export default function PlatformAdminDashboard() {
                 </div>
               </CardContent>
             </Card>
+
+            <Card
+              className="hover:shadow-md transition-shadow cursor-pointer"
+              onClick={() => navigate("/admin/email-settings")}
+            >
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <Mail className="h-8 w-8 text-green-600" />
+                    <div className="ml-4">
+                      <h3 className="text-lg font-semibold text-gray-900">
+                        Email Settings
+                      </h3>
+                      <p className="text-sm text-gray-600">
+                        Configure email service and notifications
+                      </p>
+                      <div className="flex items-center gap-1 mt-1">
+                        <span className="inline-block w-2 h-2 rounded-full bg-green-500"></span>
+                        <span className="text-xs text-green-600">
+                          EmailJS integration
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <Button variant="outline" size="sm">
+                    Configure
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           </div>
 
           {/* Users Management */}
