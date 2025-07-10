@@ -169,7 +169,7 @@ export default function CreateMentorshipRequest() {
       };
 
       // Submit to API
-      const request = await api.createMentorshipRequest(requestData);
+      const request = await apiEnhanced.createMentorshipRequest(requestData);
 
       // Send program details email to all team members
       try {
