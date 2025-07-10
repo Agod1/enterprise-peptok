@@ -1,6 +1,6 @@
 import React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { FullApp } from "@/components/core/FullApp";
+import { TestApp } from "@/components/core/TestApp";
 
 // Debug utilities in development
 if (import.meta.env.DEV) {
@@ -16,7 +16,7 @@ const queryClient = new QueryClient();
 const App: React.FC = () => {
   return (
     <QueryClientProvider client={queryClient}>
-      <FullApp />
+      <TestApp />
     </QueryClientProvider>
   );
 };
