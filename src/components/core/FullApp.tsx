@@ -38,7 +38,7 @@ import TestPermissions from "@/pages/TestPermissions";
 import Terms from "@/pages/Terms";
 import Privacy from "@/pages/Privacy";
 import PricingConfig from "@/pages/admin/PricingConfig";
-import SecuritySettings from "@/pages/admin/SecuritySettings";
+import PlatformSettings from "@/pages/admin/PlatformSettings";
 import AnalyticsSettings from "@/pages/admin/AnalyticsSettings";
 import MatchingSettings from "@/pages/admin/MatchingSettings";
 import EmailSettings from "@/pages/admin/EmailSettings";
