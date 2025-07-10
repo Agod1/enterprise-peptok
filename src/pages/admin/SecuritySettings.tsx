@@ -320,7 +320,7 @@ export default function SecuritySettings() {
                 Platform Settings
               </h1>
               <p className="text-gray-600">
-                Security settings and access controls
+                Platform settings, security controls, and AI configuration
               </p>
             </div>
             <div className="flex gap-3">
