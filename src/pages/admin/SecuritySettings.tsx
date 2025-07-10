@@ -429,6 +429,69 @@ export default function SecuritySettings() {
           )}
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* AI & Matching Settings */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Brain className="w-5 h-5" />
+                  AI & Matching Settings
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label>Matching Algorithm</Label>
+                      <p className="text-sm text-gray-600">
+                        Configure coach matching algorithm weights
+                      </p>
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() =>
+                        window.open("/admin/matching-settings", "_blank")
+                      }
+                    >
+                      Configure
+                    </Button>
+                  </div>
+
+                  <Separator />
+
+                  <div className="space-y-2">
+                    <Label>Current Algorithm Status</Label>
+                    <div className="flex items-center gap-2">
+                      <Badge variant="outline">Version 1.0.0</Badge>
+                      <Badge variant="secondary">Active</Badge>
+                    </div>
+                    <p className="text-xs text-gray-500">
+                      Last updated: {new Date().toLocaleDateString()}
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3 pt-2">
+                    <div className="text-center p-2 bg-blue-50 rounded">
+                      <p className="text-xs text-gray-600">Skill Weight</p>
+                      <p className="font-semibold text-blue-600">30%</p>
+                    </div>
+                    <div className="text-center p-2 bg-green-50 rounded">
+                      <p className="text-xs text-gray-600">Experience</p>
+                      <p className="font-semibold text-green-600">25%</p>
+                    </div>
+                    <div className="text-center p-2 bg-yellow-50 rounded">
+                      <p className="text-xs text-gray-600">Rating</p>
+                      <p className="font-semibold text-yellow-600">20%</p>
+                    </div>
+                    <div className="text-center p-2 bg-purple-50 rounded">
+                      <p className="text-xs text-gray-600">Price</p>
+                      <p className="font-semibold text-purple-600">10%</p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Password Policy */}
             <Card>
               <CardHeader>
