@@ -841,10 +841,13 @@ export default function MentorshipRequestDetails() {
                       <div className="flex items-center justify-between pt-2 border-t">
                         <div className="text-sm text-gray-600">
                           Available for{" "}
-                          {coach.availability === "available"
-                            ? "immediate"
-                            : "limited"}{" "}
-                          coaching
+                          {coach.availability === "immediate"
+                            ? "immediate start"
+                            : coach.availability === "this_week"
+                              ? "start this week"
+                              : coach.availability === "next_week"
+                                ? "start next week"
+                                : coach.availability}{" "}
                         </div>
                         {coach.isSelected ? (
                           <div className="flex items-center gap-2">
