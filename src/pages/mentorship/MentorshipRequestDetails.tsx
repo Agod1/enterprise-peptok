@@ -681,7 +681,8 @@ export default function MentorshipRequestDetails() {
                             </h4>
                             <p className="text-gray-600">{coach.title}</p>
                             <p className="text-sm text-gray-500">
-                              {coach.company}
+                              {coach.yearsExperience} years experience •{" "}
+                              {coach.timezone}
                             </p>
                             <div className="flex items-center gap-2 mt-1">
                               <div className="flex items-center gap-1">
