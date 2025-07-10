@@ -493,6 +493,13 @@ export default function PlatformAdminDashboard() {
               </p>
             </div>
             <div className="flex gap-3">
+              <Button
+                onClick={() => navigate("/admin/matching-settings")}
+                variant="outline"
+              >
+                <Brain className="w-4 h-4 mr-2" />
+                Algorithm Settings
+              </Button>
               <Dialog
                 open={isCreateCompanyOpen}
                 onOpenChange={setIsCreateCompanyOpen}
