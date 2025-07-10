@@ -694,7 +694,7 @@ export default function MentorshipRequestDetails() {
                               <div className="flex items-center gap-1">
                                 <MapPin className="w-4 h-4 text-gray-400" />
                                 <span className="text-sm text-gray-600">
-                                  {coach.location}
+                                  {coach.languages.join(", ")}
                                 </span>
                               </div>
                             </div>
