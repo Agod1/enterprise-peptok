@@ -69,6 +69,7 @@ import {
   Clock,
   Search,
   Brain,
+  Mail,
 } from "lucide-react";
 
 interface User {
