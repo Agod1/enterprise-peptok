@@ -67,6 +67,67 @@ export default function MentorshipRequestDetails() {
     }
   };
 
+  const loadMatchingResults = async (requestId: string) => {
+    try {
+      setLoadingMatches(true);
+
+      // First try to get existing matching results
+      const existingResults =
+        await matchingService.getMatchingResult(requestId);
+
+      if (existingResults) {
+        console.log("✅ Found existing matching results:", existingResults);
+        setMatchingResults(existingResults);
+        setMatchedCoaches(
+          existingResults.matches.map((coach) => ({
+            ...coach,
+            isSelected: false,
+          })),
+        );
+      } else {
+        console.log(
+          "ℹ️ No existing results found, generating new matches for:",
+          requestId,
+        );
+
+        // Create a basic matching request from available data
+        const basicRequest = {
+          id: requestId,
+          title: request?.title || "Mentorship Request",
+          description: request?.description || "",
+          requiredSkills: request?.expertise || ["Leadership", "Coaching"],
+          preferredExperience: "senior",
+          budget: 150,
+          timeline: {
+            startDate: new Date().toISOString(),
+            endDate: new Date(
+              Date.now() + 30 * 24 * 60 * 60 * 1000,
+            ).toISOString(),
+          },
+          teamMembers: teamMembers.map((member) => member.email),
+          goals: request?.goals?.map((g) => g.title) || [],
+        };
+
+        const newResults = await matchingService.findMatches(basicRequest);
+        console.log("✅ Generated new matching results:", newResults);
+
+        setMatchingResults(newResults);
+        setMatchedCoaches(
+          newResults.matches.map((coach) => ({ ...coach, isSelected: false })),
+        );
+      }
+    } catch (error) {
+      console.error("Failed to load matching results:", error);
+      toast.error("Failed to load coach matches");
+
+      // Set empty results as fallback
+      setMatchedCoaches([]);
+      setMatchingResults(null);
+    } finally {
+      setLoadingMatches(false);
+    }
+  };
+
   useEffect(() => {
     const fetchRequest = async () => {
       if (!id) {
