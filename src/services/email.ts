@@ -40,9 +40,28 @@ interface CoachAcceptanceData {
 }
 
 export class EmailService {
+  private getEmailConfig() {
+    // Get configuration from admin settings or environment variables
+    const mockEmailEnabled =
+      localStorage.getItem("email_mock_enabled") === "true" ||
+      import.meta.env.VITE_MOCK_EMAIL === "true";
+
+    return {
+      serviceId: import.meta.env.VITE_EMAILJS_SERVICE_ID || "",
+      templateId: import.meta.env.VITE_EMAILJS_TEMPLATE_ID || "",
+      userId: import.meta.env.VITE_EMAILJS_USER_ID || "",
+      mockEnabled: mockEmailEnabled,
+      fromName: localStorage.getItem("email_from_name") || "Peptok Platform",
+      fromEmail:
+        localStorage.getItem("email_from_email") || "noreply@peptok.com",
+    };
+  }
+
   private async sendEmail(template: EmailTemplate): Promise<boolean> {
-    // In development/demo mode, we'll log the email and show a success message
-    if (import.meta.env.DEV || import.meta.env.VITE_MOCK_EMAIL === "true") {
+    const config = this.getEmailConfig();
+
+    // In development/demo mode or when mock is enabled, log the email
+    if (import.meta.env.DEV || config.mockEnabled) {
       console.log("📧 Email would be sent:", {
         to: template.to,
         subject: template.subject,
