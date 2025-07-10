@@ -520,6 +520,73 @@ export class EmailService {
 
     return await this.sendEmail(template);
   }
+
+  // Test email functionality from admin panel
+  async sendTestEmail(recipientEmail: string): Promise<boolean> {
+    const config = this.getEmailConfig();
+
+    const emailTemplate: EmailTemplate = {
+      to: recipientEmail,
+      subject: "Peptok Platform - Test Email",
+      htmlContent: `
+        <h2>Email Service Test</h2>
+        <p>This is a test email from the Peptok platform.</p>
+        <p><strong>Configuration Details:</strong></p>
+        <ul>
+          <li>From: ${config.fromName} &lt;${config.fromEmail}&gt;</li>
+          <li>Service: ${config.serviceId ? "EmailJS Configured" : "EmailJS Not Configured"}</li>
+          <li>Mode: ${config.mockEnabled ? "Mock/Development" : "Production"}</li>
+          <li>Timestamp: ${new Date().toISOString()}</li>
+        </ul>
+        <p>If you received this email, the email service is working correctly!</p>
+      `,
+      textContent: `
+Email Service Test
+
+This is a test email from the Peptok platform.
+
+Configuration Details:
+- From: ${config.fromName} <${config.fromEmail}>
+- Service: ${config.serviceId ? "EmailJS Configured" : "EmailJS Not Configured"}
+- Mode: ${config.mockEnabled ? "Mock/Development" : "Production"}
+- Timestamp: ${new Date().toISOString()}
+
+If you received this email, the email service is working correctly!
+      `,
+    };
+
+    try {
+      const success = await this.sendEmail(emailTemplate);
+
+      if (success && config.mockEnabled) {
+        console.log(`
+🧪 TEST EMAIL SIMULATED
+📧 TO: ${recipientEmail}
+📧 FROM: ${config.fromName} <${config.fromEmail}>
+📧 SUBJECT: ${emailTemplate.subject}
+💡 Mock mode is enabled - email logged to console instead of being sent.
+        `);
+      }
+
+      return success;
+    } catch (error) {
+      console.error("Test email failed:", error);
+      return false;
+    }
+  }
+
+  // Get current email service status
+  getServiceStatus() {
+    const config = this.getEmailConfig();
+
+    return {
+      configured: !!(config.serviceId && config.templateId && config.userId),
+      mockEnabled: config.mockEnabled,
+      fromName: config.fromName,
+      fromEmail: config.fromEmail,
+      serviceId: config.serviceId,
+    };
+  }
 }
 
 export const emailService = new EmailService();
