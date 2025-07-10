@@ -781,6 +781,48 @@ export default function MentorshipRequestDetails() {
 
                       <p className="text-sm text-gray-600">{coach.bio}</p>
 
+                      {/* Match Score and Reasons */}
+                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-sm font-medium text-blue-900">
+                            Match Score
+                          </span>
+                          <Badge
+                            className={`${
+                              coach.matchScore >= 80
+                                ? "bg-green-100 text-green-800"
+                                : coach.matchScore >= 60
+                                  ? "bg-yellow-100 text-yellow-800"
+                                  : "bg-gray-100 text-gray-800"
+                            }`}
+                          >
+                            {Math.round(coach.matchScore * 100)}%
+                          </Badge>
+                        </div>
+                        {coach.matchReasons &&
+                          coach.matchReasons.length > 0 && (
+                            <div className="space-y-1">
+                              {coach.matchReasons.map((reason, index) => (
+                                <div
+                                  key={index}
+                                  className="text-xs text-blue-700 flex items-center gap-1"
+                                >
+                                  <CheckCircle className="w-3 h-3" />
+                                  {reason}
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        {coach.estimatedCost && (
+                          <div className="mt-2 pt-2 border-t border-blue-200">
+                            <span className="text-xs text-blue-700">
+                              Estimated program cost: $
+                              {coach.estimatedCost.toLocaleString()}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+
                       <div className="flex flex-wrap gap-2">
                         {coach.expertise.map((skill, index) => (
                           <Badge key={index} variant="outline">
