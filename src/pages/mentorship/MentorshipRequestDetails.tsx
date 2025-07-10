@@ -18,6 +18,11 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useEffect, useState } from "react";
 import { api } from "@/services/api";
 import { apiEnhanced } from "@/services/apiEnhanced";
+import {
+  matchingService,
+  type CoachMatch,
+  type MatchingResult,
+} from "@/services/matchingService";
 import { MentorshipRequest } from "@/types";
 import { toast } from "sonner";
 import { TeamMemberManagementCard } from "@/components/mentorship/TeamMemberManagementCard";
