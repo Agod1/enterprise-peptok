@@ -27,20 +27,7 @@ import { MentorshipRequest } from "@/types";
 import { toast } from "sonner";
 import { TeamMemberManagementCard } from "@/components/mentorship/TeamMemberManagementCard";
 
-interface MatchedCoach {
-  id: string;
-  name: string;
-  email: string;
-  avatar?: string;
-  title: string;
-  company: string;
-  location: string;
-  rating: number;
-  expertise: string[];
-  hourlyRate: number;
-  availability: "available" | "limited" | "busy";
-  matchScore: number;
-  bio: string;
+interface MatchedCoach extends CoachMatch {
   isSelected?: boolean;
 }
 
