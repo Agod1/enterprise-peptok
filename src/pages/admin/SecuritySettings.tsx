@@ -316,8 +316,8 @@ export default function SecuritySettings() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-                <Shield className="w-8 h-8 text-blue-600" />
-                Platform Security
+                <Settings className="w-8 h-8 text-blue-600" />
+                Platform Settings
               </h1>
               <p className="text-gray-600">
                 Security settings and access controls
