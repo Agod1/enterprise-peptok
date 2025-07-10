@@ -47,6 +47,7 @@ import {
   Smartphone,
   Plus,
   Trash2,
+  Brain,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
