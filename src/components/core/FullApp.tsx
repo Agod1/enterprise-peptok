@@ -283,13 +283,13 @@ export const FullApp: React.FC = () => {
           <DatabaseStatusIndicator />
           <LocalStorageEliminationIndicator />
 
-                    {/* Page Validator */}
+          {/* Page Validator */}
           <PageValidator />
 
           {/* Development Quick Navigation */}
           <QuickNav />
         </AuthProvider>
       </BrowserRouter>
-    </TooltipProvider>
+    </>
   );
 };
