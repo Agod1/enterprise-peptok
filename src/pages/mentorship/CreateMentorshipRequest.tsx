@@ -27,6 +27,10 @@ import {
 import { toast } from "sonner";
 import { apiEnhanced } from "@/services/apiEnhanced";
 import { emailService } from "@/services/email";
+import {
+  matchingService,
+  type MatchingRequest,
+} from "@/services/matchingService";
 import { useAuth } from "@/contexts/AuthContext";
 import { BackendStatus } from "@/components/ui/BackendStatus";
 
