@@ -221,6 +221,14 @@ export const FullApp: React.FC = () => {
               }
             />
             <Route
+              path="/admin/email-settings"
+              element={
+                <ProtectedRoute requiredUserType="platform_admin">
+                  <EmailSettings />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/analytics"
               element={
                 <ProtectedRoute
