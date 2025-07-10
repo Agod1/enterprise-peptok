@@ -63,14 +63,17 @@ export class EmailService {
     // In development/demo mode or when mock is enabled, log the email
     if (import.meta.env.DEV || config.mockEnabled) {
       console.log("📧 Email would be sent:", {
+        from: `${config.fromName} <${config.fromEmail}>`,
         to: template.to,
         subject: template.subject,
         content: template.textContent,
+        mockMode: config.mockEnabled,
       });
 
       // Show what the email would look like in the console
       console.log("📧 Email Preview:");
       console.log("==========================================");
+      console.log(`From: ${config.fromName} <${config.fromEmail}>`);
       console.log(`To: ${template.to}`);
       console.log(`Subject: ${template.subject}`);
       console.log("------------------------------------------");
