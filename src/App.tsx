@@ -15,11 +15,18 @@ import("./services/localStorageElimination");
 const queryClient = new QueryClient();
 
 const App: React.FC = () => {
+  // For development, load the full app directly
+  const LazyFullApp = React.lazy(() =>
+    import("./components/core/FullApp").then((module) => ({
+      default: module.FullApp,
+    })),
+  );
+
   return (
     <QueryClientProvider client={queryClient}>
-      <ReactReady fallback={<div>Loading Peptok Platform...</div>}>
-        <AppShell />
-      </ReactReady>
+      <React.Suspense fallback={<div>Loading Peptok Platform...</div>}>
+        <LazyFullApp />
+      </React.Suspense>
     </QueryClientProvider>
   );
 };
