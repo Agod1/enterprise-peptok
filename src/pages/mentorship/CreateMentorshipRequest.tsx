@@ -203,6 +203,45 @@ export default function CreateMentorshipRequest() {
         console.error("Failed to send program details emails:", emailError);
       }
 
+      // Run coach matching using platform admin algorithm settings
+      try {
+        toast.info("Finding matching coaches using algorithm settings...");
+
+        const matchingRequest: MatchingRequest = {
+          id: request.id || `req_${Date.now()}`,
+          title: data.title,
+          description: data.description,
+          requiredSkills: data.expertise || [],
+          preferredExperience: data.level || "mid-level",
+          budget: data.budget || 150,
+          timeline: {
+            startDate: data.timeline.startDate,
+            endDate: data.timeline.endDate,
+          },
+          teamMembers: currentTeamMembers.map((member) => member.email),
+          goals: data.goals.map((g) => g.title),
+        };
+
+        const matchingResults =
+          await matchingService.findMatches(matchingRequest);
+
+        toast.success(
+          `Found ${matchingResults.matches.length} matching coaches! View them in the program details.`,
+        );
+
+        console.log("🎯 Coach matching completed:", {
+          requestId: matchingRequest.id,
+          totalMatches: matchingResults.matches.length,
+          topMatch: matchingResults.matches[0]?.name,
+          algorithmConfig: matchingResults.configUsed,
+        });
+      } catch (matchingError) {
+        console.error("Coach matching failed:", matchingError);
+        toast.warning(
+          "Request created successfully, but coach matching failed. You can find coaches manually.",
+        );
+      }
+
       // Clear saved draft and program ID
       localStorage.removeItem("mentorship-request-draft");
       localStorage.removeItem("current-program-id");
