@@ -636,6 +636,19 @@ export default function MentorshipRequestDetails() {
                     <Button
                       variant="outline"
                       size="sm"
+                      onClick={sortCoachesByScore}
+                      title={`Sort by match score ${sortByScore === "desc" ? "ascending" : "descending"}`}
+                    >
+                      {sortByScore === "desc" ? (
+                        <ArrowDown className="w-4 h-4 mr-2" />
+                      ) : (
+                        <ArrowUp className="w-4 h-4 mr-2" />
+                      )}
+                      Sort by Score
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
                       onClick={() => loadMatchingResults(id!)}
                       disabled={loadingMatches}
                     >
