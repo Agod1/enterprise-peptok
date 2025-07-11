@@ -1,6 +1,6 @@
 import React from "react";
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
+// import { Toaster } from "@/components/ui/toaster"; // Temporarily disabled due to React hook error
+// import { Toaster as Sonner } from "@/components/ui/sonner"; // Temporarily disabled due to React hook error
 // import { TooltipProvider } from "@/components/ui/tooltip"; // Temporarily disabled due to React hook error
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
