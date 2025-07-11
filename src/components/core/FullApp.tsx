@@ -12,7 +12,7 @@ import DashboardRouter from "@/components/auth/DashboardRouter";
 // import DatabaseStatusIndicator from "@/components/common/DatabaseStatusIndicator"; // Temporarily disabled due to React hook error
 // import LocalStorageEliminationIndicator from "@/components/common/LocalStorageEliminationIndicator"; // Temporarily disabled due to React hook error
 // import { PageValidator } from "@/components/common/PageValidator"; // Temporarily disabled due to React hook error
-// import { QuickNav } from "@/components/common/QuickNav"; // Temporarily disabled
+import { QuickNav } from "@/components/common/QuickNav";
 import {
   SimpleNotification,
   useNotifications,
@@ -300,7 +300,7 @@ export const FullApp: React.FC = () => {
           </Routes>
 
           {/* Development Quick Navigation */}
-          {/* <QuickNav /> Temporarily disabled */}
+          <QuickNav />
         </SafeAuthWrapper>
       </RouterWrapper>
     </>
