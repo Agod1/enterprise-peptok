@@ -26,22 +26,47 @@ export class ReactReadyWrapper extends React.Component<ReactReadyWrapperProps> {
 
   checkReactReady = () => {
     try {
-      // Check if React hooks are available without calling them
-      const hasReact = typeof React !== "undefined";
-      const hasUseState = React && typeof React.useState === "function";
-      const hasUseEffect = React && typeof React.useEffect === "function";
+      // More thorough React readiness check
+      const hasReact = typeof React !== "undefined" && React !== null;
+      const hasWindow = typeof window !== "undefined";
 
-      if (hasReact && hasUseState && hasUseEffect) {
-        console.log("✅ React hooks ready, initializing components");
+      // Check if React hooks are properly initialized (not null)
+      let hooksReady = false;
+      if (hasReact) {
+        try {
+          // Test if accessing React hooks doesn't throw and they're not null
+          const useStateRef = React.useState;
+          const useEffectRef = React.useEffect;
+          const useContextRef = React.useContext;
+
+          hooksReady =
+            useStateRef !== null &&
+            useEffectRef !== null &&
+            useContextRef !== null &&
+            typeof useStateRef === "function" &&
+            typeof useEffectRef === "function" &&
+            typeof useContextRef === "function";
+        } catch (hookError) {
+          console.log("❌ React hooks not accessible:", hookError);
+          hooksReady = false;
+        }
+      }
+
+      if (hasReact && hasWindow && hooksReady) {
+        console.log("✅ React and hooks fully ready, initializing components");
         this.isReady = true;
         this.setState({ reactReady: true });
       } else {
-        console.log("⏳ React hooks not ready, retrying...");
-        this.retryTimer = setTimeout(this.checkReactReady, 100);
+        console.log("⏳ React not fully ready, retrying...", {
+          hasReact,
+          hasWindow,
+          hooksReady,
+        });
+        this.retryTimer = setTimeout(this.checkReactReady, 150);
       }
     } catch (error) {
       console.log("❌ React check error, retrying:", error);
-      this.retryTimer = setTimeout(this.checkReactReady, 100);
+      this.retryTimer = setTimeout(this.checkReactReady, 150);
     }
   };
 
