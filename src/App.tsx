@@ -1,33 +1,50 @@
 import React from "react";
-import FinalWorkingApp from "@/components/core/FinalWorkingApp";
-// import { StandaloneApp } from "@/components/core/StandaloneApp"; // Using FinalWorkingApp instead
-// import { QueryClient } from "@tanstack/react-query"; // Not needed
-// import { FullApp } from "@/components/core/FullApp"; // Not needed
-// import { SafeAuthProvider } from "@/contexts/SafeAuthProvider"; // Not needed
-// import { SafeQueryProvider } from "@/components/providers/SafeQueryProvider"; // Not needed
-// import { MinimalApp } from "@/components/core/MinimalApp"; // Keeping as backup
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { FullApp } from "@/components/core/FullApp";
+import { SafeAuthProvider } from "@/contexts/SafeAuthProvider";
+// Alternative implementations available but not used:
+// import FinalWorkingApp from "@/components/core/FinalWorkingApp";
+// import { StandaloneApp } from "@/components/core/StandaloneApp";
+// import { MinimalApp } from "@/components/core/MinimalApp";
 
-// Debug utilities in development - disabled for standalone
-// if (import.meta.env.DEV) {
-//   import("./utils/debug");
-//   import("./utils/emailDemo");
-// }
+// Debug utilities in development
+if (import.meta.env.DEV) {
+  import("./utils/debug");
+  import("./utils/emailDemo");
+}
 
-// Initialize localStorage elimination service - disabled for standalone
-// import("./services/localStorageElimination");
+// Initialize localStorage elimination service
+import("./services/localStorageElimination");
 
-// const queryClient = new QueryClient(); // Not needed for standalone
+const queryClient = new QueryClient();
 
 const App: React.FC = () => {
-  // Force cache refresh with timestamp
-  console.log("🚀 Loading FinalWorkingApp at:", new Date().toISOString());
-  console.log("🚫 NO LOGIN REQUIRED - Demo Mode Active");
+  // Set up a mock admin user for development
+  React.useEffect(() => {
+    if (import.meta.env.DEV) {
+      const mockUser = {
+        id: "admin-1",
+        name: "Platform Admin",
+        email: "admin@peptok.com",
+        userType: "platform_admin" as const,
+        companyId: "peptok-platform",
+        status: "active" as const,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
 
-  // Final working app with no authentication needed
+      // Store in localStorage for auth service
+      localStorage.setItem("peptok_user", JSON.stringify(mockUser));
+      localStorage.setItem("peptok_token", "mock-admin-token");
+    }
+  }, []);
+
   return (
-    <div key="final-working-app-v3" id="final-working-app-container">
-      <FinalWorkingApp />
-    </div>
+    <QueryClientProvider client={queryClient}>
+      <SafeAuthProvider>
+        <FullApp />
+      </SafeAuthProvider>
+    </QueryClientProvider>
   );
 };
 
