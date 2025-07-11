@@ -51,31 +51,36 @@ class AuthService {
     this.loadUserFromStorage();
   }
 
-  // Load user from backend database
+  // Load user from localStorage (demo mode)
   private async loadUserFromStorage() {
     try {
-      console.log("🔄 Loading user from backend database...");
+      console.log("🔄 Loading user from localStorage (demo mode)...");
 
-      const session = await backendStorage.getUserSession();
+      const userStr = localStorage.getItem("peptok_user");
+      const token = localStorage.getItem("peptok_token");
 
-      if (session && session.userId) {
+      if (userStr && token) {
+        const user = JSON.parse(userStr);
         this.currentUser = {
-          id: session.userId,
-          email: session.email,
-          name: session.name,
-          userType: session.userType,
-          companyId: session.companyId,
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          userType: user.userType,
+          companyId: user.companyId,
+          status: user.status,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt,
           isAuthenticated: true,
         };
 
         console.log(
-          `✅ User loaded from backend database: ${this.currentUser.email} (${this.currentUser.userType})`,
+          `✅ User loaded from localStorage (demo mode): ${this.currentUser.email} (${this.currentUser.userType})`,
         );
       } else {
-        console.log("ℹ️ No valid auth session found in backend database");
+        console.log("ℹ️ No valid auth session found in localStorage");
       }
     } catch (error) {
-      console.error("❌ Failed to load user from backend database:", error);
+      console.error("❌ Failed to load user from localStorage:", error);
       this.clearAuth();
     }
   }
