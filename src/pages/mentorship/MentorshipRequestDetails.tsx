@@ -313,6 +313,15 @@ export default function MentorshipRequestDetails() {
     );
   };
 
+  const getAverageMatchScore = () => {
+    if (matchedCoaches.length === 0) return 0;
+    const total = matchedCoaches.reduce(
+      (sum, coach) => sum + coach.matchScore,
+      0,
+    );
+    return total / matchedCoaches.length;
+  };
+
   const [pricingConfig, setPricingConfig] = useState({
     companyServiceFee: 0.1,
     additionalParticipantFee: 25,
