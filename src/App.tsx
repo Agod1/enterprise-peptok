@@ -1,6 +1,6 @@
 import React from "react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MinimalApp } from "@/components/core/MinimalApp";
+// import { QueryClient, QueryClientProvider } from "@tanstack/react-query"; // Removed - causing React hook initialization issues
 // import { ReactInitWrapper } from "@/components/core/ReactInitWrapper"; // Removed - causing initialization issues
 // import { FullApp } from "@/components/core/FullApp"; // Temporarily disabled due to auth issues
 
@@ -13,7 +13,7 @@ if (import.meta.env.DEV) {
 // Initialize localStorage elimination service
 import("./services/localStorageElimination");
 
-const queryClient = new QueryClient();
+// const queryClient = new QueryClient(); // Removed - not needed for demo
 
 const App: React.FC = () => {
   // Set up a mock admin user for development
@@ -36,11 +36,7 @@ const App: React.FC = () => {
     }
   }, []);
 
-  return (
-    <QueryClientProvider client={queryClient}>
-      <MinimalApp />
-    </QueryClientProvider>
-  );
+  return <MinimalApp />;
 };
 
 export default App;
