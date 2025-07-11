@@ -11,36 +11,36 @@ export const SafeAuthProvider: React.FC<SafeAuthProviderProps> = ({
   const [isReactReady, setIsReactReady] = useState(false);
 
   useEffect(() => {
-    // Ensure React hooks are available before initializing AuthProvider
+    // Ensure React is ready before initializing AuthProvider
     const initializeReact = () => {
       try {
-        // Test if React hooks are working properly
-        const testState = useState(true);
-        const testEffect = React.useEffect;
-        const testContext = React.useContext;
+        // Check if React hooks are available as functions (without calling them)
+        const hasUseState = typeof React.useState === "function";
+        const hasUseEffect = typeof React.useEffect === "function";
+        const hasUseContext = typeof React.useContext === "function";
+        const hasCreateContext = typeof React.createContext === "function";
 
         // Verify all essential React features are available
-        if (
-          testState &&
-          testEffect &&
-          testContext &&
-          typeof testState[0] === "boolean" &&
-          typeof testState[1] === "function"
-        ) {
+        if (hasUseState && hasUseEffect && hasUseContext && hasCreateContext) {
           console.log("✅ React hooks verified, initializing AuthProvider");
           setIsReactReady(true);
         } else {
-          console.log("⏳ React hooks not ready, retrying...");
+          console.log("⏳ React hooks not ready, retrying...", {
+            useState: hasUseState,
+            useEffect: hasUseEffect,
+            useContext: hasUseContext,
+            createContext: hasCreateContext,
+          });
           setTimeout(initializeReact, 100);
         }
       } catch (error) {
-        console.log("❌ React hooks error, retrying:", error);
+        console.log("❌ React initialization error, retrying:", error);
         setTimeout(initializeReact, 100);
       }
     };
 
-    // Start initialization with a longer delay to ensure React is fully loaded
-    const timer = setTimeout(initializeReact, 200);
+    // Start initialization with a delay to ensure React is fully loaded
+    const timer = setTimeout(initializeReact, 150);
     return () => clearTimeout(timer);
   }, []);
 
