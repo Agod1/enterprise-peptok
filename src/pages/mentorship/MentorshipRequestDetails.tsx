@@ -706,7 +706,21 @@ export default function MentorshipRequestDetails() {
                             </div>
                           </div>
                         </div>
-                        <div className="text-right">
+                        <div className="text-right space-y-2">
+                          {/* Match Score Badge */}
+                          <div className="flex justify-end">
+                            <Badge
+                              className={`text-sm font-semibold ${
+                                coach.matchScore >= 80
+                                  ? "bg-green-100 text-green-800 border-green-300"
+                                  : coach.matchScore >= 60
+                                    ? "bg-yellow-100 text-yellow-800 border-yellow-300"
+                                    : "bg-gray-100 text-gray-800 border-gray-300"
+                              }`}
+                            >
+                              {Math.round(coach.matchScore * 100)}% Match
+                            </Badge>
+                          </div>
                           <div className="text-lg font-bold">
                             ${coach.hourlyRate}/hr
                           </div>
