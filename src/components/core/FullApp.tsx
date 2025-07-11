@@ -19,7 +19,7 @@ import {
 } from "@/components/common/SimpleNotification";
 
 // Import all page components
-import SafeIndex from "@/pages/SafeIndex";
+import SafeIndexPage from "@/pages/SafeIndex";
 // import Index from "@/pages/Index"; // Temporarily disabled due to React hook issues
 import Pricing from "@/pages/Pricing";
 import CoachDirectory from "@/pages/CoachDirectory";
@@ -81,7 +81,7 @@ export const FullApp: React.FC = () => {
       <RouterWrapper>
         <SafeAuthWrapper>
           <Routes>
-            <Route path="/" element={<SafeIndex />} />
+            <Route path="/" element={<SafeIndexPage />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
