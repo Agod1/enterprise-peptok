@@ -18,8 +18,15 @@ import { StandaloneApp } from "@/components/core/StandaloneApp";
 // const queryClient = new QueryClient(); // Not needed for standalone
 
 const App: React.FC = () => {
+  // Force cache refresh with timestamp
+  console.log("🚀 Loading StandaloneApp at:", new Date().toISOString());
+
   // Standalone app - no auth setup needed
-  return <StandaloneApp />;
+  return (
+    <div key="standalone-app-v2" id="standalone-app-container">
+      <StandaloneApp />
+    </div>
+  );
 };
 
 export default App;
