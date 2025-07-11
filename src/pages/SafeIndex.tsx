@@ -102,7 +102,8 @@ const SafeIndex: React.FC = () => {
         </section>
 
         {/* Quick Admin Access for Development */}
-        {window.location.hostname === "localhost" && (
+        {(window.location.hostname === "localhost" ||
+          window.location.hostname.includes("builder.codes")) && (
           <div className="fixed bottom-4 right-4 bg-white border-2 border-blue-500 rounded-lg p-4 shadow-lg z-50">
             <div className="text-sm font-bold text-blue-600 mb-3">
               🚀 DEV ACCESS
