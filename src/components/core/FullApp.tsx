@@ -297,15 +297,6 @@ export const FullApp: React.FC = () => {
             <Route path="*" element={<NotFound />} />
           </Routes>
 
-          {/* Global components */}
-          <OfflineIndicator />
-          <DatabaseSyncMonitor />
-          <DatabaseStatusIndicator />
-          <LocalStorageEliminationIndicator />
-
-          {/* Page Validator */}
-          <PageValidator />
-
           {/* Development Quick Navigation */}
           <QuickNav />
         </SafeAuthWrapper>
