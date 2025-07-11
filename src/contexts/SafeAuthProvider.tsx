@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { AuthProvider } from "@/contexts/AuthContext";
 
 interface SafeAuthProviderProps {
@@ -8,40 +8,35 @@ interface SafeAuthProviderProps {
 export const SafeAuthProvider: React.FC<SafeAuthProviderProps> = ({
   children,
 }) => {
-  const [isReactReady, setIsReactReady] = useState(false);
+  // Use class component style state to avoid hooks during initialization
+  const [isReactReady, setIsReactReady] = React.useState(false);
 
-  useEffect(() => {
-    // Ensure React is ready before initializing AuthProvider
+  React.useEffect(() => {
+    // Simple React readiness check without complex testing
     const initializeReact = () => {
       try {
-        // Check if React hooks are available as functions (without calling them)
-        const hasUseState = typeof React.useState === "function";
-        const hasUseEffect = typeof React.useEffect === "function";
-        const hasUseContext = typeof React.useContext === "function";
-        const hasCreateContext = typeof React.createContext === "function";
-
-        // Verify all essential React features are available
-        if (hasUseState && hasUseEffect && hasUseContext && hasCreateContext) {
-          console.log("✅ React hooks verified, initializing AuthProvider");
+        // Just check if React object has the basic properties we need
+        if (
+          React &&
+          React.useState &&
+          React.useEffect &&
+          React.useContext &&
+          React.createContext
+        ) {
+          console.log("✅ React ready, initializing AuthProvider");
           setIsReactReady(true);
         } else {
-          console.log("⏳ React hooks not ready, retrying...", {
-            useState: hasUseState,
-            useEffect: hasUseEffect,
-            useContext: hasUseContext,
-            createContext: hasCreateContext,
-          });
-          setTimeout(initializeReact, 100);
+          console.log("⏳ React not ready, retrying...");
+          setTimeout(initializeReact, 200);
         }
       } catch (error) {
-        console.log("❌ React initialization error, retrying:", error);
-        setTimeout(initializeReact, 100);
+        console.log("❌ React check error, retrying:", error);
+        setTimeout(initializeReact, 200);
       }
     };
 
-    // Start initialization with a delay to ensure React is fully loaded
-    const timer = setTimeout(initializeReact, 150);
-    return () => clearTimeout(timer);
+    // Start initialization immediately since we're already in a useEffect
+    initializeReact();
   }, []);
 
   if (!isReactReady) {
