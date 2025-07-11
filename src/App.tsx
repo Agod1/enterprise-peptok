@@ -1,7 +1,7 @@
 import React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactInitWrapper } from "@/components/core/ReactInitWrapper";
 import { MinimalApp } from "@/components/core/MinimalApp";
+// import { ReactInitWrapper } from "@/components/core/ReactInitWrapper"; // Removed - causing initialization issues
 // import { FullApp } from "@/components/core/FullApp"; // Temporarily disabled due to auth issues
 
 // Debug utilities in development
@@ -37,11 +37,9 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <ReactInitWrapper>
-      <QueryClientProvider client={queryClient}>
-        <MinimalApp />
-      </QueryClientProvider>
-    </ReactInitWrapper>
+    <QueryClientProvider client={queryClient}>
+      <MinimalApp />
+    </QueryClientProvider>
   );
 };
 
