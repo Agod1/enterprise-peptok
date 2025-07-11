@@ -54,8 +54,6 @@ import EmployeeDashboard from "@/pages/EmployeeDashboard";
 export const FullApp: React.FC = () => {
   return (
     <>
-      <Toaster />
-      <Sonner />
       <BrowserRouter>
         <AuthProvider>
           <Routes>
