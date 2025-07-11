@@ -1,8 +1,9 @@
 import React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { FullApp } from "@/components/core/FullApp";
-import { SafeAuthProvider } from "@/contexts/SafeAuthProvider";
+import { AuthProvider } from "@/contexts/AuthContext";
 // Alternative implementations available but not used:
+// import { SafeAuthProvider } from "@/contexts/SafeAuthProvider"; // Temporarily using original AuthProvider
 // import FinalWorkingApp from "@/components/core/FinalWorkingApp";
 // import { StandaloneApp } from "@/components/core/StandaloneApp";
 // import { MinimalApp } from "@/components/core/MinimalApp";
@@ -41,9 +42,9 @@ const App: React.FC = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <SafeAuthProvider>
+      <AuthProvider>
         <FullApp />
-      </SafeAuthProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 };
