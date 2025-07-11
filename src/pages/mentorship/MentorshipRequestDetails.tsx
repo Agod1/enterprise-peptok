@@ -682,9 +682,22 @@ export default function MentorshipRequestDetails() {
                             </AvatarFallback>
                           </Avatar>
                           <div className="flex-1">
-                            <h4 className="font-semibold text-lg">
-                              {coach.name}
-                            </h4>
+                            <div className="flex items-center gap-2">
+                              <h4 className="font-semibold text-lg">
+                                {coach.name}
+                              </h4>
+                              <span
+                                className={`text-sm px-2 py-1 rounded-full font-medium ${
+                                  coach.matchScore >= 80
+                                    ? "bg-green-100 text-green-700"
+                                    : coach.matchScore >= 60
+                                      ? "bg-yellow-100 text-yellow-700"
+                                      : "bg-gray-100 text-gray-700"
+                                }`}
+                              >
+                                {Math.round(coach.matchScore * 100)}%
+                              </span>
+                            </div>
                             <p className="text-gray-600">{coach.title}</p>
                             <p className="text-sm text-gray-500">
                               {coach.yearsExperience} years experience •{" "}
