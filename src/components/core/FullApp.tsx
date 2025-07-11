@@ -75,6 +75,7 @@ const NotificationDisplay: React.FC = () => {
 export const FullApp: React.FC = () => {
   return (
     <>
+      <NotificationDisplay />
       <BrowserRouter>
         <SafeAuthWrapper>
           <Routes>
