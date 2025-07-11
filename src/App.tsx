@@ -16,26 +16,6 @@ import { MinimalApp } from "@/components/core/MinimalApp";
 // const queryClient = new QueryClient(); // Removed - not needed for demo
 
 const App: React.FC = () => {
-  // Set up a mock admin user for development
-  React.useEffect(() => {
-    if (import.meta.env.DEV) {
-      const mockUser = {
-        id: "admin-1",
-        name: "Platform Admin",
-        email: "admin@peptok.com",
-        userType: "platform_admin" as const,
-        companyId: "peptok-platform",
-        status: "active" as const,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
-
-      // Store in localStorage for auth service
-      localStorage.setItem("peptok_user", JSON.stringify(mockUser));
-      localStorage.setItem("peptok_token", "mock-admin-token");
-    }
-  }, []);
-
   return <MinimalApp />;
 };
 
