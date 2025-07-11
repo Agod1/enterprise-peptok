@@ -14,22 +14,33 @@ export const SafeAuthProvider: React.FC<SafeAuthProviderProps> = ({
     // Ensure React hooks are available before initializing AuthProvider
     const initializeReact = () => {
       try {
-        // Test if React hooks are working
+        // Test if React hooks are working properly
         const testState = useState(true);
-        if (testState && React.useEffect && React.useContext) {
+        const testEffect = React.useEffect;
+        const testContext = React.useContext;
+
+        // Verify all essential React features are available
+        if (
+          testState &&
+          testEffect &&
+          testContext &&
+          typeof testState[0] === "boolean" &&
+          typeof testState[1] === "function"
+        ) {
+          console.log("✅ React hooks verified, initializing AuthProvider");
           setIsReactReady(true);
         } else {
-          // Retry after a small delay
-          setTimeout(initializeReact, 50);
+          console.log("⏳ React hooks not ready, retrying...");
+          setTimeout(initializeReact, 100);
         }
       } catch (error) {
-        // React not ready yet, retry
-        setTimeout(initializeReact, 50);
+        console.log("❌ React hooks error, retrying:", error);
+        setTimeout(initializeReact, 100);
       }
     };
 
-    // Start initialization after a small delay
-    const timer = setTimeout(initializeReact, 100);
+    // Start initialization with a longer delay to ensure React is fully loaded
+    const timer = setTimeout(initializeReact, 200);
     return () => clearTimeout(timer);
   }, []);
 
