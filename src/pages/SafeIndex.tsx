@@ -34,7 +34,7 @@ const SafeIndex: React.FC = () => {
               <div className="inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium bg-blue-50 text-blue-700 border-blue-200 mb-6">
                 ⚡ Trusted by 8+ companies worldwide
               </div>
-              
+
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-tight mb-6">
                 Connect with{" "}
                 <span className="bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800 bg-clip-text text-transparent">
@@ -45,7 +45,7 @@ const SafeIndex: React.FC = () => {
                   Enterprise Growth
                 </span>
               </h1>
-              
+
               <p className="text-xl md:text-2xl text-gray-600 leading-relaxed max-w-3xl mx-auto mb-8">
                 Peptok bridges the gap between your enterprises and seasoned
                 professionals, creating meaningful mentorship connections that
@@ -71,14 +71,25 @@ const SafeIndex: React.FC = () => {
               {/* Stats */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-blue-600 mb-2">12</div>
-                  <div className="text-sm text-gray-600">Professional Coaches</div>
+                  <div className="text-3xl font-bold text-blue-600 mb-2">
+                    12
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    Professional Coaches
+                  </div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-blue-600 mb-2">45</div>
-                  <div className="text-sm text-gray-600">Sessions Completed</div>
+                  <div className="text-3xl font-bold text-blue-600 mb-2">
+                    45
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    Sessions Completed
+                  </div>
                 </div>
-                <div className="text-3xl font-bold text-blue-600 mb-2">4.8/5.0</div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-blue-600 mb-2">
+                    4.8/5.0
+                  </div>
                   <div className="text-sm text-gray-600">Average Rating</div>
                 </div>
                 <div className="text-center">
@@ -91,9 +102,11 @@ const SafeIndex: React.FC = () => {
         </section>
 
         {/* Quick Admin Access for Development */}
-        {window.location.hostname === 'localhost' && (
+        {window.location.hostname === "localhost" && (
           <div className="fixed bottom-4 right-4 bg-white border-2 border-blue-500 rounded-lg p-4 shadow-lg z-50">
-            <div className="text-sm font-bold text-blue-600 mb-3">🚀 DEV ACCESS</div>
+            <div className="text-sm font-bold text-blue-600 mb-3">
+              🚀 DEV ACCESS
+            </div>
             <div className="space-y-2">
               <a
                 href="/platform-admin"
