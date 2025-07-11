@@ -2,10 +2,19 @@ import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 export const QuickNav: React.FC = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
+  // Safe hook usage with error handling
+  let navigate: any = null;
+  let location: any = { pathname: "/" };
 
-  if (!import.meta.env.DEV) {
+  try {
+    navigate = useNavigate();
+    location = useLocation();
+  } catch (error) {
+    // Router hooks not ready, component will be disabled
+    return null;
+  }
+
+  if (!import.meta.env.DEV || !navigate) {
     return null;
   }
 
