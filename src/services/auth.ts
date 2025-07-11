@@ -80,23 +80,21 @@ class AuthService {
     }
   }
 
-  // Save user to backend database
+  // Save user to localStorage (demo mode)
   private async saveUserToStorage(user: User, token: string) {
     try {
       console.log(
-        `💾 Saving user to backend database: ${user.email} (${user.userType})`,
+        `💾 Saving user to localStorage (demo mode): ${user.email} (${user.userType})`,
       );
 
-      const success = await backendStorage.storeUserSession(user, token);
+      // Store in localStorage for demo mode
+      localStorage.setItem("peptok_user", JSON.stringify(user));
+      localStorage.setItem("peptok_token", token);
 
-      if (success) {
-        this.currentUser = user;
-        console.log(`✅ User saved successfully to backend database`);
-      } else {
-        throw new Error("Failed to save user session to backend database");
-      }
+      this.currentUser = user;
+      console.log(`✅ User saved successfully to localStorage (demo mode)`);
     } catch (error) {
-      console.error("❌ Failed to save user to backend database:", error);
+      console.error("❌ Failed to save user to localStorage:", error);
       throw error;
     }
   }
