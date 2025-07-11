@@ -297,6 +297,19 @@ export default function MentorshipRequestDetails() {
     );
   };
 
+  const sortCoachesByScore = () => {
+    const newSort = sortByScore === "desc" ? "asc" : "desc";
+    setSortByScore(newSort);
+
+    setMatchedCoaches((prev) =>
+      [...prev].sort((a, b) =>
+        newSort === "desc"
+          ? b.matchScore - a.matchScore
+          : a.matchScore - b.matchScore,
+      ),
+    );
+  };
+
   const [pricingConfig, setPricingConfig] = useState({
     companyServiceFee: 0.1,
     additionalParticipantFee: 25,
