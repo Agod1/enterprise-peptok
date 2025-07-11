@@ -846,18 +846,29 @@ export default function MentorshipRequestDetails() {
                       <p className="text-sm text-gray-600">{coach.bio}</p>
 
                       {/* Match Score and Reasons */}
-                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                      <div
+                        className={`border-2 rounded-lg p-3 ${
+                          coach.matchScore >= 80
+                            ? "bg-green-50 border-green-200"
+                            : coach.matchScore >= 60
+                              ? "bg-yellow-50 border-yellow-200"
+                              : "bg-gray-50 border-gray-200"
+                        }`}
+                      >
                         <div className="flex items-center justify-between mb-2">
-                          <span className="text-sm font-medium text-blue-900">
-                            Match Score
-                          </span>
+                          <div className="flex items-center gap-2">
+                            <Star className="w-4 h-4 text-yellow-500" />
+                            <span className="text-sm font-medium text-gray-900">
+                              Match Score
+                            </span>
+                          </div>
                           <Badge
-                            className={`${
+                            className={`text-base font-bold px-3 py-1 ${
                               coach.matchScore >= 80
-                                ? "bg-green-100 text-green-800"
+                                ? "bg-green-100 text-green-800 border-green-300"
                                 : coach.matchScore >= 60
-                                  ? "bg-yellow-100 text-yellow-800"
-                                  : "bg-gray-100 text-gray-800"
+                                  ? "bg-yellow-100 text-yellow-800 border-yellow-300"
+                                  : "bg-gray-100 text-gray-800 border-gray-300"
                             }`}
                           >
                             {Math.round(coach.matchScore * 100)}%
