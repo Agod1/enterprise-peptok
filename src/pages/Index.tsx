@@ -183,18 +183,6 @@ const fallbackPricingPlans = [
 const Index = () => {
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
   const [demoStats, setDemoStats] = useState<any>(null);
-  const [isRouterReady, setIsRouterReady] = useState(false);
-
-  // Safe navigation hook that checks if router is ready
-  let navigate: any = null;
-  try {
-    navigate = useNavigate();
-    if (!isRouterReady) {
-      setIsRouterReady(true);
-    }
-  } catch (error) {
-    // Router not ready yet, navigation will be disabled
-  }
 
   useEffect(() => {
     // Load demo statistics
