@@ -4,14 +4,14 @@ import { MinimalApp } from "@/components/core/MinimalApp";
 // import { ReactInitWrapper } from "@/components/core/ReactInitWrapper"; // Removed - causing initialization issues
 // import { FullApp } from "@/components/core/FullApp"; // Temporarily disabled due to auth issues
 
-// Debug utilities in development
-if (import.meta.env.DEV) {
-  import("./utils/debug");
-  import("./utils/emailDemo");
-}
+// Debug utilities in development (disabled for demo)
+// if (import.meta.env.DEV) {
+//   import("./utils/debug");
+//   import("./utils/emailDemo");
+// }
 
-// Initialize localStorage elimination service
-import("./services/localStorageElimination");
+// Initialize localStorage elimination service (disabled for demo)
+// import("./services/localStorageElimination");
 
 // const queryClient = new QueryClient(); // Removed - not needed for demo
 
