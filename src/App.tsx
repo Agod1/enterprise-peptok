@@ -1,7 +1,8 @@
 import React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactInitWrapper } from "@/components/core/ReactInitWrapper";
-import { FullApp } from "@/components/core/FullApp";
+import { MinimalApp } from "@/components/core/MinimalApp";
+// import { FullApp } from "@/components/core/FullApp"; // Temporarily disabled due to auth issues
 
 // Debug utilities in development
 if (import.meta.env.DEV) {
@@ -38,7 +39,7 @@ const App: React.FC = () => {
   return (
     <ReactInitWrapper>
       <QueryClientProvider client={queryClient}>
-        <FullApp />
+        <MinimalApp />
       </QueryClientProvider>
     </ReactInitWrapper>
   );
