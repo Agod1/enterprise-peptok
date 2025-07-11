@@ -107,7 +107,8 @@ class AuthService {
   // Clear authentication data from backend database
   private async clearAuth() {
     try {
-      await backendStorage.clearUserSession(this.currentUser?.id);
+      localStorage.removeItem("peptok_user");
+      localStorage.removeItem("peptok_token");
       this.currentUser = null;
       console.log("🧹 Authentication data cleared from backend database");
     } catch (error) {
