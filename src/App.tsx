@@ -1,5 +1,6 @@
 import React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactInitWrapper } from "@/components/core/ReactInitWrapper";
 import { FullApp } from "@/components/core/FullApp";
 
 // Debug utilities in development
@@ -35,9 +36,11 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <FullApp />
-    </QueryClientProvider>
+    <ReactInitWrapper>
+      <QueryClientProvider client={queryClient}>
+        <FullApp />
+      </QueryClientProvider>
+    </ReactInitWrapper>
   );
 };
 
