@@ -1,51 +1,25 @@
 import React from "react";
-import { QueryClient } from "@tanstack/react-query";
-import { FullApp } from "@/components/core/FullApp";
-import { SafeAuthProvider } from "@/contexts/SafeAuthProvider";
-import { SafeQueryProvider } from "@/components/providers/SafeQueryProvider";
-// import { QueryClientProvider } from "@tanstack/react-query"; // Using SafeQueryProvider instead
-// import { AuthProvider } from "@/contexts/AuthContext"; // Using SafeAuthProvider instead
+import { StandaloneApp } from "@/components/core/StandaloneApp";
+// import { QueryClient } from "@tanstack/react-query"; // Not needed for standalone
+// import { FullApp } from "@/components/core/FullApp"; // Using StandaloneApp instead
+// import { SafeAuthProvider } from "@/contexts/SafeAuthProvider"; // Not needed for standalone
+// import { SafeQueryProvider } from "@/components/providers/SafeQueryProvider"; // Not needed for standalone
 // import { MinimalApp } from "@/components/core/MinimalApp"; // Keeping as backup
 
-// Debug utilities in development
-if (import.meta.env.DEV) {
-  import("./utils/debug");
-  import("./utils/emailDemo");
-}
+// Debug utilities in development - disabled for standalone
+// if (import.meta.env.DEV) {
+//   import("./utils/debug");
+//   import("./utils/emailDemo");
+// }
 
-// Initialize localStorage elimination service
-import("./services/localStorageElimination");
+// Initialize localStorage elimination service - disabled for standalone
+// import("./services/localStorageElimination");
 
-const queryClient = new QueryClient();
+// const queryClient = new QueryClient(); // Not needed for standalone
 
 const App: React.FC = () => {
-  // Set up a mock admin user for development
-  React.useEffect(() => {
-    if (import.meta.env.DEV) {
-      const mockUser = {
-        id: "admin-1",
-        name: "Platform Admin",
-        email: "admin@peptok.com",
-        userType: "platform_admin" as const,
-        companyId: "peptok-platform",
-        status: "active" as const,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
-
-      // Store in localStorage for auth service
-      localStorage.setItem("peptok_user", JSON.stringify(mockUser));
-      localStorage.setItem("peptok_token", "mock-admin-token");
-    }
-  }, []);
-
-  return (
-    <SafeQueryProvider client={queryClient}>
-      <SafeAuthProvider>
-        <FullApp />
-      </SafeAuthProvider>
-    </SafeQueryProvider>
-  );
+  // Standalone app - no auth setup needed
+  return <StandaloneApp />;
 };
 
 export default App;
