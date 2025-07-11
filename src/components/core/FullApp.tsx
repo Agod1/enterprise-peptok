@@ -55,6 +55,23 @@ import NotFound from "@/pages/NotFound";
 import PlatformAdminDashboard from "@/pages/PlatformAdminDashboard";
 import EmployeeDashboard from "@/pages/EmployeeDashboard";
 
+const NotificationDisplay: React.FC = () => {
+  const { notifications, remove } = useNotifications();
+
+  return (
+    <>
+      {notifications.map((notification) => (
+        <SimpleNotification
+          key={notification.id}
+          message={notification.message}
+          type={notification.type}
+          onClose={() => remove(notification.id)}
+        />
+      ))}
+    </>
+  );
+};
+
 export const FullApp: React.FC = () => {
   return (
     <>
