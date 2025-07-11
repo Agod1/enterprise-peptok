@@ -2,7 +2,8 @@ import React from "react";
 // import { Toaster } from "@/components/ui/toaster"; // Temporarily disabled due to React hook error
 // import { Toaster as Sonner } from "@/components/ui/sonner"; // Temporarily disabled due to React hook error
 // import { TooltipProvider } from "@/components/ui/tooltip"; // Temporarily disabled due to React hook error
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
+import { RouterWrapper } from "@/components/core/RouterWrapper";
 import { SafeAuthWrapper } from "@/components/core/SafeAuthWrapper";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import DashboardRouter from "@/components/auth/DashboardRouter";
@@ -76,7 +77,7 @@ export const FullApp: React.FC = () => {
   return (
     <>
       <NotificationDisplay />
-      <BrowserRouter>
+      <RouterWrapper>
         <SafeAuthWrapper>
           <Routes>
             <Route path="/" element={<Index />} />
@@ -300,7 +301,7 @@ export const FullApp: React.FC = () => {
           {/* Development Quick Navigation */}
           <QuickNav />
         </SafeAuthWrapper>
-      </BrowserRouter>
+      </RouterWrapper>
     </>
   );
 };
