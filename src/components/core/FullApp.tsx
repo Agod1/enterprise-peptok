@@ -6,11 +6,11 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { SafeAuthWrapper } from "@/components/core/SafeAuthWrapper";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import DashboardRouter from "@/components/auth/DashboardRouter";
-import OfflineIndicator from "@/components/common/OfflineIndicator";
-import DatabaseSyncMonitor from "@/components/common/DatabaseSyncMonitor";
-import DatabaseStatusIndicator from "@/components/common/DatabaseStatusIndicator";
-import LocalStorageEliminationIndicator from "@/components/common/LocalStorageEliminationIndicator";
-import { PageValidator } from "@/components/common/PageValidator";
+// import OfflineIndicator from "@/components/common/OfflineIndicator"; // Temporarily disabled due to React hook error
+// import DatabaseSyncMonitor from "@/components/common/DatabaseSyncMonitor"; // Temporarily disabled due to React hook error
+// import DatabaseStatusIndicator from "@/components/common/DatabaseStatusIndicator"; // Temporarily disabled due to React hook error
+// import LocalStorageEliminationIndicator from "@/components/common/LocalStorageEliminationIndicator"; // Temporarily disabled due to React hook error
+// import { PageValidator } from "@/components/common/PageValidator"; // Temporarily disabled due to React hook error
 import { QuickNav } from "@/components/common/QuickNav";
 import {
   SimpleNotification,
