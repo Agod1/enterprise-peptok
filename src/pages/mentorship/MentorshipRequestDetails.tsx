@@ -45,6 +45,7 @@ export default function MentorshipRequestDetails() {
   const [loading, setLoading] = useState(true);
   const [loadingMatches, setLoadingMatches] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [sortByScore, setSortByScore] = useState<"desc" | "asc">("desc");
 
   const handleUpdateTeamMembers = async (updatedMembers: any[]) => {
     setTeamMembers(updatedMembers);
