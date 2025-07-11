@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import {
@@ -39,7 +40,7 @@ import {
   UserCheck,
   Building,
 } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { api } from "@/services/api";
 import { SubscriptionTier } from "@/types";
 
@@ -180,9 +181,20 @@ const fallbackPricingPlans = [
 // Dynamic stats will be calculated from demo data
 
 const Index = () => {
-  const navigate = useNavigate();
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
   const [demoStats, setDemoStats] = useState<any>(null);
+  const [isRouterReady, setIsRouterReady] = useState(false);
+
+  // Safe navigation hook that checks if router is ready
+  let navigate: any = null;
+  try {
+    navigate = useNavigate();
+    if (!isRouterReady) {
+      setIsRouterReady(true);
+    }
+  } catch (error) {
+    // Router not ready yet, navigation will be disabled
+  }
 
   useEffect(() => {
     // Load demo statistics
