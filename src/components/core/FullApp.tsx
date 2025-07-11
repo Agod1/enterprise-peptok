@@ -54,7 +54,7 @@ import EmployeeDashboard from "@/pages/EmployeeDashboard";
 export const FullApp: React.FC = () => {
   return (
     <>
-            <BrowserRouter>
+      <BrowserRouter>
         <SafeAuthWrapper>
           <Routes>
             <Route path="/" element={<Index />} />
@@ -281,12 +281,12 @@ export const FullApp: React.FC = () => {
           <DatabaseStatusIndicator />
           <LocalStorageEliminationIndicator />
 
-                    {/* Page Validator */}
+          {/* Page Validator */}
           <PageValidator />
 
           {/* Development Quick Navigation */}
           <QuickNav />
-                </AuthProvider>
+        </SafeAuthWrapper>
       </BrowserRouter>
     </>
   );
