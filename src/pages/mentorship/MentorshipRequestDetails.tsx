@@ -635,10 +635,34 @@ export default function MentorshipRequestDetails() {
                       Matched Coaches ({matchedCoaches.length})
                     </CardTitle>
                     {matchingResults && (
-                      <p className="text-sm text-gray-600 mt-1">
-                        Algorithm: {matchingResults.algorithmVersion} • Updated:{" "}
-                        {new Date(matchingResults.timestamp).toLocaleString()}
-                      </p>
+                      <div className="text-sm text-gray-600 mt-1 space-y-1">
+                        <p>
+                          Algorithm: {matchingResults.algorithmVersion} •
+                          Updated:{" "}
+                          {new Date(matchingResults.timestamp).toLocaleString()}
+                        </p>
+                        {matchedCoaches.length > 0 && (
+                          <p className="flex items-center gap-4">
+                            <span>
+                              Average Match:{" "}
+                              <span className="font-semibold text-blue-600">
+                                {Math.round(getAverageMatchScore() * 100)}%
+                              </span>
+                            </span>
+                            <span>
+                              Best Match:{" "}
+                              <span className="font-semibold text-green-600">
+                                {Math.round(
+                                  Math.max(
+                                    ...matchedCoaches.map((c) => c.matchScore),
+                                  ) * 100,
+                                )}
+                                %
+                              </span>
+                            </span>
+                          </p>
+                        )}
+                      </div>
                     )}
                   </div>
                   <div className="flex gap-2">
