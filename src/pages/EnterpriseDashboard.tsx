@@ -39,8 +39,8 @@ import {
   UserCheck,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import { api } from "@/services/api";
 import { apiEnhanced } from "@/services/apiEnhanced";
+const api = apiEnhanced; // Use apiEnhanced for all API calls
 import { MentorshipRequest, Connection } from "@/types";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { toast } from "sonner";
