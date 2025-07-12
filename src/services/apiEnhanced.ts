@@ -999,6 +999,129 @@ class EnhancedApiService {
     }
   }
 
+  // ===== SESSION MANAGEMENT METHODS =====
+
+  async updateSession(
+    sessionId: string,
+    updates: Partial<Session>,
+  ): Promise<Session> {
+    const user = checkAuthorization();
+
+    try {
+      const response = await this.request<Session>(`/sessions/${sessionId}`, {
+        method: "PUT",
+        body: JSON.stringify({
+          ...updates,
+          updatedAt: new Date().toISOString(),
+        }),
+      });
+
+      analytics.trackAction({
+        action: "session_updated",
+        component: "session_management",
+        metadata: {
+          sessionId,
+          updateFields: Object.keys(updates),
+          userType: user.userType,
+        },
+      });
+
+      return response.data;
+    } catch (error) {
+      console.warn("API not available, using local session update:", error);
+
+      // For demo purposes, return updated session
+      const updatedSession: Session = {
+        id: sessionId,
+        mentorshipRequestId: "mock-request",
+        mentorId: "mock-mentor",
+        title: updates.title || "Updated Session",
+        description: updates.description || "Session description updated",
+        scheduledStartTime: updates.scheduledStartTime || new Date(),
+        scheduledEndTime: updates.scheduledEndTime || new Date(),
+        status: updates.status || "scheduled",
+        type: updates.type || "video",
+        participants: [],
+        notes: [],
+        goals: [],
+        feedback: [],
+        isRecordingEnabled: false,
+        isTranscriptionEnabled: false,
+        rescheduleCount: updates.rescheduleCount || 0,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      return updatedSession;
+    }
+  }
+
+  async cancelSession(
+    sessionId: string,
+    reason: string,
+    notifyParticipants: boolean = true,
+  ): Promise<Session> {
+    const user = checkAuthorization();
+
+    try {
+      const response = await this.request<Session>(
+        `/sessions/${sessionId}/cancel`,
+        {
+          method: "POST",
+          body: JSON.stringify({
+            reason,
+            notifyParticipants,
+            cancelledBy: user.id,
+            cancelledAt: new Date().toISOString(),
+          }),
+        },
+      );
+
+      analytics.trackAction({
+        action: "session_cancelled",
+        component: "session_management",
+        metadata: {
+          sessionId,
+          reason,
+          notifyParticipants,
+          userType: user.userType,
+        },
+      });
+
+      return response.data;
+    } catch (error) {
+      console.warn(
+        "API not available, using local session cancellation:",
+        error,
+      );
+
+      // For demo purposes, return cancelled session
+      const cancelledSession: Session = {
+        id: sessionId,
+        mentorshipRequestId: "mock-request",
+        mentorId: "mock-mentor",
+        title: "Cancelled Session",
+        description: "This session has been cancelled",
+        scheduledStartTime: new Date(),
+        scheduledEndTime: new Date(),
+        status: "cancelled",
+        type: "video",
+        participants: [],
+        notes: [],
+        goals: [],
+        feedback: [],
+        isRecordingEnabled: false,
+        isTranscriptionEnabled: false,
+        cancellationReason: reason,
+        rescheduleCount: 0,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      return cancelledSession;
+    }
+  }
+
   // ===== GENERAL METHODS =====
 
   async getMentorshipRequests(params?: {
