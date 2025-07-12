@@ -49,10 +49,12 @@ const App: React.FC = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div style={{ padding: "20px" }}>
-        <h1>App Loading Test</h1>
-        <p>QueryClientProvider is working.</p>
-      </div>
+      <AuthProvider>
+        <div style={{ padding: "20px" }}>
+          <h1>App Loading Test</h1>
+          <p>QueryClientProvider and AuthProvider are working.</p>
+        </div>
+      </AuthProvider>
     </QueryClientProvider>
   );
 };
