@@ -7,7 +7,24 @@ import { Environment } from "./utils/environment";
 // Make React globally available for external libraries
 if (typeof window !== "undefined") {
   (window as any).React = React;
+  console.log("✅ React made globally available");
 }
+
+// Validate React is properly loaded
+if (
+  !React ||
+  typeof React.useState !== "function" ||
+  typeof React.useEffect !== "function"
+) {
+  console.error("🚨 React not properly loaded!", React);
+  throw new Error("React failed to load properly");
+}
+
+console.log("✅ React validation passed", {
+  useState: typeof React.useState,
+  useEffect: typeof React.useEffect,
+  createContext: typeof React.createContext,
+});
 
 // Log environment information for debugging
 console.log(`🌍 Environment: ${Environment.getEnvironmentName()}`);
