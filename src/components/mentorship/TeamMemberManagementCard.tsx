@@ -49,7 +49,7 @@ interface TeamMemberManagementCardProps {
 export function TeamMemberManagementCard({
   teamMembers,
   onUpdateTeamMembers,
-  programTitle = "Mentorship Program",
+  programTitle = "Coaching Program",
   programId,
   className,
   readOnly = false,
