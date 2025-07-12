@@ -6,7 +6,7 @@ import Header from "../../components/layout/Header";
 import { MentorProfileCard } from "../../components/mentor/MentorProfileCard";
 import { MentorMatchingFilters } from "../../components/mentor/MentorMatchingFilters";
 import { Mentor, MentorMatch, MatchingFilters } from "../../types/mentor";
-import { apiEnhanced as api } from "../../services/apiEnhanced";
+import { apiEnhanced as api } from "@/services/apiEnhanced";
 
 export const MentorMatching: React.FC = () => {
   const navigate = useNavigate();
