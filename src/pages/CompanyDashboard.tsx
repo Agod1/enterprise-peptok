@@ -51,7 +51,7 @@ import {
   Activity,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import { api } from "@/services/api";
+import { api } from "@/services/apiEnhanced";
 import { apiEnhanced } from "@/services/apiEnhanced";
 import { MentorshipRequest } from "@/types";
 import { toast } from "sonner";
