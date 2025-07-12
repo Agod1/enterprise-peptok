@@ -2,6 +2,7 @@ import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
+import { MentorshipController } from "./mentorship.controller";
 
 @Module({
   imports: [
@@ -11,7 +12,7 @@ import { AppService } from "./app.service";
       envFilePath: [".env.local", ".env"],
     }),
   ],
-  controllers: [AppController],
+  controllers: [AppController, MentorshipController],
   providers: [AppService],
 })
 export class AppModule {}
