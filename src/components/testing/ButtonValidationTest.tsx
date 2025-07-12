@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { api } from "@/services/api";
+import { apiEnhanced as api } from "@/services/apiEnhanced";
 import { toast } from "sonner";
 import { CheckCircle, XCircle, Clock, RefreshCw } from "lucide-react";
 

@@ -67,8 +67,7 @@ const FeatureGrid = () => {
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Peptok provides all the tools and features necessary to build,
-            manage, and measure effective mentorship programs at enterprise
-            scale.
+            manage, and measure effective coaching programs at enterprise scale.
           </p>
         </div>
 

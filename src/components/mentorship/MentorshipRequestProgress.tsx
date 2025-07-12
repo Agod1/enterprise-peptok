@@ -25,7 +25,7 @@ import {
 import { MentorshipRequest } from "@/types";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { api } from "@/services/api";
+import { apiEnhanced as api } from "@/services/apiEnhanced";
 import { useAuth } from "@/contexts/AuthContext";
 import { useState } from "react";
 
@@ -221,7 +221,7 @@ export function MentorshipRequestProgress({
             </div>
             {showCreateButton && (
               <Button asChild>
-                <Link to="/mentorship/new">
+                <Link to="/coaching/new">
                   <Plus className="w-4 h-4 mr-2" />
                   Create New Program
                 </Link>

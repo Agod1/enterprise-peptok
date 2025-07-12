@@ -216,7 +216,7 @@ export default function Connections() {
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">My Connections</h1>
           <p className="text-gray-600 mt-2">
-            Manage your mentorship relationships and upcoming sessions
+            Manage your coaching relationships and upcoming sessions
           </p>
         </div>
 
@@ -225,7 +225,7 @@ export default function Connections() {
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
             <Input
-              placeholder="Search mentors, companies, or skills..."
+              placeholder="Search coaches, companies, or skills..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10"
@@ -329,7 +329,7 @@ export default function Connections() {
               <p className="text-gray-600 mb-6">
                 {searchQuery || statusFilter !== "all"
                   ? "Try adjusting your search or filters"
-                  : "Start building your mentorship network by exploring our experts"}
+                  : "Start building your coaching network by exploring our experts"}
               </p>
               {!searchQuery && statusFilter === "all" && (
                 <Button onClick={() => (window.location.href = "/experts")}>

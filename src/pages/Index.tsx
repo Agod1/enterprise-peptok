@@ -41,7 +41,7 @@ import {
   Building,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { api } from "@/services/api";
+import { apiEnhanced as api } from "@/services/apiEnhanced";
 import { SubscriptionTier } from "@/types";
 
 const features = [

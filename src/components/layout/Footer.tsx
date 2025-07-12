@@ -13,7 +13,7 @@ const Footer = () => {
             </Link>
             <p className="text-sm text-muted-foreground">
               Connecting enterprises with retired experts for meaningful
-              mentorship and growth.
+              coaching and growth.
             </p>
           </div>
 
@@ -32,7 +32,7 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/metrics" className="hover:text-primary">
+                <Link to="/analytics" className="hover:text-primary">
                   Analytics
                 </Link>
               </li>
@@ -49,24 +49,36 @@ const Footer = () => {
             <h4 className="text-sm font-semibold">Company</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
-                <Link to="/about" className="hover:text-primary">
-                  About
-                </Link>
+                <a
+                  href="#"
+                  className="hover:text-primary text-muted-foreground/70 cursor-not-allowed"
+                >
+                  About (Coming Soon)
+                </a>
               </li>
               <li>
-                <Link to="/careers" className="hover:text-primary">
-                  Careers
-                </Link>
+                <a
+                  href="#"
+                  className="hover:text-primary text-muted-foreground/70 cursor-not-allowed"
+                >
+                  Careers (Coming Soon)
+                </a>
               </li>
               <li>
-                <Link to="/contact" className="hover:text-primary">
-                  Contact
-                </Link>
+                <a
+                  href="#"
+                  className="hover:text-primary text-muted-foreground/70 cursor-not-allowed"
+                >
+                  Contact (Coming Soon)
+                </a>
               </li>
               <li>
-                <Link to="/blog" className="hover:text-primary">
-                  Blog
-                </Link>
+                <a
+                  href="#"
+                  className="hover:text-primary text-muted-foreground/70 cursor-not-allowed"
+                >
+                  Blog (Coming Soon)
+                </a>
               </li>
             </ul>
           </div>
@@ -76,9 +88,12 @@ const Footer = () => {
             <h4 className="text-sm font-semibold">Support</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
-                <Link to="/help" className="hover:text-primary">
-                  Help Center
-                </Link>
+                <a
+                  href="#"
+                  className="hover:text-primary text-muted-foreground/70 cursor-not-allowed"
+                >
+                  Help Center (Coming Soon)
+                </a>
               </li>
               <li>
                 <Link to="/privacy" className="hover:text-primary">
@@ -91,9 +106,12 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/security" className="hover:text-primary">
-                  Security
-                </Link>
+                <a
+                  href="#"
+                  className="hover:text-primary text-muted-foreground/70 cursor-not-allowed"
+                >
+                  Security (Coming Soon)
+                </a>
               </li>
             </ul>
           </div>

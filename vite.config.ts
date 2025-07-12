@@ -12,6 +12,8 @@ export default defineConfig(({ mode }) => ({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      react: path.resolve(__dirname, "./node_modules/react"),
+      "react-dom": path.resolve(__dirname, "./node_modules/react-dom"),
     },
   },
   esbuild: {
@@ -19,6 +21,9 @@ export default defineConfig(({ mode }) => ({
     include: /\.(ts|tsx)$/,
     // Exclude JavaScript files to enforce TypeScript-only
     exclude: /\.(js|jsx)$/,
+  },
+  optimizeDeps: {
+    include: ["react", "react-dom", "react/jsx-runtime"],
   },
   build: {
     // Strict TypeScript checking during build

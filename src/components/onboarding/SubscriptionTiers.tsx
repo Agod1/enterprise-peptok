@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Check, Crown, Zap, Building2, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SubscriptionTier } from "@/types";
-import { api } from "@/services/api";
+import { apiEnhanced as api } from "@/services/apiEnhanced";
 import { toast } from "sonner";
 
 interface SubscriptionTiersProps {

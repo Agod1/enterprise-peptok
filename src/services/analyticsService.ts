@@ -1,6 +1,6 @@
 import { analytics } from "./analytics";
 import { crossBrowserSync, SYNC_CONFIGS } from "./crossBrowserSync";
-import { cacheInvalidation } from "./cacheInvalidation";
+// Removed: cacheInvalidation service (deleted)
 
 interface AnalyticsSettings {
   enableUserTracking: boolean;
@@ -198,8 +198,7 @@ class AnalyticsService {
         name: "Platform Admin",
       });
 
-      // Invalidate cache
-      cacheInvalidation.invalidatePlatformData("Platform Admin");
+      // Note: Cache invalidation removed for simplification
 
       // Update instance
       this.settings = settings;

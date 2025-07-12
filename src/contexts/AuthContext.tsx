@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import { User, authService } from "@/services/auth";
 import { setCurrentUser } from "@/services/apiEnhanced";
 import { analytics } from "@/services/analytics";
@@ -15,6 +15,7 @@ interface AuthContextType {
   updateUser: (user: User) => void;
 }
 
+// Create AuthContext
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 interface AuthProviderProps {
@@ -22,6 +23,7 @@ interface AuthProviderProps {
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
+  // Use normal React hooks - the previous safety checks were causing issues
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 

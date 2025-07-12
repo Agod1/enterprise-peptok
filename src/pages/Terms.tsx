@@ -26,7 +26,7 @@ export default function Terms() {
       id: "acceptance",
       title: "1. Acceptance of Terms",
       icon: <FileText className="w-5 h-5" />,
-      content: `By accessing and using this mentorship platform ("Service"), you accept and agree to be bound by the terms and provision of this agreement, including all pricing, payment, and refund policies outlined herein. If you do not agree to abide by the above, please do not use this service.
+      content: `By accessing and using this coaching platform ("Service"), you accept and agree to be bound by the terms and provision of this agreement, including all pricing, payment, and refund policies outlined herein. If you do not agree to abide by the above, please do not use this service.
 
 These Terms of Service govern your use of our platform and form a legally binding agreement between you and our company. By booking coaching sessions or providing coaching services, you acknowledge understanding of our session-based pricing structure, commission rates, and fee policies.
 
@@ -47,7 +47,7 @@ Last updated: ${new Date().toLocaleDateString()}`,
       icon: <Users className="w-5 h-5" />,
       content: `For the purposes of these Terms:
 
-• "Platform" refers to our mentorship matching and coaching service
+• "Platform" refers to our coaching matching and connection service
 • "Coach" refers to professional mentors providing coaching services
 • "Client" refers to individuals or companies seeking coaching services
 • "Session" refers to coaching meetings conducted through our platform
@@ -217,7 +217,7 @@ DISPUTE RESOLUTION:
 BULK SESSION PACKAGES:
 
 • Enterprise packages: Refund policies specified in custom contract
-• Prepaid sessions: Unused sessions refundable within 90 days of purchase
+��� Prepaid sessions: Unused sessions refundable within 90 days of purchase
 • Volume discounts: Non-refundable discount amounts, base session fees refundable
 
 ACCOUNT TERMINATION:
@@ -301,7 +301,7 @@ For general inquiries: info@peptok.ca (General Information Department)`,
                 </h1>
               </div>
               <p className="text-gray-600 max-w-2xl mx-auto">
-                These terms govern your use of our mentorship platform. Please
+                These terms govern your use of our coaching platform. Please
                 read them carefully to understand your rights and
                 responsibilities.
               </p>

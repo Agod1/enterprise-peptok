@@ -1,6 +1,6 @@
 import { analytics } from "./analytics";
 import { crossBrowserSync, SYNC_CONFIGS } from "./crossBrowserSync";
-import { cacheInvalidation } from "./cacheInvalidation";
+// Removed: cacheInvalidation service (deleted for simplification)
 
 interface SecuritySettings {
   passwordMinLength: number;
@@ -142,7 +142,7 @@ class SecurityService {
       });
 
       // Invalidate cache
-      cacheInvalidation.invalidatePlatformData("Platform Admin");
+      // Note: Cache invalidation removed for simplification
 
       // Update instance
       this.settings = settings;

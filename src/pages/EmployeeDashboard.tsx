@@ -39,7 +39,7 @@ import {
   UserCheck,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import { api } from "@/services/api";
+import { api } from "@/services/apiEnhanced";
 import { apiEnhanced } from "@/services/apiEnhanced";
 import { MentorshipRequest, Connection } from "@/types";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -230,8 +230,7 @@ const EmployeeDashboard = () => {
                 {user?.firstName || user?.name?.split(" ")[0] || "there"}!
               </h1>
               <p className="text-muted-foreground mt-1">
-                Track your mentorship progress and continue your learning
-                journey
+                Track your coaching progress and continue your learning journey
               </p>
             </div>
             <div className="flex gap-3">
@@ -333,12 +332,9 @@ const EmployeeDashboard = () => {
               <BarChart3 className="w-4 h-4" />
               Overview
             </TabsTrigger>
-            <TabsTrigger
-              value="mentorships"
-              className="flex items-center gap-2"
-            >
+            <TabsTrigger value="coaching" className="flex items-center gap-2">
               <Users className="w-4 h-4" />
-              My Mentorships
+              My Coaching
             </TabsTrigger>
             <TabsTrigger value="learning" className="flex items-center gap-2">
               <BookOpen className="w-4 h-4" />
@@ -368,12 +364,12 @@ const EmployeeDashboard = () => {
                     Company Mentorship Requests
                   </CardTitle>
                   <CardDescription>
-                    Track progress of mentorship programs your company has
+                    Track progress of coaching programs your company has
                     initiated
                   </CardDescription>
                 </div>
                 <Button variant="outline" size="sm" asChild>
-                  <Link to="/mentorship/new">
+                  <Link to="/coaching/new">
                     <Plus className="w-4 h-4 mr-2" />
                     Create New Program
                   </Link>
@@ -384,7 +380,7 @@ const EmployeeDashboard = () => {
                   <div className="text-center py-8">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
                     <p className="text-muted-foreground mt-2">
-                      Loading mentorship requests...
+                      Loading coaching requests...
                     </p>
                   </div>
                 ) : (
@@ -527,7 +523,7 @@ const EmployeeDashboard = () => {
           </TabsContent>
 
           {/* Mentorships Tab */}
-          <TabsContent value="mentorships" className="space-y-6">
+          <TabsContent value="coaching" className="space-y-6">
             <Card className="backdrop-blur-md bg-white/80 border-white/20 shadow-lg">
               <CardHeader>
                 <CardTitle>Active Mentorship Connections</CardTitle>
@@ -615,7 +611,7 @@ const EmployeeDashboard = () => {
                   <div className="text-center py-8">
                     <UserCheck className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
                     <p className="text-muted-foreground">
-                      No active mentorship connections
+                      No active coaching connections
                     </p>
                     <Button asChild className="mt-4">
                       <Link to="/experts">Find Mentors</Link>
@@ -689,7 +685,7 @@ const EmployeeDashboard = () => {
               <CardHeader>
                 <CardTitle>Session History</CardTitle>
                 <CardDescription>
-                  View your completed and upcoming mentorship sessions
+                  View your completed and upcoming coaching sessions
                 </CardDescription>
               </CardHeader>
               <CardContent>

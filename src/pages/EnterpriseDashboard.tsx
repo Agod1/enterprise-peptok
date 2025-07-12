@@ -39,8 +39,8 @@ import {
   UserCheck,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import { api } from "@/services/api";
 import { apiEnhanced } from "@/services/apiEnhanced";
+const api = apiEnhanced; // Use apiEnhanced for all API calls
 import { MentorshipRequest, Connection } from "@/types";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { toast } from "sonner";
@@ -223,7 +223,7 @@ const EnterpriseDashboard = () => {
                 journey
               </p>
             </div>
-            <Button onClick={() => navigate("/mentorship/new")} size="lg">
+            <Button onClick={() => navigate("/coaching/new")} size="lg">
               <Plus className="w-5 h-5 mr-2" />
               Create New Program
             </Button>
@@ -312,12 +312,12 @@ const EnterpriseDashboard = () => {
                     <div>
                       <CardTitle>Company Mentorship Requests</CardTitle>
                       <CardDescription>
-                        Track progress of mentorship programs your company has
+                        Track progress of coaching programs your company has
                         created
                       </CardDescription>
                     </div>
                     <Button variant="outline" asChild>
-                      <Link to="/mentorship/new">
+                      <Link to="/coaching/new">
                         <Plus className="w-4 h-4 mr-2" />
                         Create New Program
                       </Link>

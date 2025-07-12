@@ -17,8 +17,25 @@ const Logo = ({ className, size = "md", variant = "full" }: LogoProps) => {
     <div className={cn("flex items-center", className)}>
       <img
         src="/peptok-logo.png"
-        alt="Peptok"
-        className={cn("w-auto", sizeClasses[size])}
+        alt="Peptok Logo"
+        className={cn("w-auto object-contain", sizeClasses[size])}
+        style={{
+          maxWidth: "200px",
+          height: "auto",
+        }}
+        loading="eager"
+        decoding="async"
+        onLoad={() => {
+          console.log("✅ Peptok logo loaded successfully");
+        }}
+        onError={(e) => {
+          console.error("❌ Logo image failed to load from /peptok-logo.png");
+          // Try alternative path as fallback
+          const target = e.target as HTMLImageElement;
+          if (target.src.endsWith("/peptok-logo.png")) {
+            target.src = "./peptok-logo.png";
+          }
+        }}
       />
     </div>
   );

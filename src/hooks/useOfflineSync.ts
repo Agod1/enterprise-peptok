@@ -3,7 +3,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { offlineSync, SyncStatus, SyncOperation } from "@/services/offlineSync";
-import { offlineApi } from "@/services/offlineApiWrapper";
+import { apiEnhanced as offlineApi } from "@/services/apiEnhanced";
 
 export interface UseOfflineSyncReturn {
   // Status

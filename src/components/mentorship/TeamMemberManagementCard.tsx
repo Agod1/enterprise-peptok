@@ -33,7 +33,7 @@ import { TeamMember } from "@/types";
 import { toast } from "sonner";
 import { emailService } from "@/services/email";
 import { invitationService } from "@/services/invitationService";
-import { offlineApi } from "@/services/offlineApiWrapper";
+import { apiEnhanced as offlineApi } from "@/services/apiEnhanced";
 import { useAuth } from "@/contexts/AuthContext";
 import { useOfflineSync } from "@/hooks/useOfflineSync";
 
@@ -96,7 +96,7 @@ export function TeamMemberManagementCard({
           email: newMemberEmail.toLowerCase(),
           name: newMemberName.trim() || undefined,
           programId: programId || `program-${Date.now()}`,
-          programTitle: programTitle || "Mentorship Program",
+          programTitle: programTitle || "Coaching Program",
           companyId: user?.companyId || `company-${Date.now()}`,
           companyName: user?.businessDetails?.companyName || "Your Company",
           inviterName: user
@@ -306,7 +306,7 @@ export function TeamMemberManagementCard({
           email: member.email,
           name: member.name,
           programId: programId || `program-${Date.now()}`,
-          programTitle: programTitle || "Mentorship Program",
+          programTitle: programTitle || "Coaching Program",
           companyId: user?.companyId || `company-${Date.now()}`,
           companyName: user?.businessDetails?.companyName || "Your Company",
           inviterName: user

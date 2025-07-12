@@ -36,11 +36,11 @@ import {
   Play,
   Download,
 } from "lucide-react";
-import { mockExperts } from "@/data/mockData";
+import { mockCoaches } from "@/data/mockData";
 
 const ExpertProfile = () => {
   const { id } = useParams();
-  const expert = mockExperts.find((e) => e.id === id) || mockExperts[0];
+  const expert = mockCoaches.find((e) => e.id === id) || mockCoaches[0];
 
   // Enhanced mock data for expert profile
   const reviews = [

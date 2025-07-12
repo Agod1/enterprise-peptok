@@ -48,7 +48,7 @@ import { apiEnhanced } from "@/services/apiEnhanced";
 import { analytics } from "@/services/analytics";
 import { toast } from "sonner";
 import { crossBrowserSync, SYNC_CONFIGS } from "@/services/crossBrowserSync";
-import { cacheInvalidation } from "@/services/cacheInvalidation";
+
 import {
   Users,
   Building2,
@@ -395,8 +395,7 @@ export default function PlatformAdminDashboard() {
         { id: user?.id || "admin", name: user?.name || "Platform Admin" },
       );
 
-      // Invalidate user-related cache for all users
-      cacheInvalidation.invalidatePlatformData(user?.name || "Platform Admin");
+      // User data will be refreshed on next load
 
       setIsCreateUserOpen(false);
       setNewUser({
@@ -439,7 +438,7 @@ export default function PlatformAdminDashboard() {
       );
 
       // Invalidate company-related cache for all users
-      cacheInvalidation.invalidatePlatformData(user?.name || "Platform Admin");
+      // Company data will be refreshed on next load
 
       setIsCreateCompanyOpen(false);
       setNewCompany({

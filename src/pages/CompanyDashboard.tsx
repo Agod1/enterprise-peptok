@@ -51,7 +51,7 @@ import {
   Activity,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import { api } from "@/services/api";
+import { api } from "@/services/apiEnhanced";
 import { apiEnhanced } from "@/services/apiEnhanced";
 import { MentorshipRequest } from "@/types";
 import { toast } from "sonner";
@@ -147,7 +147,7 @@ const CompanyDashboard = () => {
       id: "3",
       type: "team_member_invited",
       user: "Maria Garcia",
-      message: "Invited 5 team members to mentorship program",
+      message: "Invited 5 team members to coaching program",
       timestamp: "1 day ago",
       status: "success",
       impact: "medium",
@@ -333,7 +333,7 @@ const CompanyDashboard = () => {
                   Company Dashboard
                 </h1>
                 <p className="text-xl text-muted-foreground">
-                  Monitor and optimize your organization's mentorship program
+                  Monitor and optimize your organization's coaching program
                   performance
                 </p>
               </div>
@@ -350,7 +350,7 @@ const CompanyDashboard = () => {
                   </SelectContent>
                 </Select>
                 <Button
-                  onClick={() => navigate("/mentorship/new")}
+                  onClick={() => navigate("/coaching/new")}
                   className="bg-primary hover:bg-primary/90"
                 >
                   <Plus className="h-4 w-4 mr-2" />
@@ -699,7 +699,7 @@ const CompanyDashboard = () => {
                         your organization
                       </CardDescription>
                     </div>
-                    <Button onClick={() => navigate("/mentorship/new")}>
+                    <Button onClick={() => navigate("/coaching/new")}>
                       <Plus className="w-4 h-4 mr-2" />
                       Create New Program
                     </Button>
@@ -709,7 +709,7 @@ const CompanyDashboard = () => {
                       <div className="text-center py-8">
                         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
                         <p className="text-muted-foreground mt-2">
-                          Loading mentorship requests...
+                          Loading coaching requests...
                         </p>
                       </div>
                     ) : (
@@ -742,7 +742,7 @@ const CompanyDashboard = () => {
                               {dept.employees} employees
                             </Badge>
                             <Badge variant="secondary">
-                              {dept.activeConnections} active mentorships
+                              {dept.activeConnections} active coaching sessions
                             </Badge>
                           </div>
                         </div>

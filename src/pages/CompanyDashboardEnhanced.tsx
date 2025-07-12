@@ -31,7 +31,6 @@ import AnalyticsDashboard from "@/components/analytics/AnalyticsDashboard";
 import { MentorshipRequest } from "@/types";
 import { toast } from "sonner";
 import { crossBrowserSync, SYNC_CONFIGS } from "@/services/crossBrowserSync";
-import { cacheInvalidation } from "@/services/cacheInvalidation";
 
 interface CompanyMetrics {
   totalEmployees: number;
@@ -108,23 +107,9 @@ export default function CompanyDashboardEnhanced() {
       metadata: { companyId: user.companyId },
     });
 
-    // Listen for cache invalidation events
-    const unsubscribeInvalidation = cacheInvalidation.onInvalidation(
-      (event) => {
-        // Reload data if company data was invalidated
-        if (
-          (event.type === "company_data" && event.scope === user.companyId) ||
-          event.type === "platform_data" ||
-          event.type === "global"
-        ) {
-          toast.info("Company data updated. Refreshing...");
-          loadDashboardData();
-        }
-      },
-    );
-
+    // Data will be refreshed through normal component lifecycle
     return () => {
-      unsubscribeInvalidation();
+      // Cleanup if needed
     };
   }, [user, navigate]);
 
@@ -137,8 +122,7 @@ export default function CompanyDashboardEnhanced() {
 
     setLoading(true);
     try {
-      // Clear any invalidated cache before loading
-      cacheInvalidation.clearInvalidatedCache(user.companyId, user.id);
+      // Load fresh data
 
       // Load company-specific requests with proper error handling
       const companyRequests = await apiEnhanced.getCompanyRequests(
@@ -244,7 +228,7 @@ export default function CompanyDashboardEnhanced() {
       component: "company_dashboard_enhanced",
       metadata: { companyId: user?.companyId },
     });
-    navigate("/mentorship/new");
+    navigate("/coaching/new");
   };
 
   const viewAllRequests = () => {
