@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import Header from "@/components/layout/Header";
-import { api } from "@/services/apiEnhanced";
+import { apiEnhanced as api } from "@/services/apiEnhanced";
 import { apiEnhanced } from "@/services/apiEnhanced";
 import { useAuth } from "@/contexts/AuthContext";
 
