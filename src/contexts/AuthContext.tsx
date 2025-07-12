@@ -203,39 +203,72 @@ export function AuthProvider({ children }: AuthProviderProps) {
 }
 
 export function useAuth() {
-  // Safety check for React hooks availability
-  if (!React || !useContext) {
-    console.warn("React useContext not available, returning mock auth");
+  // Comprehensive React hooks availability check
+  const isReactAvailable =
+    typeof React !== "undefined" &&
+    React &&
+    typeof React.useContext === "function";
+
+  if (!isReactAvailable) {
+    console.warn("🚨 React useContext not available, returning mock auth");
     return {
       user: null,
       isAuthenticated: false,
       isLoading: false,
-      login: async () => ({ success: false, message: "Auth not available" }),
+      login: async () => ({ success: false, error: "Auth not available" }),
       logout: async () => {},
       updateUser: () => {},
     };
   }
 
   if (!AuthContext) {
-    console.warn("AuthContext not available");
+    console.warn("🚨 AuthContext not available");
     return {
       user: null,
       isAuthenticated: false,
       isLoading: false,
       login: async () => ({
         success: false,
-        message: "Auth context not available",
+        error: "Auth context not available",
       }),
       logout: async () => {},
       updateUser: () => {},
     };
   }
 
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
+  try {
+    const context = React.useContext(AuthContext);
+    if (context === undefined) {
+      console.warn(
+        "🚨 useAuth called outside of AuthProvider, returning mock auth",
+      );
+      return {
+        user: null,
+        isAuthenticated: false,
+        isLoading: false,
+        login: async () => ({
+          success: false,
+          error: "useAuth must be used within an AuthProvider",
+        }),
+        logout: async () => {},
+        updateUser: () => {},
+      };
+    }
+    return context;
+  } catch (error) {
+    console.error("🚨 Failed to use AuthContext:", error);
+    return {
+      user: null,
+      isAuthenticated: false,
+      isLoading: false,
+      login: async () => ({
+        success: false,
+        error: "Failed to access auth context",
+      }),
+      logout: async () => {},
+      updateUser: () => {},
+    };
   }
-  return context;
 }
 
 export default AuthContext;
