@@ -89,11 +89,11 @@ const Header = ({ userType: propUserType }: HeaderProps) => {
     },
     {
       label: "New Program",
-      path: "/mentorship/new",
+      path: "/coaching/new",
       roles: ["company_admin", "platform_admin"],
     },
     {
-      label: "Mentors",
+      label: "Coaches",
       path: "/coaches",
       roles: ["company_admin", "platform_admin"],
     },
@@ -182,7 +182,7 @@ const Header = ({ userType: propUserType }: HeaderProps) => {
                       : "/coaches";
                   window.location.href = searchPath;
                 }}
-                title="Search mentors and programs"
+                title="Search coaches and programs"
               >
                 <Search className="h-4 w-4" />
               </Button>

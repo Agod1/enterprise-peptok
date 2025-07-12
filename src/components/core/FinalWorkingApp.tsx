@@ -358,7 +358,7 @@ const FinalWorkingApp: React.FC = () => {
 
               <p className="text-xl md:text-2xl text-gray-600 leading-relaxed max-w-3xl mx-auto mb-8">
                 Peptok bridges the gap between your enterprises and seasoned
-                professionals, creating meaningful mentorship connections that
+                professionals, creating meaningful coaching connections that
                 drive measurable business outcomes.
               </p>
 

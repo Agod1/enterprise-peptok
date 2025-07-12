@@ -255,7 +255,7 @@ export class EmailService {
     subject: string;
     htmlContent: string;
   } {
-    const subject = `You're invited to join ${data.companyName}'s mentorship program`;
+    const subject = `You're invited to join ${data.companyName}'s coaching program`;
 
     const htmlContent = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f8fafc;">
@@ -434,7 +434,7 @@ export class EmailService {
             data.sessionSchedule.length > 0
               ? `
           <div style="margin: 30px 0; padding: 20px; background-color: #ecfdf5; border-left: 4px solid #059669; border-radius: 4px;">
-            <h3 style="color: #065f46; margin: 0 0 15px 0; font-size: 18px;">📅 Upcoming Sessions</h3>
+            <h3 style="color: #065f46; margin: 0 0 15px 0; font-size: 18px;">�� Upcoming Sessions</h3>
             ${data.sessionSchedule
               .map(
                 (session) => `

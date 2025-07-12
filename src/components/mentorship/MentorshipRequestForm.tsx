@@ -60,23 +60,28 @@ interface MentorshipRequestFormProps {
   onFormDataChange?: (data: MentorshipRequestFormData) => void;
 }
 
-export interface MentorshipRequestFormData {
+export interface CoachingRequestFormData {
   title: string;
   description: string;
   goals: MentorshipGoal[];
   metricsToTrack: string[];
   teamMembers: TeamMember[];
   preferredExpertise: string[];
-  budget?: {
-    min: number;
-    max: number;
-  };
   timeline: {
     startDate: string;
     endDate: string;
     sessionFrequency: "weekly" | "bi-weekly" | "monthly";
   };
+  budget?: {
+    min: number;
+    max: number;
+  };
+  level?: string;
+  expertise?: string[];
 }
+
+// Keep for backward compatibility
+export interface MentorshipRequestFormData extends CoachingRequestFormData {}
 
 const availableMetrics = [
   {
@@ -380,10 +385,10 @@ export function MentorshipRequestForm({
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Target className="w-5 h-5" />
-            Mentorship Request Details
+            Coaching Request Details
           </CardTitle>
           <CardDescription>
-            Define the core objectives and scope of your mentorship program
+            Define the core objectives and scope of your coaching program
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -670,7 +675,7 @@ export function MentorshipRequestForm({
         <CardHeader>
           <CardTitle>Preferred Expertise Areas</CardTitle>
           <CardDescription>
-            Select the areas of expertise you're looking for in a mentor
+            Select the areas of expertise you're looking for in a coach
           </CardDescription>
         </CardHeader>
         <CardContent>

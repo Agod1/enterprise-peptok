@@ -13,21 +13,15 @@ const Logo = ({ className, size = "md", variant = "full" }: LogoProps) => {
     lg: "h-12",
   };
 
-  // Simple text logo that always works
-  const TextLogo = () => (
-    <div className={cn("flex items-center font-bold text-blue-600", className)}>
-      <span
-        className={cn(
-          size === "sm" ? "text-lg" : size === "md" ? "text-xl" : "text-2xl",
-        )}
-      >
-        Peptok
-      </span>
+  return (
+    <div className={cn("flex items-center", className)}>
+      <img
+        src="/peptok-logo.png"
+        alt="Peptok"
+        className={cn("w-auto", sizeClasses[size])}
+      />
     </div>
   );
-
-  // Use text logo as the primary solution to avoid deployment issues
-  return <TextLogo />;
 };
 
 export default Logo;

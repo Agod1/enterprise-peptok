@@ -223,8 +223,8 @@ export function TeamManagement({
           </Badge>
         </CardTitle>
         <CardDescription>
-          Add team members to participate in the mentorship program. Team
-          members will receive invitation emails to join the program.
+          Add team members to participate in the coaching program. Team members
+          will receive invitation emails to join the program.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">

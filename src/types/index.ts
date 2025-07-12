@@ -164,12 +164,12 @@ export interface CompanyProfile {
   };
 }
 
-export interface MentorshipRequest {
+export interface CoachingRequest {
   id: string;
   companyId: string;
   title: string;
   description: string;
-  goals: MentorshipGoal[];
+  goals: CoachingGoal[];
   metricsToTrack: string[];
   teamMembers: TeamMember[];
   preferredExpertise: string[];
@@ -187,7 +187,11 @@ export interface MentorshipRequest {
   updatedAt: string;
 }
 
-export interface MentorshipGoal {
+// Keep MentorshipRequest for backward compatibility
+/** @deprecated Use CoachingRequest instead */
+export interface MentorshipRequest extends CoachingRequest {}
+
+export interface CoachingGoal {
   id: string;
   title: string;
   description: string;
@@ -200,6 +204,10 @@ export interface MentorshipGoal {
     unit: string;
   }[];
 }
+
+// Keep MentorshipGoal for backward compatibility
+/** @deprecated Use CoachingGoal instead */
+export interface MentorshipGoal extends CoachingGoal {}
 
 export interface Connection {
   id: string;

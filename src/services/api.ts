@@ -602,7 +602,7 @@ class ApiService {
           billingPeriod: "monthly",
           userCap: 20,
           features: [
-            "200 minutes of mentor time per month",
+            "200 minutes of coach time per month",
             "Minimum commitment: 2 users (add up to 20 extra seats at CA$119/user/month)",
             "Monthly progress reports",
             "Email support",
@@ -630,7 +630,7 @@ class ApiService {
           billingPeriod: "monthly",
           userCap: 100,
           features: [
-            "1,200 minutes of mentor time per month",
+            "1,200 minutes of coach time per month",
             "Includes all Starter features",
             "Minimum commitment: 5 users (add up to 100 extra seats at CA$219/user/month)",
             "Advanced metrics and analytics",
@@ -666,7 +666,7 @@ class ApiService {
             "Dedicated Customer Success Manager",
             "White-labeling and integration options",
             "SLA guarantees and priority SLAs",
-            "Custom mentor vetting",
+            "Custom coach vetting",
             "API access",
             "SSO integration",
           ],
@@ -758,7 +758,7 @@ class ApiService {
           platformServiceCharge: 15, // 15% platform fee
           features: [
             "1-hour coaching sessions",
-            "Professional mentor matching",
+            "Professional coach matching",
             "Session recordings available",
             "Basic progress tracking",
             "Email support",

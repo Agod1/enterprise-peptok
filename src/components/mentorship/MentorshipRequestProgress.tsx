@@ -212,11 +212,11 @@ export function MentorshipRequestProgress({
               <Target className="w-8 h-8 text-muted-foreground" />
             </div>
             <div className="space-y-2">
-              <h3 className="font-semibold">No Mentorship Requests Yet</h3>
+              <h3 className="font-semibold">No Coaching Requests Yet</h3>
               <p className="text-sm text-muted-foreground">
                 {viewMode === "admin"
-                  ? "Create your first mentorship program to start connecting your team with mentors."
-                  : "Your company hasn't created any mentorship programs yet. Contact your admin to get started."}
+                  ? "Create your first coaching program to start connecting your team with coaches."
+                  : "Your company hasn't created any coaching programs yet. Contact your admin to get started."}
               </p>
             </div>
             {showCreateButton && (
