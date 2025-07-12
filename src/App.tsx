@@ -1,6 +1,6 @@
 import React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { FullApp } from "@/components/core/FullApp";
+// import { FullApp } from "@/components/core/FullApp";
 import { AuthProvider } from "@/contexts/AuthContext";
 // Removed unused safety wrapper imports
 // Alternative implementations available but not used:
@@ -50,7 +50,11 @@ const App: React.FC = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <FullApp />
+        <div style={{ padding: "20px" }}>
+          <h1>App is Working!</h1>
+          <p>QueryClientProvider and AuthProvider are working correctly.</p>
+          <p>Next step: Add back FullApp component.</p>
+        </div>
       </AuthProvider>
     </QueryClientProvider>
   );
