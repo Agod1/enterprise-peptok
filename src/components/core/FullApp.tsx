@@ -7,6 +7,10 @@ import { RouterWrapper } from "@/components/core/RouterWrapper";
 import { SafeAuthWrapper } from "@/components/core/SafeAuthWrapper";
 import { ReactSafetyWrapper } from "@/components/core/ReactSafetyWrapper";
 import { SafeNotificationProvider } from "@/components/common/SafeNotification";
+import {
+  ReactErrorBoundary,
+  HookErrorFallback,
+} from "@/components/core/ReactErrorBoundary";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import DashboardRouter from "@/components/auth/DashboardRouter";
 // import OfflineIndicator from "@/components/common/OfflineIndicator"; // Temporarily disabled due to React hook error
