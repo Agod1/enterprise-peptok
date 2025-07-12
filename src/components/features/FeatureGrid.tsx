@@ -28,7 +28,7 @@ const features = [
     icon: MessageSquare,
     title: "Secure Communication",
     description:
-      "Built-in messaging and video calling platform for seamless mentor-mentee interactions.",
+      "Built-in messaging and video calling platform for seamless coach-client interactions.",
   },
   {
     icon: BarChart3,
@@ -40,7 +40,7 @@ const features = [
     icon: BookOpen,
     title: "Learning Resources",
     description:
-      "Access to curated learning materials and resources shared by expert mentors.",
+      "Access to curated learning materials and resources shared by expert coaches.",
   },
   {
     icon: TrendingUp,
@@ -63,7 +63,7 @@ const FeatureGrid = () => {
         <div className="text-center space-y-4 mb-16">
           <h2 className="text-3xl md:text-4xl font-bold">
             Everything you need for
-            <span className="text-primary"> successful mentorship</span>
+            <span className="text-primary"> successful coaching</span>
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Peptok provides all the tools and features necessary to build,
