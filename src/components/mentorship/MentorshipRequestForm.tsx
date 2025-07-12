@@ -82,12 +82,6 @@ export interface CoachingRequestFormData {
 
 // Keep for backward compatibility
 export interface MentorshipRequestFormData extends CoachingRequestFormData {}
-  title: string;
-  description: string;
-  goals: MentorshipGoal[];
-  metricsToTrack: string[];
-  teamMembers: TeamMember[];
-  preferredExpertise: string[];
   budget?: {
     min: number;
     max: number;
