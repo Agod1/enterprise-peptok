@@ -4,6 +4,11 @@ import App from "./App.tsx";
 import "./index.css";
 import { Environment } from "./utils/environment";
 
+// Make React globally available for external libraries
+if (typeof window !== "undefined") {
+  (window as any).React = React;
+}
+
 // Log environment information for debugging
 console.log(`🌍 Environment: ${Environment.getEnvironmentName()}`);
 console.log(`🔗 API Base URL: ${Environment.getApiBaseUrl()}`);
