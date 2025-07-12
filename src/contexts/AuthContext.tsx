@@ -139,6 +139,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
     updateUser,
   };
 
+  if (!AuthContext) {
+    console.warn("AuthContext not available, rendering children directly");
+    return <>{children}</>;
+  }
+
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
