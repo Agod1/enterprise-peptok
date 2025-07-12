@@ -249,7 +249,7 @@ export default function CreateMentorshipRequest() {
       setProgramId("");
 
       toast.success(
-        "Mentorship request submitted successfully! Team members have been notified.",
+        "Coaching request submitted successfully! Team members have been notified.",
       );
 
       // Navigate to appropriate dashboard based on user type
@@ -260,7 +260,7 @@ export default function CreateMentorshipRequest() {
           newRequest: request,
           refresh: true,
           message:
-            "Your mentorship request has been submitted and is being reviewed.",
+            "Your coaching request has been submitted and is being reviewed.",
         },
       });
     } catch (error) {
@@ -361,8 +361,8 @@ export default function CreateMentorshipRequest() {
                 <BackendStatus />
               </div>
               <p className="text-muted-foreground">
-                Create a comprehensive mentorship program for your team. We'll
-                help you find the right mentors and structure your program for
+                Create a comprehensive coaching program for your team. We'll
+                help you find the right coaches and structure your program for
                 maximum impact.
               </p>
             </div>
@@ -459,7 +459,7 @@ export default function CreateMentorshipRequest() {
                     };
                     handleSaveDraft(updatedDraft);
                   }}
-                  programTitle={formData?.title || "New Mentorship Program"}
+                  programTitle={formData?.title || "New Coaching Program"}
                   programId={programId}
                 />
 
