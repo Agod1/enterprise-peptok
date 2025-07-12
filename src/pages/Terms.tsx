@@ -47,7 +47,7 @@ Last updated: ${new Date().toLocaleDateString()}`,
       icon: <Users className="w-5 h-5" />,
       content: `For the purposes of these Terms:
 
-• "Platform" refers to our mentorship matching and coaching service
+• "Platform" refers to our coaching matching and connection service
 • "Coach" refers to professional mentors providing coaching services
 • "Client" refers to individuals or companies seeking coaching services
 • "Session" refers to coaching meetings conducted through our platform
