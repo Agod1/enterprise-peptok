@@ -31,42 +31,28 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [isLoading, setIsLoading] = useState(true);
 
   // Initialize auth state
-  try {
-    React.useEffect(() => {
-      const initializeAuth = () => {
-        try {
-          const currentUser = authService.getCurrentUser();
-          setUser(currentUser);
-          setCurrentUser(currentUser);
+  useEffect(() => {
+    const initializeAuth = () => {
+      try {
+        const currentUser = authService.getCurrentUser();
+        setUser(currentUser);
+        setCurrentUser(currentUser);
 
-          if (currentUser) {
-            analytics.setUser(currentUser.id, currentUser.userType, {
-              email: currentUser.email,
-              name: currentUser.name,
-            });
-          }
-        } catch (error) {
-          console.error("Failed to initialize auth:", error);
-        } finally {
-          setIsLoading(false);
+        if (currentUser) {
+          analytics.setUser(currentUser.id, currentUser.userType, {
+            email: currentUser.email,
+            name: currentUser.name,
+          });
         }
-      };
+      } catch (error) {
+        console.error("Failed to initialize auth:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-      initializeAuth();
-    }, []);
-  } catch (error) {
-    console.error("🚨 Failed to initialize useEffect in AuthProvider:", error);
-    // Initialize auth synchronously as fallback
-    try {
-      const currentUser = authService.getCurrentUser();
-      setUser(currentUser);
-      setCurrentUser(currentUser);
-      setIsLoading(false);
-    } catch (authError) {
-      console.error("Failed to initialize auth synchronously:", authError);
-      setIsLoading(false);
-    }
-  }
+    initializeAuth();
+  }, []);
 
   const login = async (email: string, password: string) => {
     try {
