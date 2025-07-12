@@ -368,7 +368,7 @@ const EmployeeDashboard = () => {
                     Company Mentorship Requests
                   </CardTitle>
                   <CardDescription>
-                    Track progress of mentorship programs your company has
+                    Track progress of coaching programs your company has
                     initiated
                   </CardDescription>
                 </div>
