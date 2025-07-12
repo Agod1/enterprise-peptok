@@ -742,7 +742,7 @@ const CompanyDashboard = () => {
                               {dept.employees} employees
                             </Badge>
                             <Badge variant="secondary">
-                              {dept.activeConnections} active mentorships
+                              {dept.activeConnections} active coaching sessions
                             </Badge>
                           </div>
                         </div>
