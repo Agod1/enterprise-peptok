@@ -19,22 +19,13 @@ const Logo = ({ className, size = "md", variant = "full" }: LogoProps) => {
         src="/peptok-logo.png"
         alt="Peptok"
         className={cn("w-auto", sizeClasses[size])}
+        onLoad={() => {
+          console.log("Peptok logo loaded successfully");
+        }}
         onError={(e) => {
-          console.error("Logo image failed to load, falling back to text");
-          e.currentTarget.style.display = "none";
-          const textEl = e.currentTarget.nextElementSibling as HTMLElement;
-          if (textEl) textEl.style.display = "inline";
+          console.error("Logo image failed to load from /peptok-logo.png");
         }}
       />
-      <span
-        className={cn(
-          "font-bold text-primary",
-          size === "lg" ? "text-xl" : size === "md" ? "text-lg" : "text-base",
-        )}
-        style={{ display: "none" }}
-      >
-        Peptok
-      </span>
     </div>
   );
 };
