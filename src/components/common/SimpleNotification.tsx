@@ -108,9 +108,17 @@ export const notificationManager = new NotificationManager();
 
 // Hook to use notifications with React safety checks
 export const useNotifications = () => {
-  // Ensure React hooks are available
-  if (!React || !React.useState || !React.useEffect) {
-    console.warn("React hooks not available, using fallback");
+  // Comprehensive React hooks availability check
+  const isReactAvailable =
+    typeof React !== "undefined" &&
+    React &&
+    typeof React.useState === "function" &&
+    typeof React.useEffect === "function";
+
+  if (!isReactAvailable) {
+    console.warn(
+      "🚨 React hooks not available in useNotifications, using fallback",
+    );
     return {
       notifications: [],
       show: notificationManager.show.bind(notificationManager),
@@ -118,17 +126,44 @@ export const useNotifications = () => {
     };
   }
 
-  const [notifications, setNotifications] = useState(
-    notificationManager.getNotifications(),
-  );
+  // Safe hook initialization with try-catch
+  let notifications: Notification[] = [];
+  let setNotifications: (notifications: Notification[]) => void = () => {};
 
-  useEffect(() => {
-    const unsubscribe = notificationManager.subscribe(() => {
-      setNotifications([...notificationManager.getNotifications()]);
-    });
+  try {
+    const notificationsState = React.useState(
+      notificationManager.getNotifications(),
+    );
+    notifications = notificationsState[0];
+    setNotifications = notificationsState[1];
+  } catch (error) {
+    console.error(
+      "🚨 Failed to initialize useState in useNotifications:",
+      error,
+    );
+    return {
+      notifications: [],
+      show: notificationManager.show.bind(notificationManager),
+      remove: notificationManager.remove.bind(notificationManager),
+    };
+  }
 
-    return unsubscribe;
-  }, []);
+  // Safe useEffect with try-catch
+  try {
+    React.useEffect(() => {
+      const unsubscribe = notificationManager.subscribe(() => {
+        setNotifications([...notificationManager.getNotifications()]);
+      });
+
+      return unsubscribe;
+    }, []);
+  } catch (error) {
+    console.error(
+      "🚨 Failed to initialize useEffect in useNotifications:",
+      error,
+    );
+    // Continue without effect, will still work with current notifications
+  }
 
   return {
     notifications,
