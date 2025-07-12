@@ -40,7 +40,7 @@ const App: React.FC = () => {
         // Store in localStorage for auth service
         localStorage.setItem("peptok_user", JSON.stringify(mockUser));
         localStorage.setItem("peptok_token", "mock-admin-token");
-        console.log("🧪 Dev: Mock admin user created");
+        console.log("🧪 Dev: Mock company admin user created");
       }
     } catch (error) {
       console.warn("Failed to set up mock user:", error);
