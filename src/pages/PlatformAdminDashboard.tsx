@@ -68,6 +68,9 @@ import {
   XCircle,
   Clock,
   Search,
+  Brain,
+  Mail,
+  Settings,
 } from "lucide-react";
 
 interface User {
@@ -491,6 +494,13 @@ export default function PlatformAdminDashboard() {
               </p>
             </div>
             <div className="flex gap-3">
+              <Button
+                onClick={() => navigate("/admin/matching-settings")}
+                variant="outline"
+              >
+                <Brain className="w-4 h-4 mr-2" />
+                Algorithm Settings
+              </Button>
               <Dialog
                 open={isCreateCompanyOpen}
                 onOpenChange={setIsCreateCompanyOpen}
@@ -845,18 +855,18 @@ export default function PlatformAdminDashboard() {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
-                    <Shield className="h-8 w-8 text-blue-600" />
+                    <Settings className="h-8 w-8 text-blue-600" />
                     <div className="ml-4">
                       <h3 className="text-lg font-semibold text-gray-900">
-                        Platform Security
+                        Platform Settings
                       </h3>
                       <p className="text-sm text-gray-600">
-                        Security settings and access controls
+                        Security, AI, and system configuration
                       </p>
                       <div className="flex items-center gap-1 mt-1">
                         <span className="inline-block w-2 h-2 rounded-full bg-blue-500"></span>
                         <span className="text-xs text-blue-600">
-                          Advanced security features
+                          Security & AI controls
                         </span>
                       </div>
                     </div>
@@ -893,6 +903,66 @@ export default function PlatformAdminDashboard() {
                   </div>
                   <Button variant="outline" size="sm">
                     Settings
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card
+              className="hover:shadow-md transition-shadow cursor-pointer"
+              onClick={() => navigate("/admin/matching-settings")}
+            >
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <Brain className="h-8 w-8 text-indigo-600" />
+                    <div className="ml-4">
+                      <h3 className="text-lg font-semibold text-gray-900">
+                        Matching Algorithm
+                      </h3>
+                      <p className="text-sm text-gray-600">
+                        Configure mentor-mentee matching weights
+                      </p>
+                      <div className="flex items-center gap-1 mt-1">
+                        <span className="inline-block w-2 h-2 rounded-full bg-indigo-500"></span>
+                        <span className="text-xs text-indigo-600">
+                          AI-powered matching
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <Button variant="outline" size="sm">
+                    Configure
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card
+              className="hover:shadow-md transition-shadow cursor-pointer"
+              onClick={() => navigate("/admin/email-settings")}
+            >
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <Mail className="h-8 w-8 text-green-600" />
+                    <div className="ml-4">
+                      <h3 className="text-lg font-semibold text-gray-900">
+                        Email Settings
+                      </h3>
+                      <p className="text-sm text-gray-600">
+                        Configure email service and notifications
+                      </p>
+                      <div className="flex items-center gap-1 mt-1">
+                        <span className="inline-block w-2 h-2 rounded-full bg-green-500"></span>
+                        <span className="text-xs text-green-600">
+                          EmailJS integration
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <Button variant="outline" size="sm">
+                    Configure
                   </Button>
                 </div>
               </CardContent>

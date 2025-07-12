@@ -40,18 +40,40 @@ interface CoachAcceptanceData {
 }
 
 export class EmailService {
+  private getEmailConfig() {
+    // Get configuration from admin settings or environment variables
+    const mockEmailEnabled =
+      localStorage.getItem("email_mock_enabled") === "true" ||
+      import.meta.env.VITE_MOCK_EMAIL === "true";
+
+    return {
+      serviceId: import.meta.env.VITE_EMAILJS_SERVICE_ID || "",
+      templateId: import.meta.env.VITE_EMAILJS_TEMPLATE_ID || "",
+      userId: import.meta.env.VITE_EMAILJS_USER_ID || "",
+      mockEnabled: mockEmailEnabled,
+      fromName: localStorage.getItem("email_from_name") || "Peptok Platform",
+      fromEmail:
+        localStorage.getItem("email_from_email") || "noreply@peptok.com",
+    };
+  }
+
   private async sendEmail(template: EmailTemplate): Promise<boolean> {
-    // In development/demo mode, we'll log the email and show a success message
-    if (import.meta.env.DEV || import.meta.env.VITE_MOCK_EMAIL === "true") {
+    const config = this.getEmailConfig();
+
+    // In development/demo mode or when mock is enabled, log the email
+    if (import.meta.env.DEV || config.mockEnabled) {
       console.log("📧 Email would be sent:", {
+        from: `${config.fromName} <${config.fromEmail}>`,
         to: template.to,
         subject: template.subject,
         content: template.textContent,
+        mockMode: config.mockEnabled,
       });
 
       // Show what the email would look like in the console
       console.log("📧 Email Preview:");
       console.log("==========================================");
+      console.log(`From: ${config.fromName} <${config.fromEmail}>`);
       console.log(`To: ${template.to}`);
       console.log(`Subject: ${template.subject}`);
       console.log("------------------------------------------");
@@ -497,6 +519,73 @@ export class EmailService {
     };
 
     return await this.sendEmail(template);
+  }
+
+  // Test email functionality from admin panel
+  async sendTestEmail(recipientEmail: string): Promise<boolean> {
+    const config = this.getEmailConfig();
+
+    const emailTemplate: EmailTemplate = {
+      to: recipientEmail,
+      subject: "Peptok Platform - Test Email",
+      htmlContent: `
+        <h2>Email Service Test</h2>
+        <p>This is a test email from the Peptok platform.</p>
+        <p><strong>Configuration Details:</strong></p>
+        <ul>
+          <li>From: ${config.fromName} &lt;${config.fromEmail}&gt;</li>
+          <li>Service: ${config.serviceId ? "EmailJS Configured" : "EmailJS Not Configured"}</li>
+          <li>Mode: ${config.mockEnabled ? "Mock/Development" : "Production"}</li>
+          <li>Timestamp: ${new Date().toISOString()}</li>
+        </ul>
+        <p>If you received this email, the email service is working correctly!</p>
+      `,
+      textContent: `
+Email Service Test
+
+This is a test email from the Peptok platform.
+
+Configuration Details:
+- From: ${config.fromName} <${config.fromEmail}>
+- Service: ${config.serviceId ? "EmailJS Configured" : "EmailJS Not Configured"}
+- Mode: ${config.mockEnabled ? "Mock/Development" : "Production"}
+- Timestamp: ${new Date().toISOString()}
+
+If you received this email, the email service is working correctly!
+      `,
+    };
+
+    try {
+      const success = await this.sendEmail(emailTemplate);
+
+      if (success && config.mockEnabled) {
+        console.log(`
+🧪 TEST EMAIL SIMULATED
+📧 TO: ${recipientEmail}
+📧 FROM: ${config.fromName} <${config.fromEmail}>
+📧 SUBJECT: ${emailTemplate.subject}
+💡 Mock mode is enabled - email logged to console instead of being sent.
+        `);
+      }
+
+      return success;
+    } catch (error) {
+      console.error("Test email failed:", error);
+      return false;
+    }
+  }
+
+  // Get current email service status
+  getServiceStatus() {
+    const config = this.getEmailConfig();
+
+    return {
+      configured: !!(config.serviceId && config.templateId && config.userId),
+      mockEnabled: config.mockEnabled,
+      fromName: config.fromName,
+      fromEmail: config.fromEmail,
+      serviceId: config.serviceId,
+    };
   }
 }
 

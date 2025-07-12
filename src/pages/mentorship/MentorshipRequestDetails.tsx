@@ -9,6 +9,10 @@ import {
   Star,
   MapPin,
   CheckCircle,
+  RefreshCw,
+  ArrowUpDown,
+  ArrowUp,
+  ArrowDown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,24 +22,16 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useEffect, useState } from "react";
 import { api } from "@/services/api";
 import { apiEnhanced } from "@/services/apiEnhanced";
+import {
+  matchingService,
+  type CoachMatch,
+  type MatchingResult,
+} from "@/services/matchingService";
 import { MentorshipRequest } from "@/types";
 import { toast } from "sonner";
 import { TeamMemberManagementCard } from "@/components/mentorship/TeamMemberManagementCard";
 
-interface MatchedCoach {
-  id: string;
-  name: string;
-  email: string;
-  avatar?: string;
-  title: string;
-  company: string;
-  location: string;
-  rating: number;
-  expertise: string[];
-  hourlyRate: number;
-  availability: "available" | "limited" | "busy";
-  matchScore: number;
-  bio: string;
+interface MatchedCoach extends CoachMatch {
   isSelected?: boolean;
 }
 
@@ -45,9 +41,14 @@ export default function MentorshipRequestDetails() {
   const { user } = useAuth();
   const [request, setRequest] = useState<MentorshipRequest | null>(null);
   const [matchedCoaches, setMatchedCoaches] = useState<MatchedCoach[]>([]);
+  const [matchingResults, setMatchingResults] = useState<MatchingResult | null>(
+    null,
+  );
   const [teamMembers, setTeamMembers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMatches, setLoadingMatches] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [sortByScore, setSortByScore] = useState<"desc" | "asc">("desc");
 
   const handleUpdateTeamMembers = async (updatedMembers: any[]) => {
     setTeamMembers(updatedMembers);
@@ -63,11 +64,72 @@ export default function MentorshipRequestDetails() {
       // Persist team members to backend database
       try {
         await api.updateMentorshipRequest(request.id, updatedRequest);
-        console.log("✅ Team members updated in backend database");
+        console.log("��� Team members updated in backend database");
       } catch (error) {
         console.error("Failed to update team members in backend:", error);
         // Don't show error toast as team members are still updated in UI
       }
+    }
+  };
+
+  const loadMatchingResults = async (requestId: string) => {
+    try {
+      setLoadingMatches(true);
+
+      // First try to get existing matching results
+      const existingResults =
+        await matchingService.getMatchingResult(requestId);
+
+      if (existingResults) {
+        console.log("✅ Found existing matching results:", existingResults);
+        setMatchingResults(existingResults);
+        setMatchedCoaches(
+          existingResults.matches.map((coach) => ({
+            ...coach,
+            isSelected: false,
+          })),
+        );
+      } else {
+        console.log(
+          "ℹ️ No existing results found, generating new matches for:",
+          requestId,
+        );
+
+        // Create a basic matching request from available data
+        const basicRequest = {
+          id: requestId,
+          title: request?.title || "Mentorship Request",
+          description: request?.description || "",
+          requiredSkills: request?.expertise || ["Leadership", "Coaching"],
+          preferredExperience: "senior",
+          budget: 150,
+          timeline: {
+            startDate: new Date().toISOString(),
+            endDate: new Date(
+              Date.now() + 30 * 24 * 60 * 60 * 1000,
+            ).toISOString(),
+          },
+          teamMembers: teamMembers.map((member) => member.email),
+          goals: request?.goals?.map((g) => g.title) || [],
+        };
+
+        const newResults = await matchingService.findMatches(basicRequest);
+        console.log("✅ Generated new matching results:", newResults);
+
+        setMatchingResults(newResults);
+        setMatchedCoaches(
+          newResults.matches.map((coach) => ({ ...coach, isSelected: false })),
+        );
+      }
+    } catch (error) {
+      console.error("Failed to load matching results:", error);
+      toast.error("Failed to load coach matches");
+
+      // Set empty results as fallback
+      setMatchedCoaches([]);
+      setMatchingResults(null);
+    } finally {
+      setLoadingMatches(false);
     }
   };
 
@@ -214,66 +276,8 @@ export default function MentorshipRequestDetails() {
           setTeamMembers(mockRequest.teamMembers || []);
         }
 
-        // Mock matched coaches data
-        const mockMatchedCoaches: MatchedCoach[] = [
-          {
-            id: "coach-1",
-            name: "Sarah Johnson",
-            email: "sarah.johnson@example.com",
-            title: "Senior Leadership Coach",
-            company: "Executive Coaching Solutions",
-            location: "New York, NY",
-            rating: 4.9,
-            expertise: [
-              "Leadership Development",
-              "Strategic Planning",
-              "Team Management",
-            ],
-            hourlyRate: 250,
-            availability: "available",
-            matchScore: 95,
-            bio: "Sarah is a seasoned executive coach with over 15 years of experience helping leaders transform their organizations.",
-            isSelected: true,
-          },
-          {
-            id: "coach-2",
-            name: "Michael Chen",
-            email: "michael.chen@example.com",
-            title: "Strategic Leadership Advisor",
-            company: "Leadership Excellence Group",
-            location: "San Francisco, CA",
-            rating: 4.8,
-            expertise: [
-              "Strategic Planning",
-              "Executive Presence",
-              "Change Management",
-            ],
-            hourlyRate: 275,
-            availability: "available",
-            matchScore: 92,
-            bio: "Michael specializes in helping executives develop strategic thinking and lead organizational transformation.",
-          },
-          {
-            id: "coach-3",
-            name: "Dr. Emily Rodriguez",
-            email: "emily.rodriguez@example.com",
-            title: "Leadership Development Expert",
-            company: "Peak Performance Coaching",
-            location: "Austin, TX",
-            rating: 4.7,
-            expertise: [
-              "Leadership",
-              "Team Management",
-              "Performance Optimization",
-            ],
-            hourlyRate: 230,
-            availability: "limited",
-            matchScore: 88,
-            bio: "Dr. Rodriguez combines psychology and business expertise to help leaders unlock their full potential.",
-          },
-        ];
-
-        setMatchedCoaches(mockMatchedCoaches);
+        // Load matching results for this request
+        await loadMatchingResults(foundRequest?.id || id);
       } catch (error) {
         console.error("Failed to fetch mentorship request:", error);
         setError(error.message || "Failed to load mentorship request details");
@@ -294,6 +298,28 @@ export default function MentorshipRequestDetails() {
         isSelected: coach.id === coachId ? !coach.isSelected : false,
       })),
     );
+  };
+
+  const sortCoachesByScore = () => {
+    const newSort = sortByScore === "desc" ? "asc" : "desc";
+    setSortByScore(newSort);
+
+    setMatchedCoaches((prev) =>
+      [...prev].sort((a, b) =>
+        newSort === "desc"
+          ? b.matchScore - a.matchScore
+          : a.matchScore - b.matchScore,
+      ),
+    );
+  };
+
+  const getAverageMatchScore = () => {
+    if (matchedCoaches.length === 0) return 0;
+    const total = matchedCoaches.reduce(
+      (sum, coach) => sum + coach.matchScore,
+      0,
+    );
+    return total / matchedCoaches.length;
   };
 
   const [pricingConfig, setPricingConfig] = useState({
@@ -382,6 +408,12 @@ export default function MentorshipRequestDetails() {
 
   const getAvailabilityColor = (availability: string) => {
     switch (availability) {
+      case "immediate":
+        return "bg-green-100 text-green-800";
+      case "this_week":
+        return "bg-blue-100 text-blue-800";
+      case "next_week":
+        return "bg-yellow-100 text-yellow-800";
       case "available":
         return "bg-green-100 text-green-800";
       case "limited":
@@ -596,10 +628,96 @@ export default function MentorshipRequestDetails() {
             {/* Matched Coaches */}
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Users className="w-5 h-5" />
-                  Matched Coaches ({matchedCoaches.length})
-                </CardTitle>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle className="flex items-center gap-2">
+                      <Users className="w-5 h-5" />
+                      Matched Coaches ({matchedCoaches.length})
+                    </CardTitle>
+                    {matchingResults && (
+                      <div className="text-sm text-gray-600 mt-1 space-y-1">
+                        <p>
+                          Algorithm: {matchingResults.algorithmVersion} •
+                          Updated:{" "}
+                          {new Date(matchingResults.timestamp).toLocaleString()}
+                        </p>
+                        {matchedCoaches.length > 0 && (
+                          <p className="flex items-center gap-4">
+                            <span>
+                              Average Match:{" "}
+                              <span className="font-semibold text-blue-600">
+                                {Math.round(getAverageMatchScore() * 100)}%
+                              </span>
+                            </span>
+                            <span>
+                              Best Match:{" "}
+                              <span className="font-semibold text-green-600">
+                                {Math.round(
+                                  Math.max(
+                                    ...matchedCoaches.map((c) => c.matchScore),
+                                  ) * 100,
+                                )}
+                                %
+                              </span>
+                            </span>
+                          </p>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={sortCoachesByScore}
+                      title={`Sort by match score ${sortByScore === "desc" ? "ascending" : "descending"}`}
+                    >
+                      {sortByScore === "desc" ? (
+                        <ArrowDown className="w-4 h-4 mr-2" />
+                      ) : (
+                        <ArrowUp className="w-4 h-4 mr-2" />
+                      )}
+                      Sort by Score
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => loadMatchingResults(id!)}
+                      disabled={loadingMatches}
+                    >
+                      {loadingMatches ? (
+                        <>
+                          <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                          Updating...
+                        </>
+                      ) : (
+                        <>
+                          <RefreshCw className="w-4 h-4 mr-2" />
+                          Refresh Matches
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </div>
+                {matchingResults && (
+                  <div className="flex flex-wrap gap-2 mt-3">
+                    <Badge variant="outline">
+                      Skill: {matchingResults.configUsed.skillMatch}%
+                    </Badge>
+                    <Badge variant="outline">
+                      Experience: {matchingResults.configUsed.experience}%
+                    </Badge>
+                    <Badge variant="outline">
+                      Rating: {matchingResults.configUsed.rating}%
+                    </Badge>
+                    <Badge variant="outline">
+                      Availability: {matchingResults.configUsed.availability}%
+                    </Badge>
+                    <Badge variant="outline">
+                      Price: {matchingResults.configUsed.price}%
+                    </Badge>
+                  </div>
+                )}
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
@@ -613,8 +731,8 @@ export default function MentorshipRequestDetails() {
                           <Avatar className="w-12 h-12">
                             <AvatarImage
                               src={
-                                coach.avatar ||
-                                `https://avatar.vercel.sh/${coach.email}`
+                                coach.profileImage ||
+                                `https://avatar.vercel.sh/${coach.name}`
                               }
                             />
                             <AvatarFallback>
@@ -627,12 +745,26 @@ export default function MentorshipRequestDetails() {
                             </AvatarFallback>
                           </Avatar>
                           <div className="flex-1">
-                            <h4 className="font-semibold text-lg">
-                              {coach.name}
-                            </h4>
+                            <div className="flex items-center gap-2">
+                              <h4 className="font-semibold text-lg">
+                                {coach.name}
+                              </h4>
+                              <span
+                                className={`text-sm px-2 py-1 rounded-full font-medium ${
+                                  coach.matchScore >= 80
+                                    ? "bg-green-100 text-green-700"
+                                    : coach.matchScore >= 60
+                                      ? "bg-yellow-100 text-yellow-700"
+                                      : "bg-gray-100 text-gray-700"
+                                }`}
+                              >
+                                {Math.round(coach.matchScore * 100)}%
+                              </span>
+                            </div>
                             <p className="text-gray-600">{coach.title}</p>
                             <p className="text-sm text-gray-500">
-                              {coach.company}
+                              {coach.yearsExperience} years experience •{" "}
+                              {coach.timezone}
                             </p>
                             <div className="flex items-center gap-2 mt-1">
                               <div className="flex items-center gap-1">
@@ -644,13 +776,27 @@ export default function MentorshipRequestDetails() {
                               <div className="flex items-center gap-1">
                                 <MapPin className="w-4 h-4 text-gray-400" />
                                 <span className="text-sm text-gray-600">
-                                  {coach.location}
+                                  {coach.languages.join(", ")}
                                 </span>
                               </div>
                             </div>
                           </div>
                         </div>
-                        <div className="text-right">
+                        <div className="text-right space-y-2">
+                          {/* Match Score Badge */}
+                          <div className="flex justify-end">
+                            <Badge
+                              className={`text-sm font-semibold ${
+                                coach.matchScore >= 80
+                                  ? "bg-green-100 text-green-800 border-green-300"
+                                  : coach.matchScore >= 60
+                                    ? "bg-yellow-100 text-yellow-800 border-yellow-300"
+                                    : "bg-gray-100 text-gray-800 border-gray-300"
+                              }`}
+                            >
+                              {Math.round(coach.matchScore * 100)}% Match
+                            </Badge>
+                          </div>
                           <div className="text-lg font-bold">
                             ${coach.hourlyRate}/hr
                           </div>
@@ -732,6 +878,59 @@ export default function MentorshipRequestDetails() {
 
                       <p className="text-sm text-gray-600">{coach.bio}</p>
 
+                      {/* Match Score and Reasons */}
+                      <div
+                        className={`border-2 rounded-lg p-3 ${
+                          coach.matchScore >= 80
+                            ? "bg-green-50 border-green-200"
+                            : coach.matchScore >= 60
+                              ? "bg-yellow-50 border-yellow-200"
+                              : "bg-gray-50 border-gray-200"
+                        }`}
+                      >
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center gap-2">
+                            <Star className="w-4 h-4 text-yellow-500" />
+                            <span className="text-sm font-medium text-gray-900">
+                              Match Score
+                            </span>
+                          </div>
+                          <Badge
+                            className={`text-base font-bold px-3 py-1 ${
+                              coach.matchScore >= 80
+                                ? "bg-green-100 text-green-800 border-green-300"
+                                : coach.matchScore >= 60
+                                  ? "bg-yellow-100 text-yellow-800 border-yellow-300"
+                                  : "bg-gray-100 text-gray-800 border-gray-300"
+                            }`}
+                          >
+                            {Math.round(coach.matchScore * 100)}%
+                          </Badge>
+                        </div>
+                        {coach.matchReasons &&
+                          coach.matchReasons.length > 0 && (
+                            <div className="space-y-1">
+                              {coach.matchReasons.map((reason, index) => (
+                                <div
+                                  key={index}
+                                  className="text-xs text-blue-700 flex items-center gap-1"
+                                >
+                                  <CheckCircle className="w-3 h-3" />
+                                  {reason}
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        {coach.estimatedCost && (
+                          <div className="mt-2 pt-2 border-t border-blue-200">
+                            <span className="text-xs text-blue-700">
+                              Estimated program cost: $
+                              {coach.estimatedCost.toLocaleString()}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+
                       <div className="flex flex-wrap gap-2">
                         {coach.expertise.map((skill, index) => (
                           <Badge key={index} variant="outline">
@@ -743,10 +942,13 @@ export default function MentorshipRequestDetails() {
                       <div className="flex items-center justify-between pt-2 border-t">
                         <div className="text-sm text-gray-600">
                           Available for{" "}
-                          {coach.availability === "available"
-                            ? "immediate"
-                            : "limited"}{" "}
-                          coaching
+                          {coach.availability === "immediate"
+                            ? "immediate start"
+                            : coach.availability === "this_week"
+                              ? "start this week"
+                              : coach.availability === "next_week"
+                                ? "start next week"
+                                : coach.availability}{" "}
                         </div>
                         {coach.isSelected ? (
                           <div className="flex items-center gap-2">

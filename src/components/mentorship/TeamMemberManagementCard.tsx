@@ -36,7 +36,6 @@ import { invitationService } from "@/services/invitationService";
 import { offlineApi } from "@/services/offlineApiWrapper";
 import { useAuth } from "@/contexts/AuthContext";
 import { useOfflineSync } from "@/hooks/useOfflineSync";
-import { EmailServiceStatus } from "@/components/common/EmailServiceStatus";
 
 interface TeamMemberManagementCardProps {
   teamMembers: TeamMember[];
@@ -156,7 +155,7 @@ export function TeamMemberManagementCard({
         import.meta.env.DEV || import.meta.env.VITE_MOCK_EMAIL === "true";
 
       if (isMockEmail) {
-        toast.success(`✅ Team member added to program: ${newMemberEmail}`, {
+        toast.success(`��� Team member added to program: ${newMemberEmail}`, {
           description:
             "🔧 Development Mode: Email invitation simulated. In production, they would receive an email to join the program.",
           duration: 7000,
@@ -386,9 +385,6 @@ export function TeamMemberManagementCard({
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        {/* Email Service Status */}
-        <EmailServiceStatus />
-
         {/* Add New Team Member */}
         {!readOnly && (
           <div className="space-y-4 p-4 border rounded-lg bg-blue-50/50 border-blue-200">

@@ -25,8 +25,12 @@ import {
   TeamMember,
 } from "@/types";
 import { toast } from "sonner";
-import { api } from "@/services/api";
+import { apiEnhanced } from "@/services/apiEnhanced";
 import { emailService } from "@/services/email";
+import {
+  matchingService,
+  type MatchingRequest,
+} from "@/services/matchingService";
 import { useAuth } from "@/contexts/AuthContext";
 import { BackendStatus } from "@/components/ui/BackendStatus";
 
@@ -169,7 +173,7 @@ export default function CreateMentorshipRequest() {
       };
 
       // Submit to API
-      const request = await api.createMentorshipRequest(requestData);
+      const request = await apiEnhanced.createMentorshipRequest(requestData);
 
       // Send program details email to all team members
       try {
@@ -197,6 +201,45 @@ export default function CreateMentorshipRequest() {
       } catch (emailError) {
         // Don't fail the whole process if emails fail
         console.error("Failed to send program details emails:", emailError);
+      }
+
+      // Run coach matching using platform admin algorithm settings
+      try {
+        toast.info("Finding matching coaches using algorithm settings...");
+
+        const matchingRequest: MatchingRequest = {
+          id: request.id || `req_${Date.now()}`,
+          title: data.title,
+          description: data.description,
+          requiredSkills: data.expertise || [],
+          preferredExperience: data.level || "mid-level",
+          budget: data.budget || 150,
+          timeline: {
+            startDate: data.timeline.startDate,
+            endDate: data.timeline.endDate,
+          },
+          teamMembers: currentTeamMembers.map((member) => member.email),
+          goals: data.goals.map((g) => g.title),
+        };
+
+        const matchingResults =
+          await matchingService.findMatches(matchingRequest);
+
+        toast.success(
+          `Found ${matchingResults.matches.length} matching coaches! View them in the program details.`,
+        );
+
+        console.log("🎯 Coach matching completed:", {
+          requestId: matchingRequest.id,
+          totalMatches: matchingResults.matches.length,
+          topMatch: matchingResults.matches[0]?.name,
+          algorithmConfig: matchingResults.configUsed,
+        });
+      } catch (matchingError) {
+        console.error("Coach matching failed:", matchingError);
+        toast.warning(
+          "Request created successfully, but coach matching failed. You can find coaches manually.",
+        );
       }
 
       // Clear saved draft and program ID
@@ -248,7 +291,7 @@ export default function CreateMentorshipRequest() {
           status: "draft" as const,
         };
 
-        await api.createMentorshipRequest(draftData);
+        await apiEnhanced.createMentorshipRequest(draftData);
         toast.success("Draft saved to server successfully!");
       } catch (backendError) {
         console.warn("Backend save failed, draft saved locally:", backendError);
