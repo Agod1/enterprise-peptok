@@ -14,13 +14,21 @@ const DashboardRouter = () => {
     if (isAuthenticated && user) {
       // Redirect to appropriate dashboard based on user type
       switch (user.userType) {
-        case "admin":
-          navigate("/admin", { replace: true });
+        case "platform_admin":
+          navigate("/platform-admin", { replace: true });
+          break;
+        case "company_admin":
+          navigate("/dashboard", { replace: true });
           break;
         case "coach":
-          navigate("/coach/dashboard", { replace: true });
+          navigate("/coach-dashboard", { replace: true });
           break;
-        case "enterprise":
+        case "employee":
+          navigate("/employee-dashboard", { replace: true });
+          break;
+        case "team_member":
+          navigate("/team-member-dashboard", { replace: true });
+          break;
         default:
           navigate("/dashboard", { replace: true });
           break;
