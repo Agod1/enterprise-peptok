@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { FullApp } from "@/components/core/FullApp";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { UltraRobustWrapper } from "@/components/core/UltraRobustWrapper";
+import { ReactSafeLoader } from "@/components/core/ReactSafeLoader";
 // Alternative implementations available but not used:
 // import { ReactReadyWrapper } from "@/components/core/ReactReadyWrapper"; // Using UltraRobustWrapper instead
 // import { SafeAuthProvider } from "@/contexts/SafeAuthProvider";
@@ -49,13 +50,15 @@ const App: React.FC = () => {
   }
 
   return (
-    <UltraRobustWrapper>
-      <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <FullApp />
-        </AuthProvider>
-      </QueryClientProvider>
-    </UltraRobustWrapper>
+    <ReactSafeLoader>
+      <UltraRobustWrapper>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <FullApp />
+          </AuthProvider>
+        </QueryClientProvider>
+      </UltraRobustWrapper>
+    </ReactSafeLoader>
   );
 };
 
