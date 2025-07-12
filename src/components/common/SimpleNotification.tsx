@@ -106,13 +106,23 @@ class NotificationManager {
 
 export const notificationManager = new NotificationManager();
 
-// Hook to use notifications
+// Hook to use notifications with React safety checks
 export const useNotifications = () => {
-  const [notifications, setNotifications] = React.useState(
+  // Ensure React hooks are available
+  if (!React || !React.useState || !React.useEffect) {
+    console.warn("React hooks not available, using fallback");
+    return {
+      notifications: [],
+      show: notificationManager.show.bind(notificationManager),
+      remove: notificationManager.remove.bind(notificationManager),
+    };
+  }
+
+  const [notifications, setNotifications] = useState(
     notificationManager.getNotifications(),
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     const unsubscribe = notificationManager.subscribe(() => {
       setNotifications([...notificationManager.getNotifications()]);
     });
