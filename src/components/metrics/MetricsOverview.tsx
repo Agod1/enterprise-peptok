@@ -40,7 +40,7 @@ const MetricsOverview = ({ metrics = [], stats }: MetricsOverviewProps) => {
     {
       id: "retention",
       name: "Retention Rate",
-      description: "Employee retention rate with mentorship programs",
+      description: "Employee retention rate with coaching programs",
       targetValue: 95,
       currentValue: 89,
       unit: "%",
