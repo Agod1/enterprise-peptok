@@ -47,16 +47,16 @@ import { SubscriptionTier } from "@/types";
 const features = [
   {
     icon: Users,
-    title: "Mentor Network",
+    title: "Coach Network",
     description:
-      "Access to a curated network of retired industry mentors and leaders with proven track records.",
+      "Access to a curated network of retired industry coaches and leaders with proven track records.",
     color: "from-blue-500 to-blue-600",
   },
   {
     icon: MessageSquare,
     title: "Secure Communication",
     description:
-      "Built-in messaging and video calling platform for seamless mentor-mentee interactions.",
+      "Built-in messaging and video calling platform for seamless coach-client interactions.",
     color: "from-pink-500 to-pink-600",
   },
   {
@@ -70,7 +70,7 @@ const features = [
     icon: BookOpen,
     title: "Learning Resources",
     description:
-      "Access to curated learning materials and resources shared by expert mentors.",
+      "Access to curated learning materials and resources shared by expert coaches.",
     color: "from-teal-500 to-teal-600",
   },
   {
@@ -97,7 +97,7 @@ const testimonials = [
     avatar:
       "https://images.unsplash.com/photo-1494790108755-2616b9d3cc57?w=400&h=400&fit=crop&crop=face",
     quote:
-      "Peptok transformed our mentorship program. We saw a 40% increase in enterprise engagement and retention within 6 months.",
+      "Peptok transformed our coaching program. We saw a 40% increase in enterprise engagement and retention within 6 months.",
     rating: 5,
     impact: "+40% Engagement",
   },
@@ -108,7 +108,7 @@ const testimonials = [
     avatar:
       "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face",
     quote:
-      "The quality of mentors and the matching system exceeded our expectations. Our enterprises are developing skills faster than ever.",
+      "The quality of coaches and the matching system exceeded our expectations. Our enterprises are developing skills faster than ever.",
     rating: 5,
     impact: "+60% Skill Growth",
   },
@@ -132,9 +132,9 @@ const fallbackPricingPlans = [
     name: "Starter Plan",
     price: "CA$99",
     period: "per user/month",
-    description: "Designed for small teams launching their mentorship journey",
+    description: "Designed for small teams launching their coaching journey",
     features: [
-      "200 minutes of mentor time per month",
+      "200 minutes of coach time per month",
       "Minimum commitment: 2 users",
       "Monthly progress reports",
       "Email support",
@@ -150,7 +150,7 @@ const fallbackPricingPlans = [
     period: "per user/month",
     description: "Ideal for expanding programs and scaling impact",
     features: [
-      "1,200 minutes of mentor time per month",
+      "1,200 minutes of coach time per month",
       "Includes all Starter features",
       "Minimum commitment: 5 users",
       "Advanced metrics and analytics",
@@ -266,7 +266,7 @@ const Index = () => {
                     </h1>
                     <p className="text-xl md:text-2xl text-muted-foreground leading-relaxed max-w-2xl">
                       Peptok bridges the gap between your enterprises and
-                      seasoned professionals, creating meaningful mentorship
+                      seasoned professionals, creating meaningful coaching
                       connections that drive measurable business outcomes.
                     </p>
                   </div>
@@ -400,7 +400,7 @@ const Index = () => {
                       {/* Feature Icons */}
                       <div className="flex justify-center space-x-8 pt-4">
                         {[
-                          { icon: Users, label: "Mentor Network", delay: "0s" },
+                          { icon: Users, label: "Coach Network", delay: "0s" },
                           {
                             icon: Target,
                             label: "Goal Tracking",
@@ -459,13 +459,13 @@ const Index = () => {
                   Everything you need for
                   <span className="bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
                     {" "}
-                    successful mentorship
+                    successful coaching
                   </span>
                 </h2>
                 <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
                   Peptok provides all the tools and features necessary to build,
-                  manage, and measure effective mentorship programs at
-                  enterprise scale.
+                  manage, and measure effective coaching programs at enterprise
+                  scale.
                 </p>
               </div>
 
@@ -628,7 +628,7 @@ const Index = () => {
                 </h2>
                 <p className="text-xl text-muted-foreground leading-relaxed">
                   Join leading companies using Peptok to connect their
-                  enterprises with coach mentors and drive measurable business
+                  enterprises with expert coaches and drive measurable business
                   outcomes. Get started today.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-6 justify-center">
