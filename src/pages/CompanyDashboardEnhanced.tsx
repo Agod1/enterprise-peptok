@@ -31,7 +31,6 @@ import AnalyticsDashboard from "@/components/analytics/AnalyticsDashboard";
 import { MentorshipRequest } from "@/types";
 import { toast } from "sonner";
 import { crossBrowserSync, SYNC_CONFIGS } from "@/services/crossBrowserSync";
-import { cacheInvalidation } from "@/services/cacheInvalidation";
 
 interface CompanyMetrics {
   totalEmployees: number;
