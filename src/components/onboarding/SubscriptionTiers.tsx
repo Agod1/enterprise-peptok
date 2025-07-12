@@ -130,7 +130,7 @@ export function SubscriptionTiers({
         <CardHeader className="text-center">
           <CardTitle className="text-2xl">Choose Your Plan</CardTitle>
           <CardDescription>
-            Select the plan that best fits your organization's mentorship needs
+            Select the plan that best fits your organization's coaching needs
           </CardDescription>
         </CardHeader>
         <CardContent>
