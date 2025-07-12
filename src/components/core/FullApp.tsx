@@ -63,8 +63,6 @@ import NotFound from "@/pages/NotFound";
 import PlatformAdminDashboard from "@/pages/PlatformAdminDashboard";
 import EmployeeDashboard from "@/pages/EmployeeDashboard";
 
-import { SafeNotificationProvider } from "@/components/common/SafeNotification";
-
 const NotificationDisplay: React.FC = () => {
   try {
     // Check if React hooks are available
