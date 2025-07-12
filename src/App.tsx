@@ -48,10 +48,12 @@ const App: React.FC = () => {
   }
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>App Loading Test</h1>
-      <p>If you see this, the basic app structure is working.</p>
-    </div>
+    <QueryClientProvider client={queryClient}>
+      <div style={{ padding: "20px" }}>
+        <h1>App Loading Test</h1>
+        <p>QueryClientProvider is working.</p>
+      </div>
+    </QueryClientProvider>
   );
 };
 
