@@ -438,7 +438,7 @@ export default function PlatformAdminDashboard() {
       );
 
       // Invalidate company-related cache for all users
-      cacheInvalidation.invalidatePlatformData(user?.name || "Platform Admin");
+      // Company data will be refreshed on next load
 
       setIsCreateCompanyOpen(false);
       setNewCompany({
