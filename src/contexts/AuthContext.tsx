@@ -156,6 +156,21 @@ export function useAuth() {
     };
   }
 
+  if (!AuthContext) {
+    console.warn("AuthContext not available");
+    return {
+      user: null,
+      isAuthenticated: false,
+      isLoading: false,
+      login: async () => ({
+        success: false,
+        message: "Auth context not available",
+      }),
+      logout: async () => {},
+      updateUser: () => {},
+    };
+  }
+
   const context = useContext(AuthContext);
   if (context === undefined) {
     throw new Error("useAuth must be used within an AuthProvider");
