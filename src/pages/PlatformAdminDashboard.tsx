@@ -395,8 +395,7 @@ export default function PlatformAdminDashboard() {
         { id: user?.id || "admin", name: user?.name || "Platform Admin" },
       );
 
-      // Invalidate user-related cache for all users
-      cacheInvalidation.invalidatePlatformData(user?.name || "Platform Admin");
+      // User data will be refreshed on next load
 
       setIsCreateUserOpen(false);
       setNewUser({
