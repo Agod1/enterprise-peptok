@@ -183,15 +183,7 @@ export const FullApp: React.FC = () => {
           <Route path="/onboarding/business" element={<BusinessOnboarding />} />
           <Route path="/onboarding/coach" element={<CoachOnboarding />} />
 
-          {/* Mentorship/Coaching */}
-          <Route
-            path="/mentorship/new"
-            element={
-              <ProtectedRoute requiredUserType="company_admin">
-                <CreateMentorshipRequest />
-              </ProtectedRoute>
-            }
-          />
+          {/* Coaching */}
           <Route
             path="/coaching/new"
             element={
@@ -201,15 +193,24 @@ export const FullApp: React.FC = () => {
             }
           />
           <Route
-            path="/mentorship/requests/:id"
+            path="/coaching/requests/:id"
             element={
               <ProtectedRoute>
-                <MentorshipRequestDetails />
+                <CoachingRequestDetails />
+              </ProtectedRoute>
+            }
+          />
+          {/* Legacy mentorship routes - redirect to coaching */}
+          <Route
+            path="/mentorship/new"
+            element={
+              <ProtectedRoute requiredUserType="company_admin">
+                <CreateCoachingRequest />
               </ProtectedRoute>
             }
           />
           <Route
-            path="/coaching/requests/:id"
+            path="/mentorship/requests/:id"
             element={
               <ProtectedRoute>
                 <CoachingRequestDetails />
