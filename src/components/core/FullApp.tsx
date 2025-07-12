@@ -62,20 +62,25 @@ import PlatformAdminDashboard from "@/pages/PlatformAdminDashboard";
 import EmployeeDashboard from "@/pages/EmployeeDashboard";
 
 const NotificationDisplay: React.FC = () => {
-  const { notifications, remove } = useNotifications();
+  try {
+    const { notifications, remove } = useNotifications();
 
-  return (
-    <>
-      {notifications.map((notification) => (
-        <SimpleNotification
-          key={notification.id}
-          message={notification.message}
-          type={notification.type}
-          onClose={() => remove(notification.id)}
-        />
-      ))}
-    </>
-  );
+    return (
+      <>
+        {notifications.map((notification) => (
+          <SimpleNotification
+            key={notification.id}
+            message={notification.message}
+            type={notification.type}
+            onClose={() => remove(notification.id)}
+          />
+        ))}
+      </>
+    );
+  } catch (error) {
+    console.warn("Error in NotificationDisplay:", error);
+    return null;
+  }
 };
 
 export const FullApp: React.FC = () => {
