@@ -48,11 +48,10 @@ const App: React.FC = () => {
   }
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <FullApp />
-      </AuthProvider>
-    </QueryClientProvider>
+    <div style={{ padding: "20px" }}>
+      <h1>App Loading Test</h1>
+      <p>If you see this, the basic app structure is working.</p>
+    </div>
   );
 };
 
