@@ -22,14 +22,6 @@ if (import.meta.env.DEV) {
 const queryClient = new QueryClient();
 
 const App: React.FC = () => {
-  // Test React hooks availability
-  const [testState, setTestState] = useState("React hooks working");
-
-  useEffect(() => {
-    console.log("✅ React hooks are working in App component");
-    console.log("✅ useState result:", testState);
-  }, [testState]);
-
   // Set up a mock admin user for development - do this immediately without hooks
   if (import.meta.env.DEV && typeof window !== "undefined") {
     try {
@@ -57,11 +49,11 @@ const App: React.FC = () => {
   }
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>React Test</h1>
-      <p>If you see this, React is working: {testState}</p>
-      <button onClick={() => setTestState("Updated!")}>Test useState</button>
-    </div>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <FullApp />
+      </AuthProvider>
+    </QueryClientProvider>
   );
 };
 
