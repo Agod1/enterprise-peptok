@@ -32,7 +32,7 @@ import {
   type DemoUser,
 } from "../data/demoDatabase";
 import { crossBrowserSync, SYNC_CONFIGS } from "./crossBrowserSync";
-import { cacheInvalidation } from "./cacheInvalidation";
+// Removed: cacheInvalidation service (deleted)
 import { securityService } from "./securityService";
 import { analyticsService } from "./analyticsService";
 
@@ -827,8 +827,7 @@ class EnhancedApiService {
         request.title || "Untitled Request",
       );
 
-      // Invalidate company data cache
-      cacheInvalidation.invalidateCompanyData(user.companyId!, user.name);
+      // Note: Cache invalidation removed for simplification
 
       return response.data;
     } catch (error) {
@@ -1329,8 +1328,7 @@ class EnhancedApiService {
         name: user.name,
       });
 
-      // Invalidate pricing-related cache for all users
-      cacheInvalidation.invalidatePricingConfig(user.name);
+      // Note: Cache invalidation removed for simplification
 
       analytics.trackAction({
         action: "pricing_config_updated",
