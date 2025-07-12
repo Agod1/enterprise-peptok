@@ -380,10 +380,10 @@ export function MentorshipRequestForm({
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Target className="w-5 h-5" />
-            Mentorship Request Details
+            Coaching Request Details
           </CardTitle>
           <CardDescription>
-            Define the core objectives and scope of your mentorship program
+            Define the core objectives and scope of your coaching program
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
