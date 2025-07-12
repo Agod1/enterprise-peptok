@@ -6,7 +6,7 @@ import Header from "../../components/layout/Header";
 import { CoachProfileCard } from "../../components/coach/CoachProfileCard";
 import { CoachMatchingFilters } from "../../components/coach/CoachMatchingFilters";
 import { Coach, CoachMatch, MatchingFilters } from "../../types/coach";
-import { api } from "../../services/api";
+import { apiEnhanced as api } from "../../services/apiEnhanced";
 
 export const CoachMatching: React.FC = () => {
   const navigate = useNavigate();
