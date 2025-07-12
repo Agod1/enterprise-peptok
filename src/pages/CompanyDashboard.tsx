@@ -350,7 +350,7 @@ const CompanyDashboard = () => {
                   </SelectContent>
                 </Select>
                 <Button
-                  onClick={() => navigate("/mentorship/new")}
+                  onClick={() => navigate("/coaching/new")}
                   className="bg-primary hover:bg-primary/90"
                 >
                   <Plus className="h-4 w-4 mr-2" />
