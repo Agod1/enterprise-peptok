@@ -26,9 +26,18 @@ interface AuthProviderProps {
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  // Safety check for React hooks availability
-  if (!React || !useState || !useEffect || !createContext) {
-    console.warn("React hooks not available in AuthProvider, using fallback");
+  // Comprehensive React hooks availability check
+  const isReactAvailable =
+    typeof React !== "undefined" &&
+    React &&
+    typeof React.useState === "function" &&
+    typeof React.useEffect === "function" &&
+    typeof React.createContext === "function";
+
+  if (!isReactAvailable) {
+    console.warn(
+      "🚨 React hooks not available in AuthProvider, using fallback",
+    );
     return (
       <div
         style={{
@@ -63,8 +72,41 @@ export function AuthProvider({ children }: AuthProviderProps) {
     );
   }
 
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  // Additional safety check before calling hooks
+  let user: User | null = null;
+  let setUser: (user: User | null) => void = () => {};
+  let isLoading = true;
+  let setIsLoading: (loading: boolean) => void = () => {};
+
+  try {
+    const userState = React.useState<User | null>(null);
+    user = userState[0];
+    setUser = userState[1];
+
+    const loadingState = React.useState(true);
+    isLoading = loadingState[0];
+    setIsLoading = loadingState[1];
+  } catch (error) {
+    console.error(
+      "🚨 Failed to initialize React hooks in AuthProvider:",
+      error,
+    );
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontFamily: "system-ui",
+        }}
+      >
+        <div style={{ textAlign: "center" }}>
+          <p>React hooks initialization failed. Please refresh the page.</p>
+        </div>
+      </div>
+    );
+  }
 
   // Initialize auth state
   useEffect(() => {
