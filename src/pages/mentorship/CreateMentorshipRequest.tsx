@@ -71,6 +71,9 @@ export default function CreateMentorshipRequest() {
   const [programId, setProgramId] = useState<string>("");
   const [isDraftSaving, setIsDraftSaving] = useState(false);
   const [lastSavedDraft, setLastSavedDraft] = useState<string>("");
+  const [existingRequests, setExistingRequests] = useState<MentorshipRequest[]>(
+    [],
+  );
   const draftSaveTimeoutRef = useRef<NodeJS.Timeout>();
   const isSubmittingRef = useRef(false);
 
@@ -142,11 +145,70 @@ export default function CreateMentorshipRequest() {
     loadExistingTeamMembers();
   }, [programId, user?.companyId]); // Don't include teamMembers in deps to avoid infinite loop
 
+  // Load existing requests to check for duplicates
+  useEffect(() => {
+    const loadExistingRequests = async () => {
+      if (!user?.companyId) return;
+
+      try {
+        const requests = await apiEnhanced.getMentorshipRequests({
+          companyId: user.companyId,
+        });
+        setExistingRequests(requests);
+        console.log(
+          `📊 Loaded ${requests.length} existing requests for duplicate checking`,
+        );
+      } catch (error) {
+        console.error("Failed to load existing requests:", error);
+        // Check localStorage for existing requests
+        try {
+          const localRequests = JSON.parse(
+            localStorage.getItem("mentorship_requests") || "[]",
+          );
+          setExistingRequests(
+            localRequests.filter(
+              (req: any) => req.companyId === user.companyId,
+            ),
+          );
+        } catch (localError) {
+          console.error("Failed to load local requests:", localError);
+        }
+      }
+    };
+
+    loadExistingRequests();
+  }, [user?.companyId]);
+
+  // Check for duplicate requests
+  const checkForDuplicates = (title: string): boolean => {
+    const normalizedTitle = title.trim().toLowerCase();
+    const duplicateFound = existingRequests.some(
+      (req) => req.title?.trim().toLowerCase() === normalizedTitle,
+    );
+
+    if (duplicateFound) {
+      const exactMatch = existingRequests.find(
+        (req) => req.title?.trim().toLowerCase() === normalizedTitle,
+      );
+      console.log("🛑 Duplicate request found:", exactMatch);
+      return true;
+    }
+    return false;
+  };
+
   const handleSubmitRequest = async (data: MentorshipRequestFormData) => {
     // Prevent double submission
     if (isSubmittingRef.current) {
       console.log(
         "🛑 Submission already in progress, ignoring duplicate request",
+      );
+      return;
+    }
+
+    // Check for duplicate requests
+    if (checkForDuplicates(data.title)) {
+      toast.error(
+        `A program with the title "${data.title}" already exists. Please choose a different title.`,
       );
       return;
     }
@@ -535,15 +597,6 @@ export default function CreateMentorshipRequest() {
                   <Button
                     onClick={() => {
                       if (formData) {
-                        // Check for potential duplicate based on title
-                        const requestTitle = formData.title?.trim();
-                        if (requestTitle === "Sales Growth 3X Plan") {
-                          toast.error(
-                            "A program with this title already exists. Please choose a different title.",
-                          );
-                          return;
-                        }
-
                         handleSubmitRequest({
                           ...formData,
                           teamMembers:
