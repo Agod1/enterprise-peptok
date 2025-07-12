@@ -7,10 +7,7 @@ import { RouterWrapper } from "@/components/core/RouterWrapper";
 import { SafeAuthWrapper } from "@/components/core/SafeAuthWrapper";
 import { ReactSafetyWrapper } from "@/components/core/ReactSafetyWrapper";
 import { SafeNotificationProvider } from "@/components/common/SafeNotification";
-import {
-  ReactErrorBoundary,
-  HookErrorFallback,
-} from "@/components/core/ReactErrorBoundary";
+import { ReactErrorBoundary, HookErrorFallback } from "@/components/core/ReactErrorBoundary";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import DashboardRouter from "@/components/auth/DashboardRouter";
 // import OfflineIndicator from "@/components/common/OfflineIndicator"; // Temporarily disabled due to React hook error
@@ -71,9 +68,7 @@ const NotificationDisplay: React.FC = () => {
   try {
     // Check if React hooks are available
     if (!React.useState || !React.useEffect) {
-      console.warn(
-        "React hooks not available, using safe notification provider",
-      );
+      console.warn("React hooks not available, using safe notification provider");
       return <SafeNotificationProvider>{null}</SafeNotificationProvider>;
     }
 
@@ -101,9 +96,10 @@ import { ReactSafetyWrapper } from "./ReactSafetyWrapper";
 
 export const FullApp: React.FC = () => {
   return (
-    <ReactSafetyWrapper>
-      <NotificationDisplay />
-      <RouterWrapper>
+    <ReactErrorBoundary fallback={HookErrorFallback}>
+      <ReactSafetyWrapper>
+        <NotificationDisplay />
+        <RouterWrapper>
         <SafeAuthWrapper>
           <Routes>
             <Route path="/" element={<Index />} />
