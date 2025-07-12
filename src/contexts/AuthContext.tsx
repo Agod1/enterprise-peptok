@@ -139,6 +139,19 @@ export function AuthProvider({ children }: AuthProviderProps) {
 }
 
 export function useAuth() {
+  // Safety check for React hooks availability
+  if (!React || !useContext) {
+    console.warn("React useContext not available, returning mock auth");
+    return {
+      user: null,
+      isAuthenticated: false,
+      isLoading: false,
+      login: async () => ({ success: false, message: "Auth not available" }),
+      logout: async () => {},
+      updateUser: () => {},
+    };
+  }
+
   const context = useContext(AuthContext);
   if (context === undefined) {
     throw new Error("useAuth must be used within an AuthProvider");
