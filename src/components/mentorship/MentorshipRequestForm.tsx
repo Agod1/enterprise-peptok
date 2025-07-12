@@ -675,7 +675,7 @@ export function MentorshipRequestForm({
         <CardHeader>
           <CardTitle>Preferred Expertise Areas</CardTitle>
           <CardDescription>
-            Select the areas of expertise you're looking for in a mentor
+            Select the areas of expertise you're looking for in a coach
           </CardDescription>
         </CardHeader>
         <CardContent>
