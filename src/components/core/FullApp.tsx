@@ -37,8 +37,8 @@ import CoachOnboarding from "@/pages/onboarding/CoachOnboarding";
 import TeamMemberDashboard from "@/pages/TeamMemberDashboard";
 import VideoConference from "@/components/sessions/VideoConference";
 import Messages from "@/pages/Messages";
-import CreateCoachingRequest from "@/pages/coaching/CreateCoachingRequest";
-import CoachingRequestDetails from "@/pages/coaching/CoachingRequestDetails";
+import CreateMentorshipRequest from "@/pages/mentorship/CreateMentorshipRequest";
+import MentorshipRequestDetails from "@/pages/mentorship/MentorshipRequestDetails";
 import { CoachMatching } from "@/pages/coach/CoachMatching";
 import { CoachDashboard } from "@/pages/coach/CoachDashboard";
 import CoachSettings from "@/pages/coach/CoachSettings";
@@ -175,7 +175,7 @@ export const FullApp: React.FC = () => {
                 <ProtectedRoute
                   allowedRoles={["platform_admin", "company_admin"]}
                 >
-                  <CreateCoachingRequest />
+                  <CreateMentorshipRequest />
                 </ProtectedRoute>
               }
             />
@@ -183,7 +183,7 @@ export const FullApp: React.FC = () => {
               path="/coaching/requests/:id"
               element={
                 <ProtectedRoute>
-                  <CoachingRequestDetails />
+                  <MentorshipRequestDetails />
                 </ProtectedRoute>
               }
             />
