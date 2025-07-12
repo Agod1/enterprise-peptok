@@ -33,7 +33,7 @@ import { TeamMember } from "@/types";
 import { toast } from "sonner";
 import { emailService } from "@/services/email";
 import { invitationService } from "@/services/invitationService";
-import { offlineApi } from "@/services/offlineApiWrapper";
+import { apiEnhanced as offlineApi } from "@/services/apiEnhanced";
 import { useAuth } from "@/contexts/AuthContext";
 import { useOfflineSync } from "@/hooks/useOfflineSync";
 
