@@ -13,40 +13,20 @@ import NotFound from "@/pages/NotFound";
 // Lazy load non-critical pages for better performance
 const Pricing = React.lazy(() => import("@/pages/Pricing"));
 const CoachDirectory = React.lazy(() => import("@/pages/CoachDirectory"));
-const EnterpriseDashboard = React.lazy(
-  () => import("@/pages/EnterpriseDashboard"),
-);
+const EnterpriseDashboard = React.lazy(() => import("@/pages/EnterpriseDashboard"));
 const CompanyDashboard = React.lazy(() => import("@/pages/CompanyDashboard"));
-const CompanyDashboardEnhanced = React.lazy(
-  () => import("@/pages/CompanyDashboardEnhanced"),
-);
+const CompanyDashboardEnhanced = React.lazy(() => import("@/pages/CompanyDashboardEnhanced"));
 const CoachProfile = React.lazy(() => import("@/pages/CoachProfile"));
 const ForgotPassword = React.lazy(() => import("@/pages/ForgotPassword"));
-const BusinessOnboarding = React.lazy(
-  () => import("@/pages/onboarding/BusinessOnboarding"),
-);
-const CoachOnboarding = React.lazy(
-  () => import("@/pages/onboarding/CoachOnboarding"),
-);
-const TeamMemberDashboard = React.lazy(
-  () => import("@/pages/TeamMemberDashboard"),
-);
-const VideoConference = React.lazy(
-  () => import("@/components/sessions/VideoConference"),
-);
+const BusinessOnboarding = React.lazy(() => import("@/pages/onboarding/BusinessOnboarding"));
+const CoachOnboarding = React.lazy(() => import("@/pages/onboarding/CoachOnboarding"));
+const TeamMemberDashboard = React.lazy(() => import("@/pages/TeamMemberDashboard"));
+const VideoConference = React.lazy(() => import("@/components/sessions/VideoConference"));
 const Messages = React.lazy(() => import("@/pages/Messages"));
-const CreateMentorshipRequest = React.lazy(
-  () => import("@/pages/mentorship/CreateMentorshipRequest"),
-);
-const CreateCoachingRequest = React.lazy(
-  () => import("@/pages/coaching/CreateCoachingRequest"),
-);
-const MentorshipRequestDetails = React.lazy(
-  () => import("@/pages/mentorship/MentorshipRequestDetails"),
-);
-const CoachingRequestDetails = React.lazy(
-  () => import("@/pages/coaching/CoachingRequestDetails"),
-);
+const CreateMentorshipRequest = React.lazy(() => import("@/pages/mentorship/CreateMentorshipRequest"));
+const CreateCoachingRequest = React.lazy(() => import("@/pages/coaching/CreateCoachingRequest"));
+const MentorshipRequestDetails = React.lazy(() => import("@/pages/mentorship/MentorshipRequestDetails"));
+const CoachingRequestDetails = React.lazy(() => import("@/pages/coaching/CoachingRequestDetails"));
 const CoachMatching = React.lazy(() => import("@/pages/coach/CoachMatching"));
 const CoachDashboard = React.lazy(() => import("@/pages/coach/CoachDashboard"));
 const CoachSettings = React.lazy(() => import("@/pages/coach/CoachSettings"));
@@ -57,23 +37,13 @@ const ExpertProfile = React.lazy(() => import("@/pages/ExpertProfile"));
 const EmployeeDashboard = React.lazy(() => import("@/pages/EmployeeDashboard"));
 const Privacy = React.lazy(() => import("@/pages/Privacy"));
 const Terms = React.lazy(() => import("@/pages/Terms"));
-const PlatformAdminDashboard = React.lazy(
-  () => import("@/pages/PlatformAdminDashboard"),
-);
-const PendingInvitations = React.lazy(
-  () => import("@/pages/PendingInvitations"),
-);
+const PlatformAdminDashboard = React.lazy(() => import("@/pages/PlatformAdminDashboard"));
+const PendingInvitations = React.lazy(() => import("@/pages/PendingInvitations"));
 const PricingConfig = React.lazy(() => import("@/pages/admin/PricingConfig"));
-const AnalyticsSettings = React.lazy(
-  () => import("@/pages/admin/AnalyticsSettings"),
-);
-const MatchingSettings = React.lazy(
-  () => import("@/pages/admin/MatchingSettings"),
-);
+const AnalyticsSettings = React.lazy(() => import("@/pages/admin/AnalyticsSettings"));
+const MatchingSettings = React.lazy(() => import("@/pages/admin/MatchingSettings"));
 const EmailSettings = React.lazy(() => import("@/pages/admin/EmailSettings"));
-const PlatformSettings = React.lazy(
-  () => import("@/pages/admin/PlatformSettings"),
-);
+const PlatformSettings = React.lazy(() => import("@/pages/admin/PlatformSettings"));
 
 // Loading component for lazy-loaded pages
 const PageLoader = () => (
@@ -88,7 +58,8 @@ const PageLoader = () => (
 export const FullApp: React.FC = () => {
   return (
     <BrowserRouter>
-      <Routes>
+      <Suspense fallback={<PageLoader />}>
+        <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/pricing" element={<Pricing />} />
         <Route path="/login" element={<Login />} />
