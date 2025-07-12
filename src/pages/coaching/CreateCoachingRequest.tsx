@@ -11,16 +11,16 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
-  CoachingRequestForm,
-  CoachingRequestFormData,
-} from "@/components/coaching/CoachingRequestForm";
-import { TeamMemberManagementCard } from "@/components/coaching/TeamMemberManagementCard";
+  MentorshipRequestForm as CoachingRequestForm,
+  MentorshipRequestFormData as CoachingRequestFormData,
+} from "@/components/mentorship/MentorshipRequestForm";
+import { TeamMemberManagementCard } from "@/components/mentorship/TeamMemberManagementCard";
 
 import Header from "@/components/layout/Header";
 import { ArrowLeft, CheckCircle, Clock, AlertTriangle } from "lucide-react";
 import {
   SubscriptionTier,
-  CoachingRequest,
+  MentorshipRequest as CoachingRequest,
   SessionPricingTier,
   TeamMember,
 } from "@/types";
@@ -174,7 +174,7 @@ export default function CreateCoachingRequest() {
       };
 
       // Submit to API
-      const request = await apiEnhanced.createCoachingRequest(requestData);
+      const request = await apiEnhanced.createMentorshipRequest(requestData);
 
       // Send program details email to all team members
       try {
@@ -292,7 +292,7 @@ export default function CreateCoachingRequest() {
           status: "draft" as const,
         };
 
-        await apiEnhanced.createCoachingRequest(draftData);
+        await apiEnhanced.createMentorshipRequest(draftData);
         toast.success("Draft saved to server successfully!");
       } catch (backendError) {
         console.warn("Backend save failed, draft saved locally:", backendError);
