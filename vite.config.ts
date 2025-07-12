@@ -20,6 +20,9 @@ export default defineConfig(({ mode }) => ({
     // Exclude JavaScript files to enforce TypeScript-only
     exclude: /\.(js|jsx)$/,
   },
+  optimizeDeps: {
+    include: ["react", "react-dom", "react/jsx-runtime"],
+  },
   build: {
     // Strict TypeScript checking during build
     rollupOptions: {
