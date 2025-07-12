@@ -42,7 +42,7 @@ const LandingHero = () => {
                   500+
                 </div>
                 <div className="text-sm text-muted-foreground">
-                  Expert Mentors
+                  Expert Coaches
                 </div>
               </div>
               <div className="text-center">
@@ -106,7 +106,7 @@ const LandingHero = () => {
                       <Users className="h-6 w-6 text-primary" />
                     </div>
                     <span className="text-xs text-muted-foreground">
-                      Mentor Network
+                      Coach Network
                     </span>
                   </div>
                   <div className="flex flex-col items-center space-y-2">
