@@ -147,7 +147,7 @@ const CompanyDashboard = () => {
       id: "3",
       type: "team_member_invited",
       user: "Maria Garcia",
-      message: "Invited 5 team members to mentorship program",
+      message: "Invited 5 team members to coaching program",
       timestamp: "1 day ago",
       status: "success",
       impact: "medium",
@@ -333,7 +333,7 @@ const CompanyDashboard = () => {
                   Company Dashboard
                 </h1>
                 <p className="text-xl text-muted-foreground">
-                  Monitor and optimize your organization's mentorship program
+                  Monitor and optimize your organization's coaching program
                   performance
                 </p>
               </div>
