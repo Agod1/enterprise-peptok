@@ -27,11 +27,11 @@ const App: React.FC = () => {
       const existingUser = localStorage.getItem("peptok_user");
       if (!existingUser) {
         const mockUser = {
-          id: "admin-1",
-          name: "Platform Admin",
-          email: "admin@peptok.com",
-          userType: "platform_admin" as const,
-          companyId: "peptok-platform",
+          id: "company-admin-1",
+          name: "Company Admin",
+          email: "admin@democompany.com",
+          userType: "company_admin" as const,
+          companyId: "demo-company-1",
           status: "active" as const,
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
