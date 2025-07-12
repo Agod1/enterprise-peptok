@@ -14,7 +14,7 @@ import {
   RefreshCw,
 } from "lucide-react";
 import { Environment } from "@/utils/environment";
-import { api } from "@/services/apiEnhanced";
+import { apiEnhanced as api } from "@/services/apiEnhanced";
 
 interface DiagnosticResult {
   status: "success" | "warning" | "error";
