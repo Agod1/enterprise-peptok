@@ -1,47 +1,89 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import DashboardRouter from "@/components/auth/DashboardRouter";
 import { QuickNav } from "@/components/common/QuickNav";
 
-// Import all page components
+// Critical pages - load immediately
 import Index from "@/pages/Index";
-import Pricing from "@/pages/Pricing";
-import CoachDirectory from "@/pages/CoachDirectory";
-import EnterpriseDashboard from "@/pages/EnterpriseDashboard";
-import CompanyDashboard from "@/pages/CompanyDashboard";
-import CompanyDashboardEnhanced from "@/pages/CompanyDashboardEnhanced";
-import CoachProfile from "@/pages/CoachProfile";
 import Login from "@/pages/Login";
 import Signup from "@/pages/Signup";
-import ForgotPassword from "@/pages/ForgotPassword";
-import BusinessOnboarding from "@/pages/onboarding/BusinessOnboarding";
-import CoachOnboarding from "@/pages/onboarding/CoachOnboarding";
-import TeamMemberDashboard from "@/pages/TeamMemberDashboard";
-import VideoConference from "@/components/sessions/VideoConference";
-import Messages from "@/pages/Messages";
-import CreateMentorshipRequest from "@/pages/mentorship/CreateMentorshipRequest";
-import CreateCoachingRequest from "@/pages/coaching/CreateCoachingRequest";
-import MentorshipRequestDetails from "@/pages/mentorship/MentorshipRequestDetails";
-import CoachingRequestDetails from "@/pages/coaching/CoachingRequestDetails";
-import { CoachMatching } from "@/pages/coach/CoachMatching";
-import { CoachDashboard } from "@/pages/coach/CoachDashboard";
-import { CoachSettings } from "@/pages/coach/CoachSettings";
-import Connections from "@/pages/Connections";
-import ConnectionDetails from "@/pages/ConnectionDetails";
-import ExpertDirectory from "@/pages/ExpertDirectory";
-import ExpertProfile from "@/pages/ExpertProfile";
-import EmployeeDashboard from "@/pages/EmployeeDashboard";
 import NotFound from "@/pages/NotFound";
-import Privacy from "@/pages/Privacy";
-import Terms from "@/pages/Terms";
-import PlatformAdminDashboard from "@/pages/PlatformAdminDashboard";
-import PendingInvitations from "@/pages/PendingInvitations";
-import PricingConfig from "@/pages/admin/PricingConfig";
-import AnalyticsSettings from "@/pages/admin/AnalyticsSettings";
-import MatchingSettings from "@/pages/admin/MatchingSettings";
-import EmailSettings from "@/pages/admin/EmailSettings";
-import PlatformSettings from "@/pages/admin/PlatformSettings";
+
+// Lazy load non-critical pages for better performance
+const Pricing = React.lazy(() => import("@/pages/Pricing"));
+const CoachDirectory = React.lazy(() => import("@/pages/CoachDirectory"));
+const EnterpriseDashboard = React.lazy(
+  () => import("@/pages/EnterpriseDashboard"),
+);
+const CompanyDashboard = React.lazy(() => import("@/pages/CompanyDashboard"));
+const CompanyDashboardEnhanced = React.lazy(
+  () => import("@/pages/CompanyDashboardEnhanced"),
+);
+const CoachProfile = React.lazy(() => import("@/pages/CoachProfile"));
+const ForgotPassword = React.lazy(() => import("@/pages/ForgotPassword"));
+const BusinessOnboarding = React.lazy(
+  () => import("@/pages/onboarding/BusinessOnboarding"),
+);
+const CoachOnboarding = React.lazy(
+  () => import("@/pages/onboarding/CoachOnboarding"),
+);
+const TeamMemberDashboard = React.lazy(
+  () => import("@/pages/TeamMemberDashboard"),
+);
+const VideoConference = React.lazy(
+  () => import("@/components/sessions/VideoConference"),
+);
+const Messages = React.lazy(() => import("@/pages/Messages"));
+const CreateMentorshipRequest = React.lazy(
+  () => import("@/pages/mentorship/CreateMentorshipRequest"),
+);
+const CreateCoachingRequest = React.lazy(
+  () => import("@/pages/coaching/CreateCoachingRequest"),
+);
+const MentorshipRequestDetails = React.lazy(
+  () => import("@/pages/mentorship/MentorshipRequestDetails"),
+);
+const CoachingRequestDetails = React.lazy(
+  () => import("@/pages/coaching/CoachingRequestDetails"),
+);
+const CoachMatching = React.lazy(() => import("@/pages/coach/CoachMatching"));
+const CoachDashboard = React.lazy(() => import("@/pages/coach/CoachDashboard"));
+const CoachSettings = React.lazy(() => import("@/pages/coach/CoachSettings"));
+const Connections = React.lazy(() => import("@/pages/Connections"));
+const ConnectionDetails = React.lazy(() => import("@/pages/ConnectionDetails"));
+const ExpertDirectory = React.lazy(() => import("@/pages/ExpertDirectory"));
+const ExpertProfile = React.lazy(() => import("@/pages/ExpertProfile"));
+const EmployeeDashboard = React.lazy(() => import("@/pages/EmployeeDashboard"));
+const Privacy = React.lazy(() => import("@/pages/Privacy"));
+const Terms = React.lazy(() => import("@/pages/Terms"));
+const PlatformAdminDashboard = React.lazy(
+  () => import("@/pages/PlatformAdminDashboard"),
+);
+const PendingInvitations = React.lazy(
+  () => import("@/pages/PendingInvitations"),
+);
+const PricingConfig = React.lazy(() => import("@/pages/admin/PricingConfig"));
+const AnalyticsSettings = React.lazy(
+  () => import("@/pages/admin/AnalyticsSettings"),
+);
+const MatchingSettings = React.lazy(
+  () => import("@/pages/admin/MatchingSettings"),
+);
+const EmailSettings = React.lazy(() => import("@/pages/admin/EmailSettings"));
+const PlatformSettings = React.lazy(
+  () => import("@/pages/admin/PlatformSettings"),
+);
+
+// Loading component for lazy-loaded pages
+const PageLoader = () => (
+  <div className="min-h-screen flex items-center justify-center">
+    <div className="text-center">
+      <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+      <p className="text-gray-600">Loading page...</p>
+    </div>
+  </div>
+);
 
 export const FullApp: React.FC = () => {
   return (
