@@ -228,7 +228,7 @@ export default function CompanyDashboardEnhanced() {
       component: "company_dashboard_enhanced",
       metadata: { companyId: user?.companyId },
     });
-    navigate("/mentorship/new");
+    navigate("/coaching/new");
   };
 
   const viewAllRequests = () => {

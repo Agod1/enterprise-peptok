@@ -223,7 +223,7 @@ const EnterpriseDashboard = () => {
                 journey
               </p>
             </div>
-            <Button onClick={() => navigate("/mentorship/new")} size="lg">
+            <Button onClick={() => navigate("/coaching/new")} size="lg">
               <Plus className="w-5 h-5 mr-2" />
               Create New Program
             </Button>

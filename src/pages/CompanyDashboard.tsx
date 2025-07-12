@@ -699,7 +699,7 @@ const CompanyDashboard = () => {
                         your organization
                       </CardDescription>
                     </div>
-                    <Button onClick={() => navigate("/mentorship/new")}>
+                    <Button onClick={() => navigate("/coaching/new")}>
                       <Plus className="w-4 h-4 mr-2" />
                       Create New Program
                     </Button>
