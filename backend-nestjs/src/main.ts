@@ -5,7 +5,7 @@ import { ConfigService } from "@nestjs/config";
 import helmet from "helmet";
 import compression from "compression";
 import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
-import { AppModule } from "./app.module";
+import { AppModule } from "./app.module.simple";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -55,7 +55,7 @@ async function bootstrap() {
   const port = configService.get("PORT", 3001);
   await app.listen(port);
 
-  console.log(`🚀 Application is running on: http://localhost:${port}`);
+  console.log(`�� Application is running on: http://localhost:${port}`);
   console.log(
     `📚 Swagger docs available at: http://localhost:${port}/api/docs`,
   );
