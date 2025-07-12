@@ -88,7 +88,7 @@ export default function AnalyticsDashboard() {
         ...baseMetrics,
         { value: "employee_engagement", label: "Employee Engagement" },
         { value: "session_completions", label: "Session Completions" },
-        { value: "mentor_ratings", label: "Mentor Ratings" },
+        { value: "coach_ratings", label: "Coach Ratings" },
       ];
     }
 
