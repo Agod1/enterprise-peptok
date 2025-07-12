@@ -69,15 +69,32 @@ import EmployeeDashboard from "@/pages/EmployeeDashboard";
 
 const NotificationDisplay: React.FC = () => {
   try {
-    // Check if React hooks are available
-    if (!React.useState || !React.useEffect) {
+    // Comprehensive React hooks availability check
+    const isReactAvailable =
+      typeof React !== "undefined" &&
+      React &&
+      typeof React.useState === "function" &&
+      typeof React.useEffect === "function";
+
+    if (!isReactAvailable) {
       console.warn(
-        "React hooks not available, using safe notification provider",
+        "🚨 React hooks not available in NotificationDisplay, using safe fallback",
       );
       return <SafeNotificationProvider>{null}</SafeNotificationProvider>;
     }
 
-    const { notifications, remove } = useNotifications();
+    // Safe hook usage with additional try-catch
+    let notifications: any[] = [];
+    let remove: (id: string) => void = () => {};
+
+    try {
+      const hookResult = useNotifications();
+      notifications = hookResult.notifications;
+      remove = hookResult.remove;
+    } catch (error) {
+      console.error("🚨 Failed to use notifications hook:", error);
+      return <SafeNotificationProvider>{null}</SafeNotificationProvider>;
+    }
 
     return (
       <>
@@ -92,7 +109,10 @@ const NotificationDisplay: React.FC = () => {
       </>
     );
   } catch (error) {
-    console.warn("Error in NotificationDisplay, using safe fallback:", error);
+    console.warn(
+      "🚨 Error in NotificationDisplay, using safe fallback:",
+      error,
+    );
     return <SafeNotificationProvider>{null}</SafeNotificationProvider>;
   }
 };
