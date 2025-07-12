@@ -51,7 +51,7 @@ export const Environment = {
 
     // Default to localhost in development
     if (this.isLocalDevelopment()) {
-      return "http://localhost:3001/api";
+      return "http://localhost:3001";
     }
 
     // In production, assume backend is at same domain
