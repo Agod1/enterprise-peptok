@@ -230,8 +230,7 @@ const EmployeeDashboard = () => {
                 {user?.firstName || user?.name?.split(" ")[0] || "there"}!
               </h1>
               <p className="text-muted-foreground mt-1">
-                Track your mentorship progress and continue your learning
-                journey
+                Track your coaching progress and continue your learning journey
               </p>
             </div>
             <div className="flex gap-3">
@@ -384,7 +383,7 @@ const EmployeeDashboard = () => {
                   <div className="text-center py-8">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
                     <p className="text-muted-foreground mt-2">
-                      Loading mentorship requests...
+                      Loading coaching requests...
                     </p>
                   </div>
                 ) : (
@@ -527,7 +526,7 @@ const EmployeeDashboard = () => {
           </TabsContent>
 
           {/* Mentorships Tab */}
-          <TabsContent value="mentorships" className="space-y-6">
+          <TabsContent value="coaching" className="space-y-6">
             <Card className="backdrop-blur-md bg-white/80 border-white/20 shadow-lg">
               <CardHeader>
                 <CardTitle>Active Mentorship Connections</CardTitle>
@@ -615,7 +614,7 @@ const EmployeeDashboard = () => {
                   <div className="text-center py-8">
                     <UserCheck className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
                     <p className="text-muted-foreground">
-                      No active mentorship connections
+                      No active coaching connections
                     </p>
                     <Button asChild className="mt-4">
                       <Link to="/experts">Find Mentors</Link>
@@ -689,7 +688,7 @@ const EmployeeDashboard = () => {
               <CardHeader>
                 <CardTitle>Session History</CardTitle>
                 <CardDescription>
-                  View your completed and upcoming mentorship sessions
+                  View your completed and upcoming coaching sessions
                 </CardDescription>
               </CardHeader>
               <CardContent>
