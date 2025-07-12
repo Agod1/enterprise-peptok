@@ -20,8 +20,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuth } from "@/contexts/AuthContext";
 import { useEffect, useState } from "react";
-import { api } from "@/services/api";
-import { apiEnhanced } from "@/services/apiEnhanced";
+import { apiEnhanced as api } from "@/services/apiEnhanced";
 import {
   matchingService,
   type CoachMatch,
