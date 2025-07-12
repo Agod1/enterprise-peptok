@@ -26,87 +26,9 @@ interface AuthProviderProps {
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  // Comprehensive React hooks availability check
-  const isReactAvailable =
-    typeof React !== "undefined" &&
-    React &&
-    typeof React.useState === "function" &&
-    typeof React.useEffect === "function" &&
-    typeof React.createContext === "function";
-
-  if (!isReactAvailable) {
-    console.warn(
-      "🚨 React hooks not available in AuthProvider, using fallback",
-    );
-    return (
-      <div
-        style={{
-          minHeight: "100vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontFamily: "system-ui",
-        }}
-      >
-        <div style={{ textAlign: "center" }}>
-          <div
-            style={{
-              width: "40px",
-              height: "40px",
-              border: "4px solid #3b82f6",
-              borderTop: "4px solid transparent",
-              borderRadius: "50%",
-              animation: "spin 1s linear infinite",
-              margin: "0 auto 20px",
-            }}
-          ></div>
-          <p>Loading authentication...</p>
-          <style>{`
-            @keyframes spin {
-              0% { transform: rotate(0deg); }
-              100% { transform: rotate(360deg); }
-            }
-          `}</style>
-        </div>
-      </div>
-    );
-  }
-
-  // Additional safety check before calling hooks
-  let user: User | null = null;
-  let setUser: (user: User | null) => void = () => {};
-  let isLoading = true;
-  let setIsLoading: (loading: boolean) => void = () => {};
-
-  try {
-    const userState = React.useState<User | null>(null);
-    user = userState[0];
-    setUser = userState[1];
-
-    const loadingState = React.useState(true);
-    isLoading = loadingState[0];
-    setIsLoading = loadingState[1];
-  } catch (error) {
-    console.error(
-      "🚨 Failed to initialize React hooks in AuthProvider:",
-      error,
-    );
-    return (
-      <div
-        style={{
-          minHeight: "100vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontFamily: "system-ui",
-        }}
-      >
-        <div style={{ textAlign: "center" }}>
-          <p>React hooks initialization failed. Please refresh the page.</p>
-        </div>
-      </div>
-    );
-  }
+  // Use normal React hooks - the previous safety checks were causing issues
+  const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Initialize auth state
   try {
