@@ -26,7 +26,7 @@ export default function Terms() {
       id: "acceptance",
       title: "1. Acceptance of Terms",
       icon: <FileText className="w-5 h-5" />,
-      content: `By accessing and using this mentorship platform ("Service"), you accept and agree to be bound by the terms and provision of this agreement, including all pricing, payment, and refund policies outlined herein. If you do not agree to abide by the above, please do not use this service.
+      content: `By accessing and using this coaching platform ("Service"), you accept and agree to be bound by the terms and provision of this agreement, including all pricing, payment, and refund policies outlined herein. If you do not agree to abide by the above, please do not use this service.
 
 These Terms of Service govern your use of our platform and form a legally binding agreement between you and our company. By booking coaching sessions or providing coaching services, you acknowledge understanding of our session-based pricing structure, commission rates, and fee policies.
 
@@ -217,7 +217,7 @@ DISPUTE RESOLUTION:
 BULK SESSION PACKAGES:
 
 • Enterprise packages: Refund policies specified in custom contract
-• Prepaid sessions: Unused sessions refundable within 90 days of purchase
+��� Prepaid sessions: Unused sessions refundable within 90 days of purchase
 • Volume discounts: Non-refundable discount amounts, base session fees refundable
 
 ACCOUNT TERMINATION:
