@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, useContext, createContext } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { FullApp } from "@/components/core/FullApp";
 import { AuthProvider } from "@/contexts/AuthContext";
