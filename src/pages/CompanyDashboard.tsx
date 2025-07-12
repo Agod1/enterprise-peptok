@@ -692,10 +692,10 @@ const CompanyDashboard = () => {
                     <div>
                       <CardTitle className="flex items-center gap-2">
                         <Target className="w-5 h-5" />
-                        Mentorship Programs Management
+                        Coaching Programs Management
                       </CardTitle>
                       <CardDescription>
-                        Create and manage comprehensive mentorship programs for
+                        Create and manage comprehensive coaching programs for
                         your organization
                       </CardDescription>
                     </div>
