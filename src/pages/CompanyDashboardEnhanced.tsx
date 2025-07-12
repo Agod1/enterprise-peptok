@@ -107,23 +107,9 @@ export default function CompanyDashboardEnhanced() {
       metadata: { companyId: user.companyId },
     });
 
-    // Listen for cache invalidation events
-    const unsubscribeInvalidation = cacheInvalidation.onInvalidation(
-      (event) => {
-        // Reload data if company data was invalidated
-        if (
-          (event.type === "company_data" && event.scope === user.companyId) ||
-          event.type === "platform_data" ||
-          event.type === "global"
-        ) {
-          toast.info("Company data updated. Refreshing...");
-          loadDashboardData();
-        }
-      },
-    );
-
+    // Data will be refreshed through normal component lifecycle
     return () => {
-      unsubscribeInvalidation();
+      // Cleanup if needed
     };
   }, [user, navigate]);
 
