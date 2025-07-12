@@ -17,7 +17,7 @@ import {
 import { Slider } from "@/components/ui/slider";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { api } from "@/services/apiEnhanced";
+import { apiEnhanced as api } from "@/services/apiEnhanced";
 import { Coach } from "@/types";
 import { useAuth } from "@/contexts/AuthContext";
 import {
