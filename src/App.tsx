@@ -16,8 +16,7 @@ if (import.meta.env.DEV) {
   import("./utils/emailDemo");
 }
 
-// Initialize localStorage elimination service
-import("./services/localStorageElimination");
+// Removed: localStorage elimination service (deleted)
 
 const queryClient = new QueryClient();
 
