@@ -269,7 +269,7 @@ export function TeamMemberManagementCard({
                       <div>
                         <div className="font-medium">Participant</div>
                         <div className="text-xs text-muted-foreground">
-                          Actively participate in mentorship sessions
+                          Actively participate in coaching sessions
                         </div>
                       </div>
                     </div>
@@ -439,8 +439,7 @@ export function TeamMemberManagementCard({
               No team members added to this program yet.
             </p>
             <p className="text-sm">
-              Add team members by email to include them in the mentorship
-              program.
+              Add team members by email to include them in the coaching program.
             </p>
           </div>
         )}
