@@ -133,4 +133,4 @@ volumes:
   postgres_data:
   redis_data:
   frontend_node_modules:
-  backend_node_modules:
+  backend_nestjs_node_modules:
