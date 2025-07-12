@@ -32,7 +32,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { SessionRatingModal } from "@/components/sessions/SessionRatingModal";
-import { api } from "@/services/api";
+import { api } from "@/services/apiEnhanced";
 import { toast } from "sonner";
 import {
   invitationService,
