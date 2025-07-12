@@ -325,7 +325,7 @@ export const FullApp: React.FC = () => {
       </Suspense>
 
       {/* Development Quick Navigation */}
-      <QuickNav />
+      {/* <QuickNav /> */}
     </BrowserRouter>
   );
 };
