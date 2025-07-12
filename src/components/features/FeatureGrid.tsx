@@ -34,7 +34,7 @@ const features = [
     icon: BarChart3,
     title: "Analytics Dashboard",
     description:
-      "Comprehensive analytics to track engagement, progress, and ROI of mentorship programs.",
+      "Comprehensive analytics to track engagement, progress, and ROI of coaching programs.",
   },
   {
     icon: BookOpen,
