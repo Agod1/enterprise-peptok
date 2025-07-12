@@ -17,7 +17,7 @@ const LandingHero = () => {
               </h1>
               <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
                 Peptok bridges the gap between your enterprises and seasoned
-                professionals, creating meaningful mentorship connections that
+                professionals, creating meaningful coaching connections that
                 drive measurable business outcomes.
               </p>
             </div>
