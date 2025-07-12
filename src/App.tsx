@@ -1,8 +1,6 @@
 import React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "@/pages/Index";
-// import { FullApp } from "@/components/core/FullApp";
+import { FullApp } from "@/components/core/FullApp";
 import { AuthProvider } from "@/contexts/AuthContext";
 // Removed unused safety wrapper imports
 // Alternative implementations available but not used:
