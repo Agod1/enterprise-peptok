@@ -312,7 +312,7 @@ const EnterpriseDashboard = () => {
                     <div>
                       <CardTitle>Company Mentorship Requests</CardTitle>
                       <CardDescription>
-                        Track progress of mentorship programs your company has
+                        Track progress of coaching programs your company has
                         created
                       </CardDescription>
                     </div>

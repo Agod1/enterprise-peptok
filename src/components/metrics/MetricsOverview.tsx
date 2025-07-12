@@ -149,7 +149,7 @@ const MetricsOverview = ({ metrics = [], stats }: MetricsOverviewProps) => {
                   Performance analytics and trend charts will be displayed here
                 </p>
                 <p className="text-sm text-muted-foreground mt-2">
-                  Track mentorship program effectiveness over time
+                  Track coaching program effectiveness over time
                 </p>
               </div>
             </div>
