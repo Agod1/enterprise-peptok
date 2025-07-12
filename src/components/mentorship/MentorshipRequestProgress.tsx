@@ -221,7 +221,7 @@ export function MentorshipRequestProgress({
             </div>
             {showCreateButton && (
               <Button asChild>
-                <Link to="/mentorship/new">
+                <Link to="/coaching/new">
                   <Plus className="w-4 h-4 mr-2" />
                   Create New Program
                 </Link>
