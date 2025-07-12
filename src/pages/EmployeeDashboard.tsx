@@ -332,12 +332,9 @@ const EmployeeDashboard = () => {
               <BarChart3 className="w-4 h-4" />
               Overview
             </TabsTrigger>
-            <TabsTrigger
-              value="mentorships"
-              className="flex items-center gap-2"
-            >
+            <TabsTrigger value="coaching" className="flex items-center gap-2">
               <Users className="w-4 h-4" />
-              My Mentorships
+              My Coaching
             </TabsTrigger>
             <TabsTrigger value="learning" className="flex items-center gap-2">
               <BookOpen className="w-4 h-4" />
