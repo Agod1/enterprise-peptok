@@ -50,13 +50,11 @@ const App: React.FC = () => {
   }
 
   return (
-    <UltraRobustWrapper>
-      <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <FullApp />
-        </AuthProvider>
-      </QueryClientProvider>
-    </UltraRobustWrapper>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <FullApp />
+      </AuthProvider>
+    </QueryClientProvider>
   );
 };
 
