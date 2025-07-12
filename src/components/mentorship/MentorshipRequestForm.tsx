@@ -82,16 +82,6 @@ export interface CoachingRequestFormData {
 
 // Keep for backward compatibility
 export interface MentorshipRequestFormData extends CoachingRequestFormData {}
-  budget?: {
-    min: number;
-    max: number;
-  };
-  timeline: {
-    startDate: string;
-    endDate: string;
-    sessionFrequency: "weekly" | "bi-weekly" | "monthly";
-  };
-}
 
 const availableMetrics = [
   {
@@ -395,7 +385,7 @@ export function MentorshipRequestForm({
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Target className="w-5 h-5" />
-                        Coaching Request Details
+            Coaching Request Details
           </CardTitle>
           <CardDescription>
             Define the core objectives and scope of your coaching program
