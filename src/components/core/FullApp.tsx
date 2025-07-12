@@ -83,9 +83,11 @@ const NotificationDisplay: React.FC = () => {
   }
 };
 
+import { ReactSafetyWrapper } from "./ReactSafetyWrapper";
+
 export const FullApp: React.FC = () => {
   return (
-    <>
+    <ReactSafetyWrapper>
       <NotificationDisplay />
       <RouterWrapper>
         <SafeAuthWrapper>
