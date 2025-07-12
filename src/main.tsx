@@ -30,13 +30,6 @@ class ErrorBoundary extends React.Component<
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error("App error:", error, errorInfo);
-    console.error("React state:", {
-      React: typeof React,
-      useState: typeof React?.useState,
-      useEffect: typeof React?.useEffect,
-      createContext: typeof React?.createContext,
-      window_React: typeof (window as any)?.React,
-    });
   }
 
   render() {
