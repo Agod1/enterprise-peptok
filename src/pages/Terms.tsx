@@ -301,7 +301,7 @@ For general inquiries: info@peptok.ca (General Information Department)`,
                 </h1>
               </div>
               <p className="text-gray-600 max-w-2xl mx-auto">
-                These terms govern your use of our mentorship platform. Please
+                These terms govern your use of our coaching platform. Please
                 read them carefully to understand your rights and
                 responsibilities.
               </p>
