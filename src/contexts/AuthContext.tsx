@@ -16,7 +16,11 @@ interface AuthContextType {
   updateUser: (user: User) => void;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+// Create AuthContext with safety check
+const AuthContext =
+  typeof React !== "undefined" && React.createContext
+    ? createContext<AuthContextType | undefined>(undefined)
+    : null;
 
 interface AuthProviderProps {
   children: React.ReactNode;
