@@ -142,7 +142,7 @@ class SecurityService {
       });
 
       // Invalidate cache
-      cacheInvalidation.invalidatePlatformData("Platform Admin");
+      // Note: Cache invalidation removed for simplification
 
       // Update instance
       this.settings = settings;
