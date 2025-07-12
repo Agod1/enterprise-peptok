@@ -805,7 +805,7 @@ class EnhancedApiService {
   async createMentorshipRequest(
     request: Partial<MentorshipRequest>,
   ): Promise<MentorshipRequest> {
-    const user = checkAuthorization(["company_admin", "platform_admin"]);
+    const user = checkAuthorization(["company_admin"]);
 
     try {
       const response = await this.request<MentorshipRequest>(
