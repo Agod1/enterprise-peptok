@@ -62,8 +62,18 @@ import NotFound from "@/pages/NotFound";
 import PlatformAdminDashboard from "@/pages/PlatformAdminDashboard";
 import EmployeeDashboard from "@/pages/EmployeeDashboard";
 
+import { SafeNotificationProvider } from "@/components/common/SafeNotification";
+
 const NotificationDisplay: React.FC = () => {
   try {
+    // Check if React hooks are available
+    if (!React.useState || !React.useEffect) {
+      console.warn(
+        "React hooks not available, using safe notification provider",
+      );
+      return <SafeNotificationProvider>{null}</SafeNotificationProvider>;
+    }
+
     const { notifications, remove } = useNotifications();
 
     return (
@@ -79,8 +89,8 @@ const NotificationDisplay: React.FC = () => {
       </>
     );
   } catch (error) {
-    console.warn("Error in NotificationDisplay:", error);
-    return null;
+    console.warn("Error in NotificationDisplay, using safe fallback:", error);
+    return <SafeNotificationProvider>{null}</SafeNotificationProvider>;
   }
 };
 
