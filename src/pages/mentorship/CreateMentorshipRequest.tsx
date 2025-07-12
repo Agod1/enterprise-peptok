@@ -33,6 +33,7 @@ import {
 } from "@/services/matchingService";
 import { useAuth } from "@/contexts/AuthContext";
 import { BackendStatus } from "@/components/ui/BackendStatus";
+import { duplicateCleanup } from "@/utils/duplicateCleanup";
 
 export default function CreateMentorshipRequest() {
   const navigate = useNavigate();
