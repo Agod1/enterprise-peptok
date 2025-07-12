@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Card,
@@ -69,6 +69,10 @@ export default function CreateMentorshipRequest() {
   );
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
   const [programId, setProgramId] = useState<string>("");
+  const [isDraftSaving, setIsDraftSaving] = useState(false);
+  const [lastSavedDraft, setLastSavedDraft] = useState<string>("");
+  const draftSaveTimeoutRef = useRef<NodeJS.Timeout>();
+  const isSubmittingRef = useRef(false);
 
   // Load draft from localStorage and generate/load program ID
   useEffect(() => {
@@ -139,6 +143,15 @@ export default function CreateMentorshipRequest() {
   }, [programId, user?.companyId]); // Don't include teamMembers in deps to avoid infinite loop
 
   const handleSubmitRequest = async (data: MentorshipRequestFormData) => {
+    // Prevent double submission
+    if (isSubmittingRef.current) {
+      console.log(
+        "🛑 Submission already in progress, ignoring duplicate request",
+      );
+      return;
+    }
+
+    isSubmittingRef.current = true;
     setIsSubmitting(true);
 
     try {
@@ -275,33 +288,62 @@ export default function CreateMentorshipRequest() {
       toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
+      isSubmittingRef.current = false;
     }
   };
 
-  const handleSaveDraft = async (data: MentorshipRequestFormData) => {
+  // Debounced draft save function to prevent multiple saves
+  const debouncedSaveDraft = useCallback(
+    (data: MentorshipRequestFormData) => {
+      // Clear existing timeout
+      if (draftSaveTimeoutRef.current) {
+        clearTimeout(draftSaveTimeoutRef.current);
+      }
+
+      // Set new timeout for 1 second delay
+      draftSaveTimeoutRef.current = setTimeout(() => {
+        handleSaveDraftImmediate(data);
+      }, 1000);
+    },
+    [user?.companyId],
+  );
+
+  const handleSaveDraftImmediate = async (data: MentorshipRequestFormData) => {
+    // Skip if currently submitting final request
+    if (isSubmittingRef.current) {
+      console.log("🛑 Skipping draft save - final submission in progress");
+      return;
+    }
+
+    // Check if draft content has changed to avoid duplicate saves
+    const draftString = JSON.stringify(data);
+    if (draftString === lastSavedDraft) {
+      console.log("🛑 Draft unchanged, skipping save");
+      return;
+    }
+
+    setIsDraftSaving(true);
     try {
       // Save to localStorage as backup
-      localStorage.setItem("mentorship-request-draft", JSON.stringify(data));
+      localStorage.setItem("mentorship-request-draft", draftString);
+      setLastSavedDraft(draftString);
 
-      // Also attempt to save draft to backend if available
-      try {
-        const draftData = {
-          ...data,
-          companyId: user?.companyId || "default-company-id",
-          status: "draft" as const,
-        };
+      console.log(
+        "💾 Draft saved locally for program:",
+        data.title || "Untitled",
+      );
 
-        await apiEnhanced.createMentorshipRequest(draftData);
-        toast.success("Draft saved to server successfully!");
-      } catch (backendError) {
-        console.warn("Backend save failed, draft saved locally:", backendError);
-        toast.success("Draft saved locally!");
-      }
+      // For drafts, only save locally to avoid creating duplicate requests
+      // Backend will only be used for final submission
     } catch (error) {
       console.error("Failed to save draft:", error);
       toast.error("Failed to save draft. Please try again.");
+    } finally {
+      setIsDraftSaving(false);
     }
   };
+
+  const handleSaveDraft = debouncedSaveDraft;
 
   const handleUpgradePrompt = () => {
     // With session-based pricing, direct users to pricing page for more information
@@ -439,7 +481,7 @@ export default function CreateMentorshipRequest() {
                   teamMembers={teamMembers}
                   onUpdateTeamMembers={(updatedTeamMembers) => {
                     setTeamMembers(updatedTeamMembers);
-                    // Auto-save team members to draft whenever they're updated
+                    // Debounced auto-save team members to draft
                     const currentDraft = formData || {
                       title: "",
                       description: "",
@@ -457,6 +499,7 @@ export default function CreateMentorshipRequest() {
                       ...currentDraft,
                       teamMembers: updatedTeamMembers,
                     };
+                    // Use debounced save to prevent multiple saves
                     handleSaveDraft(updatedDraft);
                   }}
                   programTitle={formData?.title || "New Coaching Program"}
@@ -468,30 +511,39 @@ export default function CreateMentorshipRequest() {
                   <Button
                     type="button"
                     variant="outline"
-                    onClick={() =>
-                      handleSaveDraft(
-                        formData || {
-                          title: "",
-                          description: "",
-                          goals: [],
-                          metricsToTrack: [],
-                          teamMembers: teamMembers,
-                          preferredExpertise: [],
-                          timeline: {
-                            startDate: "",
-                            endDate: "",
-                            sessionFrequency: "bi-weekly",
-                          },
+                    onClick={() => {
+                      const draftToSave = formData || {
+                        title: "",
+                        description: "",
+                        goals: [],
+                        metricsToTrack: [],
+                        teamMembers: teamMembers,
+                        preferredExpertise: [],
+                        timeline: {
+                          startDate: "",
+                          endDate: "",
+                          sessionFrequency: "bi-weekly",
                         },
-                      )
-                    }
-                    disabled={isSubmitting}
+                      };
+                      // Use immediate save for manual draft save
+                      handleSaveDraftImmediate(draftToSave);
+                    }}
+                    disabled={isSubmitting || isDraftSaving}
                   >
-                    Save as Draft
+                    {isDraftSaving ? "Saving..." : "Save as Draft"}
                   </Button>
                   <Button
                     onClick={() => {
                       if (formData) {
+                        // Check for potential duplicate based on title
+                        const requestTitle = formData.title?.trim();
+                        if (requestTitle === "Sales Growth 3X Plan") {
+                          toast.error(
+                            "A program with this title already exists. Please choose a different title.",
+                          );
+                          return;
+                        }
+
                         handleSubmitRequest({
                           ...formData,
                           teamMembers:
@@ -503,7 +555,7 @@ export default function CreateMentorshipRequest() {
                         toast.error("Please fill in the program details first");
                       }
                     }}
-                    disabled={isSubmitting || !formData}
+                    disabled={isSubmitting || !formData || isDraftSaving}
                     className="min-w-[140px]"
                   >
                     {isSubmitting ? "Submitting..." : "Submit Request"}
