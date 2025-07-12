@@ -334,8 +334,8 @@ export const FullApp: React.FC = () => {
               <Route path="*" element={<NotFound />} />
             </Routes>
 
-                        {/* Development Quick Navigation */}
-            <QuickNav />
+                                {/* Development Quick Navigation */}
+        <QuickNav />
       </Routes>
     </BrowserRouter>
   );
