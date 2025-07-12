@@ -1,6 +1,7 @@
 import { NestFactory } from "@nestjs/core";
+import { ValidationPipe } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { AppModule } from "./app.module";
+import { AppModule } from "./app.simple.module";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -14,16 +15,24 @@ async function bootstrap() {
     credentials: true,
   });
 
+  // Global validation pipe
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
+
   // Global prefix
   app.setGlobalPrefix("api/v1");
 
   const port = configService.get("PORT", 3001);
   await app.listen(port);
 
-  console.log(`🚀 Peptok NestJS API is running on: http://localhost:${port}`);
-  console.log(
-    `📚 Health check available at: http://localhost:${port}/api/v1/health`,
-  );
+  console.log(`🚀 Peptok NestJS API running on: http://localhost:${port}`);
+  console.log(`📚 Health check: http://localhost:${port}/api/v1/health`);
+  console.log(`📊 Database: nestjs-database.json`);
 }
 
 bootstrap().catch((error) => {
