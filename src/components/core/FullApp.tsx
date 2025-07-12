@@ -334,11 +334,9 @@ export const FullApp: React.FC = () => {
               <Route path="*" element={<NotFound />} />
             </Routes>
 
-            {/* Development Quick Navigation */}
+                        {/* Development Quick Navigation */}
             <QuickNav />
-          </SafeAuthWrapper>
-        </RouterWrapper>
-      </ReactSafetyWrapper>
-    </ReactErrorBoundary>
+      </Routes>
+    </BrowserRouter>
   );
 };
