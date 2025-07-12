@@ -301,8 +301,8 @@ export function TeamManagement({
 
           <div className="flex justify-between items-center">
             <div className="text-sm text-muted-foreground">
-              <strong>Participant:</strong> Can actively participate in
-              mentorship sessions
+              <strong>Participant:</strong> Can actively participate in coaching
+              sessions
               <br />
               <strong>Observer:</strong> Can view sessions and materials but not
               participate actively
@@ -319,8 +319,8 @@ export function TeamManagement({
 
           <div className="flex justify-between items-center">
             <div className="text-sm text-muted-foreground">
-              <strong>Participant:</strong> Can actively participate in
-              mentorship sessions
+              <strong>Participant:</strong> Can actively participate in coaching
+              sessions
               <br />
               <strong>Observer:</strong> Can view sessions and materials but not
               participate actively
@@ -483,8 +483,7 @@ export function TeamManagement({
               No team members added to this program yet.
             </p>
             <p className="text-sm">
-              Add team members by email to include them in the mentorship
-              program.
+              Add team members by email to include them in the coaching program.
             </p>
           </div>
         )}
