@@ -6,24 +6,48 @@ interface RouterWrapperProps {
 }
 
 export const RouterWrapper: React.FC<RouterWrapperProps> = ({ children }) => {
-  // Safety check for React hooks availability
-  if (!React || !useState || !useEffect) {
+  // Comprehensive React hooks availability check
+  const isReactAvailable =
+    typeof React !== "undefined" &&
+    React &&
+    typeof React.useState === "function" &&
+    typeof React.useEffect === "function";
+
+  if (!isReactAvailable) {
     console.warn(
-      "React hooks not available in RouterWrapper, rendering children directly",
+      "🚨 React hooks not available in RouterWrapper, rendering children directly",
     );
     return <BrowserRouter>{children}</BrowserRouter>;
   }
 
-  const [isReady, setIsReady] = useState(false);
+  // Safe hook initialization with try-catch
+  let isReady = false;
+  let setIsReady: (ready: boolean) => void = () => {};
 
-  useEffect(() => {
-    // Small delay to ensure React is fully initialized
-    const timer = setTimeout(() => {
-      setIsReady(true);
-    }, 10);
+  try {
+    const readyState = React.useState(false);
+    isReady = readyState[0];
+    setIsReady = readyState[1];
+  } catch (error) {
+    console.error("🚨 Failed to initialize useState in RouterWrapper:", error);
+    return <BrowserRouter>{children}</BrowserRouter>;
+  }
 
-    return () => clearTimeout(timer);
-  }, []);
+  // Safe useEffect with try-catch
+  try {
+    React.useEffect(() => {
+      // Small delay to ensure React is fully initialized
+      const timer = setTimeout(() => {
+        setIsReady(true);
+      }, 10);
+
+      return () => clearTimeout(timer);
+    }, []);
+  } catch (error) {
+    console.error("🚨 Failed to initialize useEffect in RouterWrapper:", error);
+    // Set ready immediately as fallback
+    setIsReady(true);
+  }
 
   if (!isReady) {
     return (
