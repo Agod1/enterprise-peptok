@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import { User, authService } from "@/services/auth";
 import { setCurrentUser } from "@/services/apiEnhanced";
 import { analytics } from "@/services/analytics";
