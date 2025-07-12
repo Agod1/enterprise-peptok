@@ -50,17 +50,7 @@ const App: React.FC = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <BrowserRouter>
-          <div style={{ padding: "20px" }}>
-            <h1>App is Working!</h1>
-            <p>Basic router is working. Testing routes...</p>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/test" element={<div>Test route works!</div>} />
-              <Route path="*" element={<div>Catch-all route works!</div>} />
-            </Routes>
-          </div>
-        </BrowserRouter>
+        <FullApp />
       </AuthProvider>
     </QueryClientProvider>
   );
