@@ -122,8 +122,7 @@ export default function CompanyDashboardEnhanced() {
 
     setLoading(true);
     try {
-      // Clear any invalidated cache before loading
-      cacheInvalidation.clearInvalidatedCache(user.companyId, user.id);
+      // Load fresh data
 
       // Load company-specific requests with proper error handling
       const companyRequests = await apiEnhanced.getCompanyRequests(
