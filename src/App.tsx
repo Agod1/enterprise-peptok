@@ -1,5 +1,6 @@
 import React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 // import { FullApp } from "@/components/core/FullApp";
 import { AuthProvider } from "@/contexts/AuthContext";
 // Removed unused safety wrapper imports
@@ -50,11 +51,16 @@ const App: React.FC = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <div style={{ padding: "20px" }}>
-          <h1>App is Working!</h1>
-          <p>QueryClientProvider and AuthProvider are working correctly.</p>
-          <p>Next step: Add back FullApp component.</p>
-        </div>
+        <BrowserRouter>
+          <div style={{ padding: "20px" }}>
+            <h1>App is Working!</h1>
+            <p>Basic router is working. Testing routes...</p>
+            <Routes>
+              <Route path="/" element={<div>Home route works!</div>} />
+              <Route path="*" element={<div>Catch-all route works!</div>} />
+            </Routes>
+          </div>
+        </BrowserRouter>
       </AuthProvider>
     </QueryClientProvider>
   );
