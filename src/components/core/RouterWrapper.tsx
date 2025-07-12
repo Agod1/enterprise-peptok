@@ -6,6 +6,14 @@ interface RouterWrapperProps {
 }
 
 export const RouterWrapper: React.FC<RouterWrapperProps> = ({ children }) => {
+  // Safety check for React hooks availability
+  if (!React || !useState || !useEffect) {
+    console.warn(
+      "React hooks not available in RouterWrapper, rendering children directly",
+    );
+    return <BrowserRouter>{children}</BrowserRouter>;
+  }
+
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
