@@ -25,7 +25,7 @@ import {
 import { MentorshipRequest } from "@/types";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { api } from "@/services/api";
+import { api } from "@/services/apiEnhanced";
 import { useAuth } from "@/contexts/AuthContext";
 import { useState } from "react";
 
