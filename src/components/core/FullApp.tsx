@@ -77,9 +77,7 @@ const NotificationDisplay: React.FC = () => {
       typeof React.useEffect === "function";
 
     if (!isReactAvailable) {
-      console.warn(
-        "🚨 React hooks not available in NotificationDisplay, using safe fallback",
-      );
+      console.warn("🚨 React hooks not available in NotificationDisplay, using safe fallback");
       return <SafeNotificationProvider>{null}</SafeNotificationProvider>;
     }
 
@@ -109,22 +107,15 @@ const NotificationDisplay: React.FC = () => {
       </>
     );
   } catch (error) {
-    console.warn(
-      "🚨 Error in NotificationDisplay, using safe fallback:",
-      error,
-    );
+    console.warn("🚨 Error in NotificationDisplay, using safe fallback:", error);
     return <SafeNotificationProvider>{null}</SafeNotificationProvider>;
   }
 };
 
 export const FullApp: React.FC = () => {
   return (
-    <ReactErrorBoundary fallback={HookErrorFallback}>
-      <ReactSafetyWrapper>
-        <NotificationDisplay />
-        <RouterWrapper>
-          <SafeAuthWrapper>
-            <Routes>
+    <BrowserRouter>
+      <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/pricing" element={<Pricing />} />
               <Route path="/login" element={<Login />} />
