@@ -107,7 +107,7 @@ export const SimpleApp: React.FC = () => {
             </h1>
             <p className="text-gray-600">
               Configure the matching algorithm weights and parameters for
-              mentor-mentee pairing
+              coach-client pairing
             </p>
 
             {/* Weight Configuration */}
