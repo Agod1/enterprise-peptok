@@ -1,6 +1,7 @@
 import React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Index from "@/pages/Index";
 // import { FullApp } from "@/components/core/FullApp";
 import { AuthProvider } from "@/contexts/AuthContext";
 // Removed unused safety wrapper imports
@@ -56,7 +57,8 @@ const App: React.FC = () => {
             <h1>App is Working!</h1>
             <p>Basic router is working. Testing routes...</p>
             <Routes>
-              <Route path="/" element={<div>Home route works!</div>} />
+              <Route path="/" element={<Index />} />
+              <Route path="/test" element={<div>Test route works!</div>} />
               <Route path="*" element={<div>Catch-all route works!</div>} />
             </Routes>
           </div>
