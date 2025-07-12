@@ -96,7 +96,7 @@ export function TeamMemberManagementCard({
           email: newMemberEmail.toLowerCase(),
           name: newMemberName.trim() || undefined,
           programId: programId || `program-${Date.now()}`,
-          programTitle: programTitle || "Mentorship Program",
+          programTitle: programTitle || "Coaching Program",
           companyId: user?.companyId || `company-${Date.now()}`,
           companyName: user?.businessDetails?.companyName || "Your Company",
           inviterName: user
@@ -306,7 +306,7 @@ export function TeamMemberManagementCard({
           email: member.email,
           name: member.name,
           programId: programId || `program-${Date.now()}`,
-          programTitle: programTitle || "Mentorship Program",
+          programTitle: programTitle || "Coaching Program",
           companyId: user?.companyId || `company-${Date.now()}`,
           companyName: user?.businessDetails?.companyName || "Your Company",
           inviterName: user
