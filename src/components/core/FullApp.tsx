@@ -314,6 +314,6 @@ export const FullApp: React.FC = () => {
           <QuickNav />
         </SafeAuthWrapper>
       </RouterWrapper>
-    </>
+    </ReactSafetyWrapper>
   );
 };
