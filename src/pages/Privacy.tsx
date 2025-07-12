@@ -19,8 +19,8 @@ export default function Privacy() {
             <CardContent className="prose max-w-none">
               <h2>Information We Collect</h2>
               <p>
-                When you use our mentorship platform, we collect information
-                that helps us provide and improve our services:
+                When you use our coaching platform, we collect information that
+                helps us provide and improve our services:
               </p>
               <ul>
                 <li>
@@ -29,7 +29,7 @@ export default function Privacy() {
                 </li>
                 <li>
                   <strong>Profile Data:</strong> Skills, expertise areas, goals,
-                  and mentorship preferences
+                  and coaching preferences
                 </li>
                 <li>
                   <strong>Usage Data:</strong> How you interact with our
@@ -45,9 +45,9 @@ export default function Privacy() {
               <p>We use your information to:</p>
               <ul>
                 <li>
-                  Provide mentorship matching and program management services
+                  Provide coaching matching and program management services
                 </li>
-                <li>Facilitate communication between mentors and mentees</li>
+                <li>Facilitate communication between coaches and clients</li>
                 <li>
                   Track progress and generate analytics for program
                   effectiveness
@@ -63,7 +63,7 @@ export default function Privacy() {
               </p>
               <ul>
                 <li>
-                  With your mentor or mentee as part of the mentorship program
+                  With your coach or client as part of the coaching program
                 </li>
                 <li>
                   With your company administrator for program management
