@@ -531,7 +531,7 @@ export const CoachDashboard: React.FC = () => {
               />
               Refresh
             </Button>
-            <Button onClick={() => navigate("/coach/settings")}>
+            <Button onClick={() => navigate("/coach-settings")}>
               <Settings className="w-4 h-4 mr-2" />
               Settings
             </Button>
