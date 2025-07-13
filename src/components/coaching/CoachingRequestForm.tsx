@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -36,6 +36,8 @@ import {
   Lightbulb,
   Users,
   Clock,
+  ChevronDown,
+  Zap,
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
