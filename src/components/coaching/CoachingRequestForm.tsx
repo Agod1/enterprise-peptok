@@ -903,6 +903,135 @@ export function CoachingRequestForm({
               </div>
             </div>
           </div>
+
+          {/* Communication Channel */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2">
+              <Video className="w-4 h-4 text-blue-600" />
+              <h3 className="text-lg font-semibold">Communication Channel</h3>
+            </div>
+            <p className="text-sm text-gray-600">
+              Select the preferred communication platform for coaching sessions
+            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Channel Type Selection */}
+              <div className="space-y-2">
+                <Label>Communication Platform</Label>
+                <Select
+                  value={formData.communicationChannel.type}
+                  onValueChange={(
+                    value: "google_meet" | "zoom" | "teams" | "custom",
+                  ) =>
+                    updateFormData({
+                      communicationChannel: {
+                        ...formData.communicationChannel,
+                        type: value,
+                        customLink:
+                          value === "google_meet"
+                            ? "https://meet.google.com/whm-ixsm-jtz"
+                            : value === "custom"
+                              ? formData.communicationChannel.customLink
+                              : "",
+                      },
+                    })
+                  }
+                  disabled={isLoading}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="google_meet">
+                      <div className="flex items-center gap-2">
+                        <Video className="w-4 h-4" />
+                        Google Meet
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="zoom">
+                      <div className="flex items-center gap-2">
+                        <Monitor className="w-4 h-4" />
+                        Zoom
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="teams">
+                      <div className="flex items-center gap-2">
+                        <Users className="w-4 h-4" />
+                        Microsoft Teams
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="custom">
+                      <div className="flex items-center gap-2">
+                        <Link className="w-4 h-4" />
+                        Custom Meeting Link
+                      </div>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Custom Link Input (shown when custom is selected) */}
+              {formData.communicationChannel.type === "custom" && (
+                <div className="space-y-2">
+                  <Label htmlFor="customLink">Custom Meeting Link</Label>
+                  <Input
+                    id="customLink"
+                    type="url"
+                    placeholder="https://your-meeting-platform.com/room/123"
+                    value={formData.communicationChannel.customLink || ""}
+                    onChange={(e) =>
+                      updateFormData({
+                        communicationChannel: {
+                          ...formData.communicationChannel,
+                          customLink: e.target.value,
+                        },
+                      })
+                    }
+                    disabled={isLoading}
+                  />
+                </div>
+              )}
+
+              {/* Default Link Display (for non-custom options) */}
+              {formData.communicationChannel.type !== "custom" &&
+                formData.communicationChannel.customLink && (
+                  <div className="space-y-2">
+                    <Label>Default Meeting Link</Label>
+                    <div className="p-3 bg-gray-50 rounded-md border">
+                      <p className="text-sm text-gray-700 font-mono break-all">
+                        {formData.communicationChannel.customLink}
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        This link will be used for demo sessions. Coach can
+                        customize links for each session.
+                      </p>
+                    </div>
+                  </div>
+                )}
+            </div>
+
+            {/* Channel Features Info */}
+            <div className="p-4 bg-blue-50 rounded-lg">
+              <h4 className="font-medium text-blue-900 mb-2">
+                Channel Features:
+              </h4>
+              <ul className="text-sm text-blue-700 space-y-1">
+                <li>
+                  • Sessions will be automatically created with selected
+                  communication links
+                </li>
+                <li>
+                  • Participants can join sessions directly via provided links
+                </li>
+                <li>
+                  • Coaches can customize meeting links for individual sessions
+                </li>
+                <li>
+                  • All session recordings and data will be stored securely
+                </li>
+              </ul>
+            </div>
+          </div>
         </form>
       </CardContent>
     </Card>
