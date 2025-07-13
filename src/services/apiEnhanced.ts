@@ -796,6 +796,7 @@ class EnhancedApiService {
 
       const availableCoaches = demoUsers
         .filter((user) => user.userType === "coach")
+        .filter((coach) => coach.status === "active") // Only active coaches
         .filter(
           (coach) =>
             assignedCoachIds.includes(coach.id) ||
@@ -803,6 +804,9 @@ class EnhancedApiService {
         )
         .map((coach) => ({
           ...coach,
+          status: "active", // Ensure status is active
+          isActive: true,
+          isVerified: true,
           assignedRequests: companyRequests.filter(
             (req) => req.assignedCoachId === coach.id,
           ),
