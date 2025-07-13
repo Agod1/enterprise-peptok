@@ -1061,6 +1061,49 @@ class EnhancedApiService {
     }
   }
 
+  async getAllCoaches(): Promise<any[]> {
+    try {
+      const response = await this.request<any[]>("/coaches");
+
+      // Filter only active coaches
+      const activeCoaches = response.data.filter(
+        (coach: any) => coach.status === "active" || coach.isActive !== false,
+      );
+
+      return activeCoaches;
+    } catch (error) {
+      console.warn("API not available, using demo coaches:", error);
+
+      // Return demo coaches from demo database
+      const demoCoaches = demoUsers
+        .filter((user) => user.userType === "coach")
+        .map((coach) => ({
+          id: coach.id,
+          firstName: coach.firstName,
+          lastName: coach.lastName,
+          title: "Professional Coach",
+          skills: ["Leadership", "Communication", "Team Building", "Strategy"],
+          experience: Math.floor(Math.random() * 8) + 3, // 3-10 years
+          rating: 4.0 + Math.random() * 1, // 4.0-5.0 rating
+          status: "active",
+          hourlyRate: 100 + Math.floor(Math.random() * 100), // $100-200/hr
+          profilePicture: coach.avatar,
+          bio: "Experienced professional coach dedicated to helping individuals and teams achieve their goals.",
+          specializations: [
+            "Leadership Development",
+            "Team Performance",
+            "Strategic Planning",
+          ],
+          yearsExperience: Math.floor(Math.random() * 8) + 3,
+          languages: ["English"],
+          timezone: "EST",
+          isActive: true,
+        }));
+
+      return demoCoaches;
+    }
+  }
+
   // ===== COMPANY-SPECIFIC METHODS =====
 
   async getCompanyRequests(companyId?: string): Promise<MentorshipRequest[]> {
