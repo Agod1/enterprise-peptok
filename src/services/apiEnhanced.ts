@@ -37,6 +37,8 @@ import { crossBrowserSync, SYNC_CONFIGS } from "./crossBrowserSync";
 // Removed: cacheInvalidation service (deleted)
 import { securityService } from "./securityService";
 import { analyticsService } from "./analyticsService";
+import { dataSyncService } from "./dataSyncService";
+import { SYNC_CONFIGS as DATA_SYNC_CONFIGS } from "./syncConfigs";
 
 const API_BASE_URL = Environment.getApiBaseUrl();
 
