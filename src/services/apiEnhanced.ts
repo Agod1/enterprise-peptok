@@ -1036,53 +1036,44 @@ class EnhancedApiService {
   ): Promise<CoachingRequest> {
     const user = checkAuthorization(["company_admin"]);
 
-    try {
-      const response = await this.request<CoachingRequest>(
-        "/coaching-requests",
-        {
-          method: "POST",
-          body: JSON.stringify({
-            ...request,
-            companyId: user.companyId,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-          }),
-        },
-      );
+    const newRequest: CoachingRequest = {
+      id: `request_${Date.now()}`, // Will be replaced by backend if successful
+      companyId: user.companyId!,
+      ...request,
+      status: "submitted",
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    } as CoachingRequest;
 
-      analytics.company.requestCreated(
-        response.data.id,
-        user.companyId!,
-        request.title || "Untitled Request",
-      );
+    // Use data sync service for backend-first creation
+    const result = await dataSyncService.createData<CoachingRequest>(
+      DATA_SYNC_CONFIGS.COACHING_REQUESTS,
+      newRequest,
+    );
 
-      // Store in localStorage for persistence
-      LocalStorageService.addCoachingRequest(response.data);
+    analytics.company.requestCreated(
+      newRequest.id,
+      user.companyId!,
+      request.title || "Untitled Request",
+    );
 
-      return response.data;
-    } catch (error) {
-      console.warn("API not available, storing request locally:", error);
+    // Track the sync result
+    analytics.trackAction({
+      action: "coaching_request_created",
+      component: "api_enhanced",
+      metadata: {
+        source: result.source,
+        companyId: user.companyId,
+        title: request.title,
+      },
+    });
 
-      const newRequest: CoachingRequest = {
-        id: `request_${Date.now()}`,
-        companyId: user.companyId!,
-        ...request,
-        status: "submitted",
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      } as CoachingRequest;
+    console.log(
+      `✅ Created coaching request via ${result.source}:`,
+      newRequest.id,
+    );
 
-      // Store in localStorage for persistence
-      LocalStorageService.addCoachingRequest(newRequest);
-
-      analytics.company.requestCreated(
-        newRequest.id,
-        user.companyId!,
-        request.title || "Untitled Request",
-      );
-
-      return newRequest;
-    }
+    return newRequest;
   }
 
   async getCoachingRequests(params?: {
