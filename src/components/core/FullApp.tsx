@@ -332,6 +332,9 @@ export const FullApp: React.FC = () => {
           {/* Public Validation Dashboard (for development/testing) */}
           <Route path="/validation" element={<PlatformValidationDashboard />} />
 
+          {/* Data Sync Testing Dashboard (for development/debugging) */}
+          <Route path="/sync-testing" element={<DataSyncTestingDashboard />} />
+
           {/* Legal Pages */}
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
