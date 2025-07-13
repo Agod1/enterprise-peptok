@@ -235,6 +235,7 @@ export default function AnalyticsSettings() {
   });
 
   const availableMetrics = [
+    // Technical/Platform Metrics
     "user_registrations",
     "session_duration",
     "page_views",
@@ -242,11 +243,21 @@ export default function AnalyticsSettings() {
     "revenue",
     "error_rate",
     "bounce_rate",
-    "user_engagement",
     "api_calls",
     "load_time",
     "active_users",
     "churn_rate",
+    // Coaching Program Metrics (synchronized with CoachingRequestForm)
+    "employee_engagement",
+    "performance_ratings",
+    "skill_assessments",
+    "goal_achievement",
+    "team_collaboration",
+    "leadership_effectiveness",
+    "innovation_metrics",
+    "time_to_proficiency",
+    "retention_rate",
+    "customer_satisfaction",
   ];
 
   const availableEvents = [
