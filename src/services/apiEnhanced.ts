@@ -917,6 +917,150 @@ class EnhancedApiService {
     }
   }
 
+  async getCoachProfile(coachId: string): Promise<any> {
+    const user = checkAuthorization(["coach", "platform_admin"]);
+
+    // Coaches can only access their own profile unless platform admin
+    if (user.userType === "coach" && user.id !== coachId) {
+      throw new Error("Coaches can only access their own profile");
+    }
+
+    try {
+      const response = await this.request<any>(`/coaches/${coachId}/profile`);
+      return response.data;
+    } catch (error) {
+      console.warn("API not available, using demo coach profile:", error);
+
+      // Return demo coach profile based on the coach ID
+      const demoCoach = demoUsers.find(
+        (u) => u.id === coachId && u.userType === "coach",
+      );
+      if (!demoCoach) {
+        throw new Error("Coach profile not found");
+      }
+
+      // Create a default profile structure
+      const defaultProfile = {
+        id: coachId,
+        name: `${demoCoach.firstName} ${demoCoach.lastName}`,
+        email: demoCoach.email,
+        bio: "Experienced professional coach dedicated to helping individuals and teams achieve their goals.",
+        skills: ["Leadership", "Communication", "Team Building", "Strategy"],
+        experience: 5,
+        hourlyRate: 150,
+        currency: "USD",
+        availability: {
+          timezone: "EST",
+          schedule: [
+            {
+              day: "Monday",
+              startTime: "09:00",
+              endTime: "17:00",
+              available: true,
+            },
+            {
+              day: "Tuesday",
+              startTime: "09:00",
+              endTime: "17:00",
+              available: true,
+            },
+            {
+              day: "Wednesday",
+              startTime: "09:00",
+              endTime: "17:00",
+              available: true,
+            },
+            {
+              day: "Thursday",
+              startTime: "09:00",
+              endTime: "17:00",
+              available: true,
+            },
+            {
+              day: "Friday",
+              startTime: "09:00",
+              endTime: "17:00",
+              available: true,
+            },
+            {
+              day: "Saturday",
+              startTime: "10:00",
+              endTime: "14:00",
+              available: false,
+            },
+            {
+              day: "Sunday",
+              startTime: "10:00",
+              endTime: "14:00",
+              available: false,
+            },
+          ],
+        },
+        certifications: ["ICF Certified Coach", "PCC Credential"],
+        languages: ["English"],
+        profileImage: demoCoach.avatar || "",
+        isActive: true,
+        notifications: {
+          emailNotifications: true,
+          smsNotifications: false,
+          newMatches: true,
+          sessionReminders: true,
+          paymentUpdates: true,
+        },
+        privacy: {
+          showProfile: true,
+          showRating: true,
+          showExperience: true,
+        },
+      };
+
+      return defaultProfile;
+    }
+  }
+
+  async updateCoachProfile(coachId: string, profileData: any): Promise<any> {
+    const user = checkAuthorization(["coach", "platform_admin"]);
+
+    // Coaches can only update their own profile unless platform admin
+    if (user.userType === "coach" && user.id !== coachId) {
+      throw new Error("Coaches can only update their own profile");
+    }
+
+    try {
+      const response = await this.request<any>(`/coaches/${coachId}/profile`, {
+        method: "PUT",
+        body: JSON.stringify(profileData),
+      });
+
+      analytics.trackAction({
+        action: "coach_profile_updated",
+        component: "coach_settings",
+        metadata: { coachId },
+      });
+
+      return response.data;
+    } catch (error) {
+      console.warn("API not available, storing profile locally:", error);
+
+      // Store profile data locally
+      localStorage.setItem(
+        `coach_profile_${coachId}`,
+        JSON.stringify({
+          ...profileData,
+          updatedAt: new Date().toISOString(),
+        }),
+      );
+
+      analytics.trackAction({
+        action: "coach_profile_updated_local",
+        component: "coach_settings",
+        metadata: { coachId },
+      });
+
+      return profileData;
+    }
+  }
+
   // ===== COMPANY-SPECIFIC METHODS =====
 
   async getCompanyRequests(companyId?: string): Promise<MentorshipRequest[]> {
