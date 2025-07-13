@@ -585,9 +585,7 @@ class EnhancedApiService {
       window.location.hostname.includes(".netlify.app");
 
     // Skip API request if no backend is configured or we're in a cloud environment without API URL
-    if (!apiUrl || (isCloudEnvironment && !apiUrl)) {
-      console.log("🗃️ No backend configured, using mock coaches data");
-    } else {
+    if (apiUrl && !isCloudEnvironment) {
       try {
         const response = await this.request<Coach[]>("/coaches");
 
@@ -601,6 +599,8 @@ class EnhancedApiService {
       } catch (error) {
         console.warn("API not available, using mock coaches:", error);
       }
+    } else {
+      console.log("🗃️ No backend configured, using mock coaches data");
     }
 
     // Return mock coaches data for the directory
