@@ -318,6 +318,19 @@ export function SessionManagement({
                               {session.participants.length} participants
                             </span>
                           </div>
+                          {session.meetingLink && (
+                            <div className="flex items-center gap-2 mt-2">
+                              <Video className="w-4 h-4 text-gray-400" />
+                              <a
+                                href={session.meetingLink}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-sm text-blue-600 hover:text-blue-800 underline truncate max-w-xs"
+                              >
+                                {session.meetingLink}
+                              </a>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
