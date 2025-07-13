@@ -576,47 +576,39 @@ class EnhancedApiService {
     }
   }
 
-  async getAllCoaches(): Promise<Coach[]> {
-    try {
-      const response = await this.request<Coach[]>("/coaches");
+      async getAllCoaches(): Promise<Coach[]> {
+    // Skip API request if backend is not available/configured
+    if (!Environment.shouldTryBackend()) {
+      console.log("🗃️ No backend configured, using mock coaches data");
+    } else {
+      try {
+        const response = await this.request<Coach[]>("/coaches");
 
-      analytics.trackAction({
-        action: "all_coaches_viewed",
-        component: "coach_directory",
-        metadata: { coachCount: response.data.length },
-      });
+        analytics.trackAction({
+          action: "all_coaches_viewed",
+          component: "coach_directory",
+          metadata: { coachCount: response.data.length },
+        });
 
-      return response.data;
-    } catch (error) {
-      console.warn("API not available, using mock coaches:", error);
+        return response.data;
+      } catch (error) {
+        console.warn("API not available, using mock coaches:", error);
+      }
+    }
 
-      // Return mock coaches data for the directory
+            // Return mock coaches data for the directory
       const mockCoaches: Coach[] = [
         {
           id: "coach_1",
           name: "Sarah Wilson",
           title: "Senior Full-Stack Developer & Tech Lead",
           company: "TechCorp Inc.",
-          coaching: [
-            "JavaScript",
-            "React",
-            "Node.js",
-            "TypeScript",
-            "AWS",
-            "Leadership",
-          ],
+          coaching: ["JavaScript", "React", "Node.js", "TypeScript", "AWS", "Leadership"],
           rating: 4.9,
           experience: 8,
           totalSessions: 156,
-          avatar:
-            "https://images.unsplash.com/photo-1494790108755-2616b612b1-3c?w=150",
-          availableSlots: [
-            "Mon 9:00",
-            "Tue 10:00",
-            "Wed 14:00",
-            "Thu 15:00",
-            "Fri 13:00",
-          ],
+          avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b1-3c?w=150",
+          availableSlots: ["Mon 9:00", "Tue 10:00", "Wed 14:00", "Thu 15:00", "Fri 13:00"],
         },
         {
           id: "coach_2",
@@ -627,8 +619,7 @@ class EnhancedApiService {
           rating: 4.7,
           experience: 6,
           totalSessions: 78,
-          avatar:
-            "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150",
+          avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150",
           availableSlots: ["Mon 14:00", "Wed 10:00", "Fri 16:00"],
         },
         {
@@ -640,8 +631,7 @@ class EnhancedApiService {
           rating: 4.6,
           experience: 5,
           totalSessions: 45,
-          avatar:
-            "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150",
+          avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150",
           availableSlots: ["Tue 9:00", "Thu 11:00", "Fri 14:00"],
         },
         {
@@ -649,19 +639,11 @@ class EnhancedApiService {
           name: "David Kumar",
           title: "DevOps Engineer & Cloud Architect",
           company: "CloudScale Solutions",
-          coaching: [
-            "AWS",
-            "Docker",
-            "Kubernetes",
-            "CI/CD",
-            "Python",
-            "Terraform",
-          ],
+          coaching: ["AWS", "Docker", "Kubernetes", "CI/CD", "Python", "Terraform"],
           rating: 4.8,
           experience: 10,
           totalSessions: 87,
-          avatar:
-            "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150",
+          avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150",
           availableSlots: ["Mon 8:00", "Wed 9:00", "Thu 13:00"],
         },
         {
@@ -669,18 +651,11 @@ class EnhancedApiService {
           name: "Lisa Thompson",
           title: "Product Manager & Agile Coach",
           company: "ProductFirst LLC",
-          coaching: [
-            "Product Management",
-            "Agile",
-            "Scrum",
-            "User Research",
-            "Analytics",
-          ],
+          coaching: ["Product Management", "Agile", "Scrum", "User Research", "Analytics"],
           rating: 4.5,
           experience: 7,
           totalSessions: 53,
-          avatar:
-            "https://images.unsplash.com/photo-1494790108755-2616b612b1-c?w=150",
+          avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b1-c?w=150",
           availableSlots: ["Tue 10:00", "Wed 15:00", "Fri 11:00"],
         },
         {
@@ -688,20 +663,13 @@ class EnhancedApiService {
           name: "James Anderson",
           title: "Data Scientist & ML Engineer",
           company: "DataDriven Analytics",
-          coaching: [
-            "Python",
-            "Machine Learning",
-            "TensorFlow",
-            "Data Analysis",
-            "SQL",
-          ],
+          coaching: ["Python", "Machine Learning", "TensorFlow", "Data Analysis", "SQL"],
           rating: 4.7,
           experience: 9,
           totalSessions: 67,
-          avatar:
-            "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150",
+          avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150",
           availableSlots: ["Mon 11:00", "Tue 14:00", "Thu 10:00", "Fri 9:00"],
-        },
+        }
       ];
 
       analytics.trackAction({
