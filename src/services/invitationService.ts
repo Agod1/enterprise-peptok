@@ -42,12 +42,25 @@ export interface AcceptInvitationData {
 
 class InvitationService {
   constructor() {
-    // Ensure database connection on service initialization if API is configured
-    this.verifyDatabaseConnection().catch(() => {
+    // Only verify database connection if we have an API URL configured
+    const apiUrl = import.meta.env.VITE_API_URL;
+    const isCloudEnvironment =
+      window.location.hostname.includes(".fly.dev") ||
+      window.location.hostname.includes(".vercel.app") ||
+      window.location.hostname.includes(".netlify.app");
+
+    if (apiUrl || (!isCloudEnvironment && this.isLocalDevelopment())) {
+      // Ensure database connection on service initialization if API is configured
+      this.verifyDatabaseConnection().catch(() => {
+        console.log(
+          "🗃️ Database verification failed - will use fallback methods",
+        );
+      });
+    } else {
       console.log(
-        "🗃️ Database verification failed - will use fallback methods",
+        "🗃️ No backend configured for InvitationService - using localStorage mode",
       );
-    });
+    }
   }
 
   /**
