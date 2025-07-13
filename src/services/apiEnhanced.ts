@@ -47,6 +47,10 @@ let currentUser: User | null = null;
 
 export const setCurrentUser = (user: User | null) => {
   currentUser = user;
+
+  // Set user in sync service for authentication
+  dataSyncService.setCurrentUser(user);
+
   if (user) {
     analytics.setUser(user.id, user.userType, {
       email: user.email,
