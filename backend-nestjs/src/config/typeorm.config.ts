@@ -10,8 +10,12 @@ import { MatchingRequest } from "../modules/matching/entities/matching-request.e
 import { Match } from "../modules/matching/entities/match.entity";
 
 export const createTypeOrmConfig = (configService: ConfigService) => ({
-  type: "sqlite" as const,
-  database: "peptok_coaching.db",
+  type: "postgres" as const,
+  host: configService.get("DATABASE_HOST", "localhost"),
+  port: configService.get("DATABASE_PORT", 5432),
+  username: configService.get("DATABASE_USER", "peptok_user"),
+  password: configService.get("DATABASE_PASSWORD", "peptok_password"),
+  database: configService.get("DATABASE_NAME", "peptok_dev"),
   entities: [
     User,
     Coach,
@@ -22,10 +26,14 @@ export const createTypeOrmConfig = (configService: ConfigService) => ({
     MatchingRequest,
     Match,
   ],
-  synchronize: true, // For testing only
-  logging: false,
+  synchronize: true, // For development only
+  logging: configService.get("NODE_ENV") === "development",
   migrations: ["dist/migrations/**/*.js"],
   subscribers: ["dist/subscribers/**/*.js"],
+  ssl:
+    configService.get("NODE_ENV") === "production"
+      ? { rejectUnauthorized: false }
+      : false,
 });
 
 // For CLI usage
