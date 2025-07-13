@@ -709,8 +709,16 @@ export const CoachDashboard: React.FC = () => {
                           <Button
                             variant="outline"
                             onClick={() => {
-                              setSelectedMatch(match);
-                              setIsMatchDialogOpen(true);
+                              console.log("Opening match details for:", match);
+                              if (match && match.id) {
+                                setSelectedMatch(match);
+                                setIsMatchDialogOpen(true);
+                              } else {
+                                console.error("Invalid match data:", match);
+                                toast.error(
+                                  "Match details not available. Please refresh and try again.",
+                                );
+                              }
                             }}
                           >
                             <Eye className="w-4 h-4 mr-2" />
