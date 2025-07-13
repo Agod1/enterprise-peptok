@@ -35,6 +35,10 @@ import { useAuth } from "@/contexts/AuthContext";
 import { BackendStatus } from "@/components/ui/BackendStatus";
 import { duplicateCleanup } from "@/utils/duplicateCleanup";
 import LocalStorageService from "@/services/localStorageService";
+import {
+  logProgramCreation,
+  logProgramUpdate,
+} from "@/services/interactionLogger";
 
 export default function CreateCoachingRequest() {
   const navigate = useNavigate();
