@@ -62,6 +62,7 @@ import { crossBrowserSync, SYNC_CONFIGS } from "@/services/crossBrowserSync";
 import LocalStorageService from "@/services/localStorageService";
 import { emailService } from "@/services/email";
 import { websocketService } from "@/services/websocket";
+import { logMatchAction } from "@/services/interactionLogger";
 
 interface CoachProfile {
   id: string;
