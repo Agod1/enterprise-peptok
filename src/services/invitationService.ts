@@ -42,15 +42,26 @@ export interface AcceptInvitationData {
 
 class InvitationService {
   constructor() {
-    // Only verify database connection if we have an API URL configured
+    // Check environment and API configuration
     const apiUrl = import.meta.env.VITE_API_URL;
+    const hostname = window.location.hostname;
     const isCloudEnvironment =
-      window.location.hostname.includes(".fly.dev") ||
-      window.location.hostname.includes(".vercel.app") ||
-      window.location.hostname.includes(".netlify.app");
+      hostname.includes(".fly.dev") ||
+      hostname.includes(".vercel.app") ||
+      hostname.includes(".netlify.app") ||
+      hostname.includes(".herokuapp.com") ||
+      hostname.includes(".amazonaws.com");
 
-    if (apiUrl || (!isCloudEnvironment && this.isLocalDevelopment())) {
-      // Ensure database connection on service initialization if API is configured
+    console.log("🗃️ InvitationService environment check:", {
+      hostname,
+      apiUrl: !!apiUrl,
+      isCloudEnvironment,
+      isLocal: this.isLocalDevelopment(),
+    });
+
+    // Only verify database connection if we have an explicit API URL
+    if (apiUrl) {
+      console.log("🗃️ API URL configured, verifying database connection...");
       this.verifyDatabaseConnection().catch(() => {
         console.log(
           "🗃️ Database verification failed - will use fallback methods",
@@ -58,7 +69,7 @@ class InvitationService {
       });
     } else {
       console.log(
-        "🗃️ No backend configured for InvitationService - using localStorage mode",
+        "🗃️ No API URL configured - InvitationService using localStorage mode",
       );
     }
   }
@@ -341,7 +352,7 @@ class InvitationService {
 
       // Check if expired
       if (new Date() > new Date(invitation.expiresAt)) {
-        console.log("⏰ Invitation expired");
+        console.log("��� Invitation expired");
         invitation.status = "expired";
         // Update in localStorage
         const updatedInvitations = invitations.map((inv) =>
