@@ -15,7 +15,7 @@ export class CoachesService {
       ...createCoachDto,
       userId,
     });
-    return await this.coachRepository.save(coach);
+    return this.coachRepository.save(coach) as Promise<Coach>;
   }
 
   async findAll(query: any): Promise<{ coaches: Coach[]; total: number }> {
