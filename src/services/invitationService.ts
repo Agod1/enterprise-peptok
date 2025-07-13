@@ -605,21 +605,32 @@ class InvitationService {
    * Get pending invitations for a user by email
    */
   async getPendingInvitations(email: string): Promise<TeamInvitation[]> {
+    console.log(`📥 Getting pending invitations for ${email}`);
+
     try {
-      // Try backend API first if available
-      if (this.isApiConfigured() && databaseConfig.isDatabaseReady()) {
-        const invitations = await apiEnhanced.getPendingInvitations(email);
-        return invitations;
+      // Use data sync service for backend-first retrieval
+      const result = await dataSyncService.getData<TeamInvitation>(
+        SYNC_CONFIGS.TEAM_INVITATIONS,
+        { email: email.toLowerCase(), status: "pending" },
+      );
+
+      let invitations = result.data || [];
+
+      // Filter for localStorage fallback (backend should handle this filtering)
+      if (result.source === "localStorage") {
+        invitations = invitations.filter(
+          (inv) =>
+            inv.email.toLowerCase() === email.toLowerCase() &&
+            inv.status === "pending" &&
+            new Date() <= new Date(inv.expiresAt),
+        );
       }
 
-      // Fall back to localStorage
-      const invitations = this.getInvitationsFromLocalStorage();
-      return invitations.filter(
-        (inv) =>
-          inv.email.toLowerCase() === email.toLowerCase() &&
-          inv.status === "pending" &&
-          new Date() <= new Date(inv.expiresAt),
+      console.log(
+        `✅ Found ${invitations.length} pending invitations for ${email} from ${result.source}`,
       );
+
+      return invitations;
     } catch (error) {
       console.error("Failed to get pending invitations:", error);
       return [];
