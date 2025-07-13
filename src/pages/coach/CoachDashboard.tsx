@@ -274,10 +274,18 @@ export const CoachDashboard: React.FC = () => {
       const result = await apiEnhanced.acceptMatch(matchId);
 
       if (result.success) {
-        // Remove from pending matches
-        setPendingMatches((prev) =>
-          prev.filter((match) => match.id !== matchId),
+        // Remove from pending matches and persist the action
+        const updatedMatches = pendingMatches.filter(
+          (match) => match.id !== matchId,
         );
+        setPendingMatches(updatedMatches);
+
+        // Persist match action to prevent data loss on refresh
+        LocalStorageService.setItem(`match_action_${matchId}`, {
+          action: "accepted",
+          timestamp: new Date().toISOString(),
+          coachId: user.id,
+        });
 
         toast.success("Match accepted successfully!");
 
