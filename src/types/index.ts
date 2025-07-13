@@ -74,8 +74,7 @@ export interface CoachSessionLimits {
   isAvailable: boolean;
 }
 
-// Keep SubscriptionTier for backward compatibility but mark as deprecated
-/** @deprecated Use SessionPricingTier instead */
+// Keep SubscriptionTier for backward compatibility
 export interface SubscriptionTier {
   id: string;
   name: string;
@@ -188,7 +187,6 @@ export interface CoachingRequest {
 }
 
 // Keep MentorshipRequest for backward compatibility
-/** @deprecated Use CoachingRequest instead */
 export interface MentorshipRequest extends CoachingRequest {}
 
 export interface CoachingGoal {
@@ -206,7 +204,6 @@ export interface CoachingGoal {
 }
 
 // Keep MentorshipGoal for backward compatibility
-/** @deprecated Use CoachingGoal instead */
 export interface MentorshipGoal extends CoachingGoal {}
 
 export interface Connection {
