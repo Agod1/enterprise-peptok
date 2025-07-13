@@ -261,6 +261,10 @@ export interface CoachingRequestFormData {
     endDate: string;
     sessionFrequency: "weekly" | "bi-weekly" | "monthly";
   };
+  communicationChannel: {
+    type: "google_meet" | "zoom" | "teams" | "custom";
+    customLink?: string;
+  };
   expertise?: string[];
   level?: string;
 }
