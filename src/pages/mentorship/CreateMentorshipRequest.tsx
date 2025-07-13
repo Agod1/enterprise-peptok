@@ -36,6 +36,7 @@ import {
 import { useAuth } from "@/contexts/AuthContext";
 import { BackendStatus } from "@/components/ui/BackendStatus";
 import { duplicateCleanup } from "@/utils/duplicateCleanup";
+import LocalStorageService from "@/services/localStorageService";
 
 export default function CreateMentorshipRequest() {
   const navigate = useNavigate();
@@ -83,25 +84,30 @@ export default function CreateMentorshipRequest() {
   // Load draft from localStorage and generate/load program ID
   useEffect(() => {
     // Generate a unique program ID for this session if not exists
-    let storedProgramId = localStorage.getItem("current-program-id");
+    let storedProgramId = LocalStorageService.getProgramId();
     if (!storedProgramId) {
       storedProgramId = `program-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-      localStorage.setItem("current-program-id", storedProgramId);
+      LocalStorageService.setProgramId(storedProgramId);
     }
     setProgramId(storedProgramId);
 
-    const draft = localStorage.getItem("mentorship-request-draft");
+    const draft = LocalStorageService.getCoachingRequestDraft();
     if (draft) {
       try {
-        const parsedDraft = JSON.parse(draft);
-        setSavedDraft(parsedDraft);
+        setSavedDraft(draft);
         // Load team members from draft if available
-        if (parsedDraft.teamMembers && parsedDraft.teamMembers.length > 0) {
-          setTeamMembers(parsedDraft.teamMembers);
+        if (draft.teamMembers && draft.teamMembers.length > 0) {
+          setTeamMembers(draft.teamMembers);
         }
       } catch (error) {
         console.error("Failed to load draft:", error);
       }
+    }
+
+    // Load existing team members from localStorage
+    const existingTeamMembers = LocalStorageService.getTeamMembers();
+    if (existingTeamMembers.length > 0 && teamMembers.length === 0) {
+      setTeamMembers(existingTeamMembers);
     }
   }, []);
 
@@ -321,8 +327,7 @@ export default function CreateMentorshipRequest() {
       }
 
       // Clear saved draft and program ID
-      localStorage.removeItem("mentorship-request-draft");
-      localStorage.removeItem("current-program-id");
+      LocalStorageService.clearCoachingRequestDraft();
       setTeamMembers([]);
       setProgramId("");
 
@@ -390,7 +395,7 @@ export default function CreateMentorshipRequest() {
     setIsDraftSaving(true);
     try {
       // Save to localStorage as backup
-      localStorage.setItem("mentorship-request-draft", draftString);
+      LocalStorageService.setCoachingRequestDraft(data);
       setLastSavedDraft(draftString);
 
       console.log(
@@ -424,8 +429,7 @@ export default function CreateMentorshipRequest() {
   };
 
   const clearDraft = () => {
-    localStorage.removeItem("mentorship-request-draft");
-    localStorage.removeItem("current-program-id");
+    LocalStorageService.clearCoachingRequestDraft();
     setSavedDraft(null);
     setTeamMembers([]);
     setProgramId("");
