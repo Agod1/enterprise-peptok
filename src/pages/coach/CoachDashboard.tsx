@@ -408,6 +408,14 @@ export const CoachDashboard: React.FC = () => {
           // Don't fail the match decline if notification fails
         }
 
+        // Log interaction for backend tracking (Issues #6 & #7)
+        try {
+          await logMatchAction(user.id, "coach", matchId, "declined", reason);
+          console.log("✅ Match decline interaction logged");
+        } catch (logError) {
+          console.warn("⚠️ Failed to log match action:", logError);
+        }
+
         setIsMatchDialogOpen(false);
         setSelectedMatch(null);
         setDeclineReason("");
