@@ -37,11 +37,23 @@ class DatabaseConfigService {
       failedEndpoints: [],
     };
 
-    // Only test database connection if API is properly configured
-    if (this.isApiConfigured()) {
+    // Only test database connection if API is properly configured and we're not in a cloud environment without API
+    const apiUrl = import.meta.env.VITE_API_URL;
+    const hostname = window.location.hostname;
+    const isCloudEnvironment =
+      hostname.includes(".fly.dev") ||
+      hostname.includes(".vercel.app") ||
+      hostname.includes(".netlify.app") ||
+      hostname.includes(".herokuapp.com") ||
+      hostname.includes(".amazonaws.com");
+
+    if (apiUrl && this.isApiConfigured()) {
+      console.log("🗃️ Testing database connection on service initialization");
       this.testDatabaseConnection();
     } else {
-      console.log("🗃️ Database service disabled - no API configuration");
+      console.log(
+        "🗃️ Database service disabled - no API configuration or cloud environment without backend",
+      );
       this.status.isConnected = false;
     }
   }
