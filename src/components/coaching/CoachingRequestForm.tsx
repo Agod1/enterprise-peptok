@@ -532,16 +532,52 @@ export function CoachingRequestForm({
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* Basic Information */}
           <div className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="title">Program Title *</Label>
-              <Input
-                id="title"
-                value={formData.title}
-                onChange={(e) => updateFormData({ title: e.target.value })}
-                placeholder="e.g., Leadership Development Program Q1 2024"
-                required
-                disabled={isLoading}
-              />
+            <div className="space-y-2 relative">
+              <Label htmlFor="title" className="flex items-center gap-2">
+                Program Title *
+                <Badge variant="outline" className="text-xs">
+                  <Zap className="w-3 h-3 mr-1" />
+                  Type A, B, C, D, or E for templates
+                </Badge>
+              </Label>
+              <div className="relative">
+                <Input
+                  ref={titleInputRef}
+                  id="title"
+                  value={formData.title}
+                  onChange={(e) => handleTitleChange(e.target.value)}
+                  placeholder="e.g., Leadership Development Program Q1 2024 (Try typing A, B, C, D, or E)"
+                  required
+                  disabled={isLoading}
+                />
+                {showSuggestions && suggestions.length > 0 && (
+                  <div
+                    ref={suggestionsRef}
+                    className="absolute top-full left-0 right-0 z-50 bg-white border border-gray-200 rounded-md shadow-lg mt-1"
+                  >
+                    {suggestions.map((suggestion, index) => (
+                      <button
+                        key={index}
+                        type="button"
+                        className="w-full text-left px-4 py-3 hover:bg-blue-50 border-b border-gray-100 last:border-b-0 transition-colors"
+                        onClick={() => handleSuggestionClick(suggestion)}
+                      >
+                        <div className="flex items-center gap-2">
+                          <Lightbulb className="w-4 h-4 text-blue-500" />
+                          <div>
+                            <div className="font-medium text-sm">
+                              {suggestion}
+                            </div>
+                            <div className="text-xs text-gray-500">
+                              Click to auto-fill complete program template
+                            </div>
+                          </div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
 
             <div className="space-y-2">
