@@ -1,5 +1,5 @@
 import { CoachingRequest } from "@/types";
-import { LocalStorageService } from "@/services/localStorageService";
+import LocalStorageService from "@/services/localStorageService";
 import { TeamInvitation } from "@/services/invitationService";
 
 export function initializeSampleData() {
