@@ -576,6 +576,156 @@ class EnhancedApiService {
     }
   }
 
+  async getAllCoaches(): Promise<Coach[]> {
+    // Check if we have a valid API URL configuration
+    const apiUrl = import.meta.env.VITE_API_URL;
+    const isCloudEnvironment =
+      window.location.hostname.includes(".fly.dev") ||
+      window.location.hostname.includes(".vercel.app") ||
+      window.location.hostname.includes(".netlify.app");
+
+    // Skip API request if no backend is configured or we're in a cloud environment without API URL
+    if (apiUrl && !isCloudEnvironment) {
+      try {
+        const response = await this.request<Coach[]>("/coaches");
+
+        analytics.trackAction({
+          action: "all_coaches_viewed",
+          component: "coach_directory",
+          metadata: { coachCount: response.data.length },
+        });
+
+        return response.data;
+      } catch (error) {
+        console.warn("API not available, using mock coaches:", error);
+      }
+    } else {
+      console.log("🗃️ No backend configured, using mock coaches data");
+    }
+
+    // Return mock coaches data for the directory
+    const mockCoaches: Coach[] = [
+      {
+        id: "coach_1",
+        name: "Sarah Wilson",
+        title: "Senior Full-Stack Developer & Tech Lead",
+        company: "TechCorp Inc.",
+        coaching: [
+          "JavaScript",
+          "React",
+          "Node.js",
+          "TypeScript",
+          "AWS",
+          "Leadership",
+        ],
+        rating: 4.9,
+        experience: 8,
+        totalSessions: 156,
+        avatar:
+          "https://images.unsplash.com/photo-1494790108755-2616b612b1-3c?w=150",
+        availableSlots: [
+          "Mon 9:00",
+          "Tue 10:00",
+          "Wed 14:00",
+          "Thu 15:00",
+          "Fri 13:00",
+        ],
+      },
+      {
+        id: "coach_2",
+        name: "Michael Chen",
+        title: "React Specialist & UI/UX Expert",
+        company: "Design Systems Co.",
+        coaching: ["React", "TypeScript", "CSS", "Design Systems", "GraphQL"],
+        rating: 4.7,
+        experience: 6,
+        totalSessions: 78,
+        avatar:
+          "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150",
+        availableSlots: ["Mon 14:00", "Wed 10:00", "Fri 16:00"],
+      },
+      {
+        id: "coach_3",
+        name: "Emma Rodriguez",
+        title: "JavaScript Expert & Mentor",
+        company: "Vue Innovations",
+        coaching: ["JavaScript", "Vue.js", "Node.js", "MongoDB", "Testing"],
+        rating: 4.6,
+        experience: 5,
+        totalSessions: 45,
+        avatar:
+          "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150",
+        availableSlots: ["Tue 9:00", "Thu 11:00", "Fri 14:00"],
+      },
+      {
+        id: "coach_4",
+        name: "David Kumar",
+        title: "DevOps Engineer & Cloud Architect",
+        company: "CloudScale Solutions",
+        coaching: [
+          "AWS",
+          "Docker",
+          "Kubernetes",
+          "CI/CD",
+          "Python",
+          "Terraform",
+        ],
+        rating: 4.8,
+        experience: 10,
+        totalSessions: 87,
+        avatar:
+          "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150",
+        availableSlots: ["Mon 8:00", "Wed 9:00", "Thu 13:00"],
+      },
+      {
+        id: "coach_5",
+        name: "Lisa Thompson",
+        title: "Product Manager & Agile Coach",
+        company: "ProductFirst LLC",
+        coaching: [
+          "Product Management",
+          "Agile",
+          "Scrum",
+          "User Research",
+          "Analytics",
+        ],
+        rating: 4.5,
+        experience: 7,
+        totalSessions: 53,
+        avatar:
+          "https://images.unsplash.com/photo-1494790108755-2616b612b1-c?w=150",
+        availableSlots: ["Tue 10:00", "Wed 15:00", "Fri 11:00"],
+      },
+      {
+        id: "coach_6",
+        name: "James Anderson",
+        title: "Data Scientist & ML Engineer",
+        company: "DataDriven Analytics",
+        coaching: [
+          "Python",
+          "Machine Learning",
+          "TensorFlow",
+          "Data Analysis",
+          "SQL",
+        ],
+        rating: 4.7,
+        experience: 9,
+        totalSessions: 67,
+        avatar:
+          "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150",
+        availableSlots: ["Mon 11:00", "Tue 14:00", "Thu 10:00", "Fri 9:00"],
+      },
+    ];
+
+    analytics.trackAction({
+      action: "all_coaches_viewed_mock",
+      component: "coach_directory",
+      metadata: { coachCount: mockCoaches.length },
+    });
+
+    return mockCoaches;
+  }
+
   async getCompanyCoaches(companyId?: string): Promise<any[]> {
     const user = checkAuthorization(["company_admin", "platform_admin"]);
     const targetCompanyId = companyId || user.companyId;
@@ -1362,75 +1512,87 @@ class EnhancedApiService {
   }): Promise<MentorshipRequest[]> {
     const user = checkAuthorization();
 
-    try {
-      const queryParams = new URLSearchParams();
+    // Check if we have a valid API URL configuration
+    const apiUrl = import.meta.env.VITE_API_URL;
+    const isCloudEnvironment =
+      window.location.hostname.includes(".fly.dev") ||
+      window.location.hostname.includes(".vercel.app") ||
+      window.location.hostname.includes(".netlify.app");
 
-      // Role-based filtering
-      if (user.userType === "coach") {
-        queryParams.append("coachId", user.id);
-      } else if (user.userType === "company_admin" && user.companyId) {
-        queryParams.append("companyId", user.companyId);
-      }
+    // Skip API request if no backend is configured or we're in a cloud environment without API URL
+    if (apiUrl && !isCloudEnvironment) {
+      try {
+        const queryParams = new URLSearchParams();
 
-      // Additional filters
-      if (params?.status) queryParams.append("status", params.status);
-      if (params?.companyId && user.userType === "platform_admin") {
-        queryParams.append("companyId", params.companyId);
-      }
-      if (params?.coachId && user.userType === "platform_admin") {
-        queryParams.append("coachId", params.coachId);
-      }
-      if (params?.limit) queryParams.append("limit", params.limit.toString());
+        // Role-based filtering
+        if (user.userType === "coach") {
+          queryParams.append("coachId", user.id);
+        } else if (user.userType === "company_admin" && user.companyId) {
+          queryParams.append("companyId", user.companyId);
+        }
 
-      const response = await this.request<MentorshipRequest[]>(
-        `/mentorship-requests?${queryParams.toString()}`,
-      );
+        // Additional filters
+        if (params?.status) queryParams.append("status", params.status);
+        if (params?.companyId && user.userType === "platform_admin") {
+          queryParams.append("companyId", params.companyId);
+        }
+        if (params?.coachId && user.userType === "platform_admin") {
+          queryParams.append("coachId", params.coachId);
+        }
+        if (params?.limit) queryParams.append("limit", params.limit.toString());
 
-      analytics.trackAction({
-        action: "mentorship_requests_viewed",
-        component: "dashboard",
-        metadata: {
-          params,
-          userType: user.userType,
-          resultCount: response.data.length,
-        },
-      });
-
-      return response.data;
-    } catch (error) {
-      console.warn("API not available, using filtered mock requests:", error);
-
-      // Get and filter data from localStorage
-      let allRequests = JSON.parse(
-        localStorage.getItem("mentorship_requests") || "[]",
-      );
-
-      // Apply role-based filtering
-      if (user.userType === "coach") {
-        allRequests = allRequests.filter(
-          (req: MentorshipRequest) =>
-            req.assignedCoachId === user.id ||
-            (req.status === "pending" && !req.assignedCoachId),
+        const response = await this.request<MentorshipRequest[]>(
+          `/mentorship-requests?${queryParams.toString()}`,
         );
-      } else if (user.userType === "company_admin" && user.companyId) {
-        allRequests = allRequests.filter(
-          (req: MentorshipRequest) => req.companyId === user.companyId,
-        );
-      }
 
-      // Apply additional filters
-      if (params?.status) {
-        allRequests = allRequests.filter(
-          (req: MentorshipRequest) => req.status === params.status,
-        );
-      }
+        analytics.trackAction({
+          action: "mentorship_requests_viewed",
+          component: "dashboard",
+          metadata: {
+            params,
+            userType: user.userType,
+            resultCount: response.data.length,
+          },
+        });
 
-      if (params?.limit) {
-        allRequests = allRequests.slice(0, params.limit);
+        return response.data;
+      } catch (error) {
+        console.warn("API not available, using filtered mock requests:", error);
       }
-
-      return allRequests;
+    } else {
+      console.log("🗃️ No backend configured, using filtered mock requests");
     }
+
+    // Get and filter data from localStorage
+    let allRequests = JSON.parse(
+      localStorage.getItem("mentorship_requests") || "[]",
+    );
+
+    // Apply role-based filtering
+    if (user.userType === "coach") {
+      allRequests = allRequests.filter(
+        (req: MentorshipRequest) =>
+          req.assignedCoachId === user.id ||
+          (req.status === "pending" && !req.assignedCoachId),
+      );
+    } else if (user.userType === "company_admin" && user.companyId) {
+      allRequests = allRequests.filter(
+        (req: MentorshipRequest) => req.companyId === user.companyId,
+      );
+    }
+
+    // Apply additional filters
+    if (params?.status) {
+      allRequests = allRequests.filter(
+        (req: MentorshipRequest) => req.status === params.status,
+      );
+    }
+
+    if (params?.limit) {
+      allRequests = allRequests.slice(0, params.limit);
+    }
+
+    return allRequests;
   }
 
   // ===== ANALYTICS METHODS =====
@@ -1458,44 +1620,58 @@ class EnhancedApiService {
 
   // Existing methods from original API service that don't need auth changes
   async getPricingConfig(): Promise<any> {
-    try {
-      const response = await this.request<any>("/admin/pricing-config");
+    // Check if we have a valid API URL configuration
+    const apiUrl = import.meta.env.VITE_API_URL;
+    const isCloudEnvironment =
+      window.location.hostname.includes(".fly.dev") ||
+      window.location.hostname.includes(".vercel.app") ||
+      window.location.hostname.includes(".netlify.app");
 
-      analytics.trackAction({
-        action: "pricing_config_retrieved",
-        component: "api_enhanced",
-        metadata: { source: "backend_api" },
-      });
+    // Skip API request if no backend is configured or we're in a cloud environment without API URL
+    if (apiUrl && !isCloudEnvironment) {
+      try {
+        const response = await this.request<any>("/admin/pricing-config");
 
-      return response.data;
-    } catch (error) {
-      console.warn(
-        "API not available, using cross-browser synchronized storage:",
-        error,
-      );
+        analytics.trackAction({
+          action: "pricing_config_retrieved",
+          component: "api_enhanced",
+          metadata: { source: "backend_api" },
+        });
 
-      // Use centralized cross-browser sync service
-      const config = crossBrowserSync.load(SYNC_CONFIGS.PRICING_CONFIG);
-
-      if (config) {
-        return config;
+        return response.data;
+      } catch (error) {
+        console.warn(
+          "API not available, using cross-browser synchronized storage:",
+          error,
+        );
       }
-
-      // Default configuration if no data exists
-      const defaultConfig = {
-        companyServiceFee: 0.1,
-        coachCommission: 0.2,
-        minCoachCommissionAmount: 5,
-        additionalParticipantFee: 25,
-        maxParticipantsIncluded: 1,
-        currency: "CAD",
-        lastUpdated: new Date().toISOString(),
-        version: "1.0",
-        createdBy: "system",
-      };
-
-      return defaultConfig;
+    } else {
+      console.log(
+        "🗃️ No backend configured, using cross-browser synchronized storage for pricing config",
+      );
     }
+
+    // Use centralized cross-browser sync service
+    const config = crossBrowserSync.load(SYNC_CONFIGS.PRICING_CONFIG);
+
+    if (config) {
+      return config;
+    }
+
+    // Default configuration if no data exists
+    const defaultConfig = {
+      companyServiceFee: 0.1,
+      coachCommission: 0.2,
+      minCoachCommissionAmount: 5,
+      additionalParticipantFee: 25,
+      maxParticipantsIncluded: 1,
+      currency: "CAD",
+      lastUpdated: new Date().toISOString(),
+      version: "1.0",
+      createdBy: "system",
+    };
+
+    return defaultConfig;
   }
 
   private getSharedPlatformConfig(): any {

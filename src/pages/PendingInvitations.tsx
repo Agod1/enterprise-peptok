@@ -55,20 +55,26 @@ export default function PendingInvitations() {
     setHasSearched(true);
 
     try {
-      const pendingInvitations = invitationService.getPendingInvitations(
+      const pendingInvitations = await invitationService.getPendingInvitations(
         email.toLowerCase(),
       );
-      setInvitations(pendingInvitations);
 
-      if (pendingInvitations.length === 0) {
+      // Ensure pendingInvitations is always an array
+      const safeInvitations = Array.isArray(pendingInvitations)
+        ? pendingInvitations
+        : [];
+      setInvitations(safeInvitations);
+
+      if (safeInvitations.length === 0) {
         toast.info("No pending invitations found for this email address");
       } else {
         toast.success(
-          `Found ${pendingInvitations.length} pending invitation${pendingInvitations.length > 1 ? "s" : ""}`,
+          `Found ${safeInvitations.length} pending invitation${safeInvitations.length > 1 ? "s" : ""}`,
         );
       }
     } catch (error) {
       console.error("Failed to search invitations:", error);
+      setInvitations([]); // Ensure invitations is set to empty array on error
       toast.error("Failed to search for invitations");
     } finally {
       setIsLoading(false);
@@ -193,113 +199,115 @@ export default function PendingInvitations() {
               ) : (
                 <div className="space-y-4">
                   <h2 className="text-xl font-semibold text-gray-900 text-center">
-                    Your Pending Invitations ({invitations.length})
+                    Your Pending Invitations (
+                    {Array.isArray(invitations) ? invitations.length : 0})
                   </h2>
 
                   <div className="grid gap-4">
-                    {invitations.map((invitation) => (
-                      <Card key={invitation.id} className="max-w-2xl mx-auto">
-                        <CardContent className="p-6">
-                          <div className="space-y-4">
-                            {/* Header */}
-                            <div className="flex items-start justify-between">
-                              <div className="space-y-1">
-                                <h3 className="text-lg font-semibold text-gray-900">
-                                  {invitation.programTitle}
-                                </h3>
-                                <div className="flex items-center gap-2 text-sm text-gray-600">
-                                  <Building2 className="w-4 h-4" />
-                                  {invitation.companyName}
+                    {Array.isArray(invitations) &&
+                      invitations.map((invitation) => (
+                        <Card key={invitation.id} className="max-w-2xl mx-auto">
+                          <CardContent className="p-6">
+                            <div className="space-y-4">
+                              {/* Header */}
+                              <div className="flex items-start justify-between">
+                                <div className="space-y-1">
+                                  <h3 className="text-lg font-semibold text-gray-900">
+                                    {invitation.programTitle}
+                                  </h3>
+                                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                                    <Building2 className="w-4 h-4" />
+                                    {invitation.companyName}
+                                  </div>
                                 </div>
+                                <Badge
+                                  variant="outline"
+                                  className={getUrgencyColor(
+                                    invitation.expiresAt,
+                                  )}
+                                >
+                                  <Clock className="w-3 h-3 mr-1" />
+                                  {formatTimeRemaining(invitation.expiresAt)}
+                                </Badge>
                               </div>
-                              <Badge
-                                variant="outline"
-                                className={getUrgencyColor(
-                                  invitation.expiresAt,
+
+                              {/* Invitation Details */}
+                              <div className="bg-gray-50 p-4 rounded-lg space-y-3">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                  <div className="flex items-center gap-2">
+                                    <Users className="w-4 h-4 text-gray-500" />
+                                    <span className="text-sm">
+                                      Role: <strong>{invitation.role}</strong>
+                                    </span>
+                                  </div>
+                                  <div className="flex items-center gap-2">
+                                    <Mail className="w-4 h-4 text-gray-500" />
+                                    <span className="text-sm">
+                                      From:{" "}
+                                      <strong>{invitation.inviterName}</strong>
+                                    </span>
+                                  </div>
+                                </div>
+
+                                {invitation.metadata && (
+                                  <div className="flex flex-wrap gap-2">
+                                    {invitation.metadata.startDate && (
+                                      <Badge
+                                        variant="secondary"
+                                        className="text-xs"
+                                      >
+                                        <Calendar className="w-3 h-3 mr-1" />
+                                        Starts{" "}
+                                        {new Date(
+                                          invitation.metadata.startDate,
+                                        ).toLocaleDateString()}
+                                      </Badge>
+                                    )}
+                                    {invitation.metadata.duration && (
+                                      <Badge
+                                        variant="secondary"
+                                        className="text-xs"
+                                      >
+                                        <Clock className="w-3 h-3 mr-1" />
+                                        {invitation.metadata.duration}
+                                      </Badge>
+                                    )}
+                                    {invitation.metadata.sessionCount && (
+                                      <Badge
+                                        variant="secondary"
+                                        className="text-xs"
+                                      >
+                                        {invitation.metadata.sessionCount}{" "}
+                                        sessions
+                                      </Badge>
+                                    )}
+                                  </div>
                                 )}
-                              >
-                                <Clock className="w-3 h-3 mr-1" />
-                                {formatTimeRemaining(invitation.expiresAt)}
-                              </Badge>
-                            </div>
 
-                            {/* Invitation Details */}
-                            <div className="bg-gray-50 p-4 rounded-lg space-y-3">
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="flex items-center gap-2">
-                                  <Users className="w-4 h-4 text-gray-500" />
-                                  <span className="text-sm">
-                                    Role: <strong>{invitation.role}</strong>
-                                  </span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                  <Mail className="w-4 h-4 text-gray-500" />
-                                  <span className="text-sm">
-                                    From:{" "}
-                                    <strong>{invitation.inviterName}</strong>
-                                  </span>
-                                </div>
+                                {invitation.metadata?.programDescription && (
+                                  <p className="text-sm text-gray-700">
+                                    {invitation.metadata.programDescription}
+                                  </p>
+                                )}
                               </div>
 
-                              {invitation.metadata && (
-                                <div className="flex flex-wrap gap-2">
-                                  {invitation.metadata.startDate && (
-                                    <Badge
-                                      variant="secondary"
-                                      className="text-xs"
-                                    >
-                                      <Calendar className="w-3 h-3 mr-1" />
-                                      Starts{" "}
-                                      {new Date(
-                                        invitation.metadata.startDate,
-                                      ).toLocaleDateString()}
-                                    </Badge>
-                                  )}
-                                  {invitation.metadata.duration && (
-                                    <Badge
-                                      variant="secondary"
-                                      className="text-xs"
-                                    >
-                                      <Clock className="w-3 h-3 mr-1" />
-                                      {invitation.metadata.duration}
-                                    </Badge>
-                                  )}
-                                  {invitation.metadata.sessionCount && (
-                                    <Badge
-                                      variant="secondary"
-                                      className="text-xs"
-                                    >
-                                      {invitation.metadata.sessionCount}{" "}
-                                      sessions
-                                    </Badge>
-                                  )}
-                                </div>
-                              )}
-
-                              {invitation.metadata?.programDescription && (
-                                <p className="text-sm text-gray-700">
-                                  {invitation.metadata.programDescription}
-                                </p>
-                              )}
+                              {/* Actions */}
+                              <div className="flex justify-end">
+                                <Button
+                                  onClick={() =>
+                                    handleAcceptInvitation(invitation)
+                                  }
+                                  className="flex items-center gap-2"
+                                >
+                                  <UserPlus className="w-4 h-4" />
+                                  Accept Invitation
+                                  <ArrowRight className="w-4 h-4" />
+                                </Button>
+                              </div>
                             </div>
-
-                            {/* Actions */}
-                            <div className="flex justify-end">
-                              <Button
-                                onClick={() =>
-                                  handleAcceptInvitation(invitation)
-                                }
-                                className="flex items-center gap-2"
-                              >
-                                <UserPlus className="w-4 h-4" />
-                                Accept Invitation
-                                <ArrowRight className="w-4 h-4" />
-                              </Button>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
+                          </CardContent>
+                        </Card>
+                      ))}
                   </div>
                 </div>
               )}

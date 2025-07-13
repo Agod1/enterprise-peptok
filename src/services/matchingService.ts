@@ -466,3 +466,82 @@ class MatchingService {
 }
 
 export const matchingService = new MatchingService();
+
+// Type alias for compatibility
+export type MatchedCoach = CoachMatch;
+
+// Wrapper functions for coach-specific matching
+export async function findCoachMatches(
+  request: MatchingRequest,
+): Promise<MatchingResult> {
+  return await matchingService.findMatches(request);
+}
+
+export async function acceptCoachMatch(
+  requestId: string,
+  coachId: string,
+): Promise<boolean> {
+  try {
+    console.log(
+      `🎯 Accepting coach match: ${coachId} for request ${requestId}`,
+    );
+
+    // Store the acceptance in localStorage for demo purposes
+    const acceptanceKey = `acceptance_${requestId}_${coachId}`;
+    localStorage.setItem(
+      acceptanceKey,
+      JSON.stringify({
+        requestId,
+        coachId,
+        status: "accepted",
+        timestamp: new Date().toISOString(),
+      }),
+    );
+
+    // Update the request status
+    const requestKey = `coaching_request_${requestId}`;
+    const existingRequest = localStorage.getItem(requestKey);
+    if (existingRequest) {
+      const request = JSON.parse(existingRequest);
+      request.status = "matched";
+      request.matchedCoachId = coachId;
+      request.updatedAt = new Date().toISOString();
+      localStorage.setItem(requestKey, JSON.stringify(request));
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Failed to accept coach match:", error);
+    return false;
+  }
+}
+
+export async function rejectCoachMatch(
+  requestId: string,
+  coachId: string,
+  reason?: string,
+): Promise<boolean> {
+  try {
+    console.log(
+      `🎯 Rejecting coach match: ${coachId} for request ${requestId}`,
+    );
+
+    // Store the rejection in localStorage for demo purposes
+    const rejectionKey = `rejection_${requestId}_${coachId}`;
+    localStorage.setItem(
+      rejectionKey,
+      JSON.stringify({
+        requestId,
+        coachId,
+        status: "rejected",
+        reason: reason || "No reason provided",
+        timestamp: new Date().toISOString(),
+      }),
+    );
+
+    return true;
+  } catch (error) {
+    console.error("Failed to reject coach match:", error);
+    return false;
+  }
+}

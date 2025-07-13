@@ -42,18 +42,70 @@ export interface AcceptInvitationData {
 
 class InvitationService {
   constructor() {
-    // Ensure database connection on service initialization if API is configured
-    this.verifyDatabaseConnection().catch(() => {
-      console.log(
-        "🗃️ Database verification failed - will use fallback methods",
-      );
+    // Check environment and API configuration
+    const apiUrl = import.meta.env.VITE_API_URL;
+    const hostname = window.location.hostname;
+    const isCloudEnvironment =
+      hostname.includes(".fly.dev") ||
+      hostname.includes(".vercel.app") ||
+      hostname.includes(".netlify.app") ||
+      hostname.includes(".herokuapp.com") ||
+      hostname.includes(".amazonaws.com");
+
+    console.log("🗃️ InvitationService environment check:", {
+      hostname,
+      apiUrl: !!apiUrl,
+      isCloudEnvironment,
+      isLocal: this.isLocalDevelopment(),
     });
+
+    // NEVER verify database connections in cloud environments without explicit API URL
+    const hasValidApiUrl =
+      apiUrl && apiUrl.trim() && apiUrl !== "" && apiUrl.length > 0;
+    const shouldSkipDatabaseCheck = isCloudEnvironment || !hasValidApiUrl;
+
+    if (shouldSkipDatabaseCheck) {
+      console.log(
+        "🗃️ Skipping database verification - InvitationService using localStorage mode",
+        { isCloudEnvironment, hasValidApiUrl, hostname },
+      );
+      return; // Exit early, don't do any database operations
+    }
+
+    if (hasValidApiUrl) {
+      console.log("🗃️ API URL configured, verifying database connection...");
+      this.verifyDatabaseConnection().catch(() => {
+        console.log(
+          "🗃️ Database verification failed - will use fallback methods",
+        );
+      });
+    } else {
+      console.log(
+        "🗃️ No valid API URL configured - InvitationService using localStorage mode",
+        { apiUrl, hasValidApiUrl },
+      );
+    }
   }
 
   /**
    * Verify database connection before operations
    */
   private async verifyDatabaseConnection(): Promise<void> {
+    // Additional safety check - never verify in cloud environments
+    const hostname = window.location.hostname;
+    const isCloudEnvironment =
+      hostname.includes(".fly.dev") ||
+      hostname.includes(".vercel.app") ||
+      hostname.includes(".netlify.app");
+    const apiUrl = import.meta.env.VITE_API_URL;
+
+    if (isCloudEnvironment && !apiUrl) {
+      console.log(
+        "🗃️ Safety check: Skipping database verification in cloud environment without API URL",
+      );
+      return;
+    }
+
     if (!this.isApiConfigured()) {
       console.log(
         "🗃️ Database service not configured - using mock/localStorage mode",
@@ -328,7 +380,7 @@ class InvitationService {
 
       // Check if expired
       if (new Date() > new Date(invitation.expiresAt)) {
-        console.log("⏰ Invitation expired");
+        console.log("��� Invitation expired");
         invitation.status = "expired";
         // Update in localStorage
         const updatedInvitations = invitations.map((inv) =>
@@ -626,7 +678,7 @@ class InvitationService {
       }
 
       // Fall back to localStorage
-      console.log("⚠️ Backend unavailable, resending via localStorage");
+      console.log("⚠�� Backend unavailable, resending via localStorage");
       const invitations = this.getInvitationsFromLocalStorage();
       const invitation = invitations.find((inv) => inv.id === invitationId);
 
@@ -817,4 +869,12 @@ class InvitationService {
   }
 }
 
-export const invitationService = new InvitationService();
+// Create singleton instance safely
+let invitationServiceInstance: InvitationService | null = null;
+
+export const invitationService = (() => {
+  if (!invitationServiceInstance) {
+    invitationServiceInstance = new InvitationService();
+  }
+  return invitationServiceInstance;
+})();

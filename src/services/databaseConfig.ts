@@ -37,11 +37,23 @@ class DatabaseConfigService {
       failedEndpoints: [],
     };
 
-    // Only test database connection if API is properly configured
-    if (this.isApiConfigured()) {
+    // Only test database connection if API is properly configured and we're not in a cloud environment without API
+    const apiUrl = import.meta.env.VITE_API_URL;
+    const hostname = window.location.hostname;
+    const isCloudEnvironment =
+      hostname.includes(".fly.dev") ||
+      hostname.includes(".vercel.app") ||
+      hostname.includes(".netlify.app") ||
+      hostname.includes(".herokuapp.com") ||
+      hostname.includes(".amazonaws.com");
+
+    if (apiUrl && this.isApiConfigured()) {
+      console.log("🗃️ Testing database connection on service initialization");
       this.testDatabaseConnection();
     } else {
-      console.log("🗃️ Database service disabled - no API configuration");
+      console.log(
+        "🗃️ Database service disabled - no API configuration or cloud environment without backend",
+      );
       this.status.isConnected = false;
     }
   }
@@ -74,9 +86,15 @@ class DatabaseConfigService {
   private isApiConfigured(): boolean {
     const envApiUrl = import.meta.env.VITE_API_URL;
     const isLocalDev = this.isLocalDevelopment();
+    const isCloud = this.isCloudEnvironment();
+
+    // In cloud environments without explicit API URL, disable database
+    if (isCloud && !envApiUrl) {
+      return false;
+    }
 
     // In production, require explicit API URL
-    if (!isLocalDev) {
+    if (!isLocalDev && !isCloud) {
       return !!envApiUrl;
     }
 
@@ -100,11 +118,29 @@ class DatabaseConfigService {
       return envApiUrl.replace("/api", ""); // Remove /api suffix if present
     }
 
+    // In cloud development environment, don't try to connect to localhost
+    if (this.isCloudEnvironment()) {
+      return ""; // Return empty to skip database connections
+    }
+
     if (this.isLocalDevelopment()) {
       return "http://localhost:3001";
     }
 
     return window.location.origin;
+  }
+
+  private isCloudEnvironment(): boolean {
+    const hostname = window.location.hostname;
+    // Detect cloud/remote development environments
+    return (
+      hostname.includes("fly.dev") ||
+      hostname.includes("vercel.app") ||
+      hostname.includes("netlify.app") ||
+      hostname.includes("gitpod.io") ||
+      hostname.includes("codespaces.dev") ||
+      !this.isLocalDevelopment()
+    );
   }
 
   /**
@@ -388,7 +424,14 @@ class DatabaseConfigService {
     const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout for tests
 
     try {
-      const response = await fetch(endpoint, {
+      // Check if we have a valid base URL
+      if (!this.config.baseUrl) {
+        throw new Error("No API base URL configured");
+      }
+
+      const fullUrl = this.config.baseUrl + endpoint;
+
+      const response = await fetch(fullUrl, {
         method,
         headers: this.config.headers,
         signal: controller.signal,
@@ -398,6 +441,20 @@ class DatabaseConfigService {
       return response;
     } catch (error) {
       clearTimeout(timeoutId);
+
+      // Handle specific fetch errors gracefully
+      if (error instanceof Error) {
+        if (error.name === "AbortError") {
+          console.warn(`⏱️ Request timeout for ${endpoint}`);
+        } else if (error.message.includes("fetch")) {
+          console.warn(
+            `🌐 Network error for ${endpoint}: Backend not available`,
+          );
+        } else {
+          console.warn(`❌ Request failed for ${endpoint}:`, error.message);
+        }
+      }
+
       throw error;
     }
   }
