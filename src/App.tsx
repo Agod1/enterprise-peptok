@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { FullApp } from "@/components/core/FullApp";
 import { AuthProvider } from "@/contexts/AuthContext";
 import LocalStorageService from "@/services/localStorageService";
+import "@/utils/demoDataSeeder"; // Initialize demo data
 // Removed unused safety wrapper imports
 // Alternative implementations available but not used:
 // import { ReactReadyWrapper } from "@/components/core/ReactReadyWrapper"; // Using UltraRobustWrapper instead
