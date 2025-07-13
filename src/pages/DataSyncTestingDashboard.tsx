@@ -2,6 +2,7 @@ import { useState } from "react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { DataSyncTester } from "@/components/testing/DataSyncTester";
+import { DatabaseServiceTest } from "@/components/testing/DatabaseServiceTest";
 import {
   Card,
   CardContent,
