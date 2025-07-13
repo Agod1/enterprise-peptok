@@ -577,7 +577,7 @@ class EnhancedApiService {
   }
 
       async getAllCoaches(): Promise<Coach[]> {
-    // Skip API request if backend is not available/configured
+        // Skip API request if backend is not available/configured
     if (!Environment.shouldTryBackend()) {
       console.log("🗃️ No backend configured, using mock coaches data");
     } else {
@@ -596,7 +596,7 @@ class EnhancedApiService {
       }
     }
 
-            // Return mock coaches data for the directory
+    // Return mock coaches data for the directory
       const mockCoaches: Coach[] = [
         {
           id: "coach_1",
