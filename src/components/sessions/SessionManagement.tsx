@@ -96,7 +96,7 @@ export function SessionManagement({
       onSessionUpdate(session.id, { status: "live" });
 
       // Navigate to video conference
-      navigate(`/session/video?sessionId=${session.id}`);
+      navigate(`/session/${session.id}`);
 
       toast.success("Session started successfully!");
     } catch (error) {
