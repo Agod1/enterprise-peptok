@@ -873,7 +873,7 @@ export default function PlatformAdminDashboard() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <Card
               className="hover:shadow-md transition-shadow cursor-pointer"
-              onClick={() => navigate("/admin/pricing-config")}
+              onClick={() => navigate("/admin/pricing")}
             >
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
@@ -903,7 +903,7 @@ export default function PlatformAdminDashboard() {
 
             <Card
               className="hover:shadow-md transition-shadow cursor-pointer"
-              onClick={() => navigate("/admin/security-settings")}
+              onClick={() => navigate("/admin/platform")}
             >
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
@@ -933,7 +933,7 @@ export default function PlatformAdminDashboard() {
 
             <Card
               className="hover:shadow-md transition-shadow cursor-pointer"
-              onClick={() => navigate("/admin/analytics-settings")}
+              onClick={() => navigate("/admin/analytics")}
             >
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">

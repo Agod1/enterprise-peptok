@@ -96,7 +96,7 @@ export function SessionManagement({
       onSessionUpdate(session.id, { status: "live" });
 
       // Navigate to video conference
-      navigate(`/session/video?sessionId=${session.id}`);
+      navigate(`/session/${session.id}`);
 
       toast.success("Session started successfully!");
     } catch (error) {
@@ -108,7 +108,7 @@ export function SessionManagement({
 
   const handleJoinSession = (session: Session) => {
     // Navigate to video conference
-    navigate(`/session/video?sessionId=${session.id}`);
+    navigate(`/session/${session.id}`);
   };
 
   const handleCompleteOffline = async (session: Session) => {
@@ -244,6 +244,19 @@ export function SessionManagement({
                             </span>
                             <span>{session.duration} min</span>
                           </div>
+                          {session.meetingLink && (
+                            <div className="flex items-center gap-2 mt-2">
+                              <Video className="w-4 h-4 text-gray-400" />
+                              <a
+                                href={session.meetingLink}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-sm text-blue-600 hover:text-blue-800 underline truncate max-w-xs"
+                              >
+                                {session.meetingLink}
+                              </a>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -318,6 +331,19 @@ export function SessionManagement({
                               {session.participants.length} participants
                             </span>
                           </div>
+                          {session.meetingLink && (
+                            <div className="flex items-center gap-2 mt-2">
+                              <Video className="w-4 h-4 text-gray-400" />
+                              <a
+                                href={session.meetingLink}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-sm text-blue-600 hover:text-blue-800 underline truncate max-w-xs"
+                              >
+                                {session.meetingLink}
+                              </a>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>

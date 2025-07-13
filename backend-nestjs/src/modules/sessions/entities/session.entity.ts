@@ -12,7 +12,7 @@ import {
 import { User } from "../../users/entities/user.entity";
 import { Coach } from "../../coaches/entities/coach.entity";
 import { Company } from "../../companies/entities/company.entity";
-import { Payment } from "../../payments/entities/payment.entity";
+
 import { Review } from "../../reviews/entities/review.entity";
 
 export enum SessionStatus {
@@ -150,9 +150,6 @@ export class Session {
 
   @Column()
   companyId: string;
-
-  @OneToMany(() => Payment, (payment) => payment.session)
-  payments: Payment[];
 
   @OneToMany(() => Review, (review) => review.session)
   reviews: Review[];

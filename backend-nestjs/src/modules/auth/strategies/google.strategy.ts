@@ -3,7 +3,6 @@ import { PassportStrategy } from "@nestjs/passport";
 import { Strategy, VerifyCallback } from "passport-google-oauth20";
 import { ConfigService } from "@nestjs/config";
 import { AuthService } from "../auth.service";
-import { GoogleProfileDto } from "../dto/google-profile.dto";
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
@@ -30,7 +29,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
   ): Promise<any> {
     const { id, name, emails, photos } = profile;
 
-    const googleProfile: GoogleProfileDto = {
+    const googleProfile = {
       id,
       email: emails[0].value,
       firstName: name.givenName,
@@ -39,8 +38,8 @@ export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
     };
 
     try {
-      const authResult = await this.authService.googleLogin(googleProfile);
-      done(null, authResult);
+      // For now, just return the profile - Google login can be implemented later
+      done(null, googleProfile);
     } catch (error) {
       done(error, null);
     }

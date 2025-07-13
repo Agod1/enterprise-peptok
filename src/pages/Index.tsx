@@ -674,8 +674,8 @@ const Index = () => {
                 <div className="animate-in slide-in-from-right duration-1000 delay-300">
                   <LeadCapture
                     source="landing_page_cta"
-                    title="Start Your Free Trial"
-                    description="Get instant access to our coaching platform and see results in 30 days."
+                    title="Get Started"
+                    description="Get instant access to our coaching platform with pay-as-you-go pricing."
                   />
                 </div>
               </div>

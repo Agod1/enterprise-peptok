@@ -31,6 +31,7 @@ import {
   type TeamInvitation,
 } from "@/services/invitationService";
 import Header from "@/components/layout/Header";
+import { initializeSampleData } from "@/utils/sampleDataInitializer";
 
 export default function PendingInvitations() {
   const navigate = useNavigate();
@@ -38,6 +39,11 @@ export default function PendingInvitations() {
   const [invitations, setInvitations] = useState<TeamInvitation[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
+
+  // Initialize sample data for testing
+  useEffect(() => {
+    initializeSampleData();
+  }, []);
 
   const handleSearchInvitations = async () => {
     if (!email.trim()) {

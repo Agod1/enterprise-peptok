@@ -37,6 +37,8 @@ import { crossBrowserSync, SYNC_CONFIGS } from "./crossBrowserSync";
 // Removed: cacheInvalidation service (deleted)
 import { securityService } from "./securityService";
 import { analyticsService } from "./analyticsService";
+import { dataSyncService } from "./dataSyncService";
+import { SYNC_CONFIGS as DATA_SYNC_CONFIGS } from "./syncConfigs";
 
 const API_BASE_URL = Environment.getApiBaseUrl();
 
@@ -45,6 +47,10 @@ let currentUser: User | null = null;
 
 export const setCurrentUser = (user: User | null) => {
   currentUser = user;
+
+  // Set user in sync service for authentication
+  dataSyncService.setCurrentUser(user);
+
   if (user) {
     analytics.setUser(user.id, user.userType, {
       email: user.email,
@@ -815,49 +821,38 @@ class EnhancedApiService {
   ): Promise<{ success: boolean; message?: string }> {
     const user = checkAuthorization(["coach"]);
 
-    try {
-      const response = await this.request<{
-        success: boolean;
-        message?: string;
-      }>(`/matches/${matchId}/accept`, {
-        method: "POST",
-        body: JSON.stringify({ coachId: user.id }),
-      });
+    // Use data sync service to update the match
+    const updates = {
+      assignedCoachId: user.id,
+      status: "in_progress",
+      updatedAt: new Date().toISOString(),
+    };
 
-      analytics.coach.matchAccepted(matchId, user.id);
-      analytics.trackAction({
-        action: "match_accepted",
-        component: "coach_matching",
-        metadata: { matchId, coachId: user.id },
-      });
+    const result = await dataSyncService.updateData<MentorshipRequest>(
+      DATA_SYNC_CONFIGS.MENTORSHIP_REQUESTS,
+      matchId,
+      updates,
+    );
 
-      return response.data;
-    } catch (error) {
-      console.warn("API not available, updating localStorage:", error);
+    analytics.coach.matchAccepted(matchId, user.id);
+    analytics.trackAction({
+      action: "match_accepted",
+      component: "coach_matching",
+      metadata: {
+        matchId,
+        coachId: user.id,
+        source: result.source,
+      },
+    });
 
-      // Update localStorage
-      const requests = JSON.parse(
-        localStorage.getItem("mentorship_requests") || "[]",
-      );
-      const updatedRequests = requests.map((req: MentorshipRequest) =>
-        req.id === matchId
-          ? {
-              ...req,
-              assignedCoachId: user.id,
-              status: "in_progress",
-              updatedAt: new Date().toISOString(),
-            }
-          : req,
-      );
-      localStorage.setItem(
-        "mentorship_requests",
-        JSON.stringify(updatedRequests),
-      );
+    console.log(`✅ Match ${matchId} accepted via ${result.source}`);
 
-      analytics.coach.matchAccepted(matchId, user.id);
-
-      return { success: true, message: "Match accepted successfully" };
-    }
+    return {
+      success: result.success,
+      message: result.success
+        ? "Match accepted successfully"
+        : "Failed to accept match",
+    };
   }
 
   async declineMatch(
@@ -972,55 +967,32 @@ class EnhancedApiService {
   ): Promise<MentorshipRequest> {
     const user = checkAuthorization(["company_admin"]);
 
-    try {
-      const response = await this.request<MentorshipRequest>(
-        "/mentorship-requests",
-        {
-          method: "POST",
-          body: JSON.stringify({
-            ...request,
-            companyId: user.companyId,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-          }),
-        },
-      );
+    const newRequest: MentorshipRequest = {
+      id: `request_${Date.now()}`,
+      companyId: user.companyId!,
+      ...request,
+      status: "pending",
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    } as MentorshipRequest;
 
-      analytics.company.requestCreated(
-        response.data.id,
-        user.companyId!,
-        request.title || "Untitled Request",
-      );
+    // Use data sync service for backend-first creation
+    const result = await dataSyncService.createData<MentorshipRequest>(
+      DATA_SYNC_CONFIGS.MENTORSHIP_REQUESTS,
+      newRequest,
+    );
 
-      // Note: Cache invalidation removed for simplification
+    analytics.company.requestCreated(
+      newRequest.id,
+      user.companyId!,
+      request.title || "Untitled Request",
+    );
 
-      return response.data;
-    } catch (error) {
-      console.warn("API not available, storing request locally:", error);
+    console.log(
+      `✅ Created mentorship request ${newRequest.id} via ${result.source}`,
+    );
 
-      const newRequest: MentorshipRequest = {
-        id: `request_${Date.now()}`,
-        companyId: user.companyId!,
-        ...request,
-        status: "pending",
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      } as MentorshipRequest;
-
-      const requests = JSON.parse(
-        localStorage.getItem("mentorship_requests") || "[]",
-      );
-      requests.push(newRequest);
-      localStorage.setItem("mentorship_requests", JSON.stringify(requests));
-
-      analytics.company.requestCreated(
-        newRequest.id,
-        user.companyId!,
-        request.title || "Untitled Request",
-      );
-
-      return newRequest;
-    }
+    return newRequest;
   }
 
   // ===== COACHING REQUEST METHODS =====
@@ -1030,53 +1002,44 @@ class EnhancedApiService {
   ): Promise<CoachingRequest> {
     const user = checkAuthorization(["company_admin"]);
 
-    try {
-      const response = await this.request<CoachingRequest>(
-        "/coaching-requests",
-        {
-          method: "POST",
-          body: JSON.stringify({
-            ...request,
-            companyId: user.companyId,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-          }),
-        },
-      );
+    const newRequest: CoachingRequest = {
+      id: `request_${Date.now()}`, // Will be replaced by backend if successful
+      companyId: user.companyId!,
+      ...request,
+      status: "submitted",
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    } as CoachingRequest;
 
-      analytics.company.requestCreated(
-        response.data.id,
-        user.companyId!,
-        request.title || "Untitled Request",
-      );
+    // Use data sync service for backend-first creation
+    const result = await dataSyncService.createData<CoachingRequest>(
+      DATA_SYNC_CONFIGS.COACHING_REQUESTS,
+      newRequest,
+    );
 
-      // Store in localStorage for persistence
-      LocalStorageService.addCoachingRequest(response.data);
+    analytics.company.requestCreated(
+      newRequest.id,
+      user.companyId!,
+      request.title || "Untitled Request",
+    );
 
-      return response.data;
-    } catch (error) {
-      console.warn("API not available, storing request locally:", error);
+    // Track the sync result
+    analytics.trackAction({
+      action: "coaching_request_created",
+      component: "api_enhanced",
+      metadata: {
+        source: result.source,
+        companyId: user.companyId,
+        title: request.title,
+      },
+    });
 
-      const newRequest: CoachingRequest = {
-        id: `request_${Date.now()}`,
-        companyId: user.companyId!,
-        ...request,
-        status: "submitted",
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      } as CoachingRequest;
+    console.log(
+      `✅ Created coaching request via ${result.source}:`,
+      newRequest.id,
+    );
 
-      // Store in localStorage for persistence
-      LocalStorageService.addCoachingRequest(newRequest);
-
-      analytics.company.requestCreated(
-        newRequest.id,
-        user.companyId!,
-        request.title || "Untitled Request",
-      );
-
-      return newRequest;
-    }
+    return newRequest;
   }
 
   async getCoachingRequests(params?: {
@@ -1087,73 +1050,77 @@ class EnhancedApiService {
   }): Promise<CoachingRequest[]> {
     const user = checkAuthorization();
 
-    try {
-      const queryParams = new URLSearchParams();
+    // Use data sync service with backend-first approach
+    const filters: Record<string, string> = {};
 
-      // Role-based filtering
+    // Role-based filtering
+    if (user.userType === "coach") {
+      filters.coachId = user.id;
+    } else if (user.userType === "company_admin" && user.companyId) {
+      filters.companyId = user.companyId;
+    }
+
+    // Additional filters
+    if (params?.status) filters.status = params.status;
+    if (params?.companyId && user.userType === "platform_admin") {
+      filters.companyId = params.companyId;
+    }
+    if (params?.coachId && user.userType === "platform_admin") {
+      filters.coachId = params.coachId;
+    }
+    if (params?.limit) filters.limit = params.limit.toString();
+
+    const result = await dataSyncService.getData<CoachingRequest>(
+      DATA_SYNC_CONFIGS.COACHING_REQUESTS,
+      filters,
+    );
+
+    analytics.trackAction({
+      action: "coaching_requests_viewed",
+      component: "dashboard",
+      metadata: {
+        params,
+        userType: user.userType,
+        resultCount: result.data?.length || 0,
+        source: result.source,
+        backendAvailable: result.backendAvailable,
+      },
+    });
+
+    // Apply client-side filtering for localStorage fallback
+    let filteredData = result.data || [];
+
+    if (result.source === "localStorage") {
+      // Apply role-based filtering for localStorage
       if (user.userType === "coach") {
-        queryParams.append("coachId", user.id);
-      } else if (user.userType === "company_admin" && user.companyId) {
-        queryParams.append("companyId", user.companyId);
-      }
-
-      // Additional filters
-      if (params?.status) queryParams.append("status", params.status);
-      if (params?.companyId && user.userType === "platform_admin") {
-        queryParams.append("companyId", params.companyId);
-      }
-      if (params?.coachId && user.userType === "platform_admin") {
-        queryParams.append("coachId", params.coachId);
-      }
-      if (params?.limit) queryParams.append("limit", params.limit.toString());
-
-      const response = await this.request<CoachingRequest[]>(
-        `/coaching-requests?${queryParams.toString()}`,
-      );
-
-      analytics.trackAction({
-        action: "coaching_requests_viewed",
-        component: "dashboard",
-        metadata: {
-          params,
-          userType: user.userType,
-          resultCount: response.data.length,
-        },
-      });
-
-      return response.data;
-    } catch (error) {
-      console.warn("API not available, using localStorage requests:", error);
-
-      // Get data from localStorage
-      let allRequests = LocalStorageService.getCoachingRequests();
-
-      // Apply role-based filtering
-      if (user.userType === "coach") {
-        allRequests = allRequests.filter(
+        filteredData = filteredData.filter(
           (req: CoachingRequest) =>
             req.assignedCoachId === user.id ||
             (req.status === "submitted" && !req.assignedCoachId),
         );
       } else if (user.userType === "company_admin" && user.companyId) {
-        allRequests = allRequests.filter(
+        filteredData = filteredData.filter(
           (req: CoachingRequest) => req.companyId === user.companyId,
         );
       }
 
       // Apply additional filters
       if (params?.status) {
-        allRequests = allRequests.filter(
+        filteredData = filteredData.filter(
           (req: CoachingRequest) => req.status === params.status,
         );
       }
 
       if (params?.limit) {
-        allRequests = allRequests.slice(0, params.limit);
+        filteredData = filteredData.slice(0, params.limit);
       }
-
-      return allRequests;
     }
+
+    console.log(
+      `📊 Retrieved ${filteredData.length} coaching requests from ${result.source}`,
+    );
+
+    return filteredData;
   }
 
   async getCoachingRequest(id: string): Promise<CoachingRequest | null> {
@@ -1201,54 +1168,37 @@ class EnhancedApiService {
   ): Promise<CoachingRequest> {
     const user = checkAuthorization();
 
-    try {
-      const response = await this.request<CoachingRequest>(
-        `/coaching-requests/${id}`,
-        {
-          method: "PUT",
-          body: JSON.stringify({
-            ...updates,
-            updatedAt: new Date().toISOString(),
-          }),
-        },
-      );
+    const updatesWithTimestamp = {
+      ...updates,
+      updatedAt: new Date().toISOString(),
+    };
 
-      analytics.trackAction({
-        action: "coaching_request_updated",
-        component: "dashboard",
-        metadata: { requestId: id, updates: Object.keys(updates) },
-      });
+    // Use data sync service for backend-first update
+    const result = await dataSyncService.updateData<CoachingRequest>(
+      DATA_SYNC_CONFIGS.COACHING_REQUESTS,
+      id,
+      updatesWithTimestamp,
+    );
 
-      // Update in localStorage
-      LocalStorageService.updateCoachingRequest(id, {
-        ...updates,
-        updatedAt: new Date().toISOString(),
-      });
+    analytics.trackAction({
+      action: "coaching_request_updated",
+      component: "dashboard",
+      metadata: {
+        requestId: id,
+        updates: Object.keys(updates),
+        source: result.source,
+      },
+    });
 
-      return response.data;
-    } catch (error) {
-      console.warn("API not available, updating localStorage:", error);
+    console.log(`✅ Updated coaching request ${id} via ${result.source}`);
 
-      // Update in localStorage
-      LocalStorageService.updateCoachingRequest(id, {
-        ...updates,
-        updatedAt: new Date().toISOString(),
-      });
-
-      // Get updated request
-      const updatedRequest = LocalStorageService.getCoachingRequest(id);
-      if (!updatedRequest) {
-        throw new Error("Request not found");
-      }
-
-      analytics.trackAction({
-        action: "coaching_request_updated",
-        component: "dashboard",
-        metadata: { requestId: id, updates: Object.keys(updates) },
-      });
-
-      return updatedRequest;
+    // Return the updated request from localStorage
+    const updatedRequest = LocalStorageService.getCoachingRequest(id);
+    if (!updatedRequest) {
+      throw new Error("Request not found after update");
     }
+
+    return { ...updatedRequest, ...updatesWithTimestamp };
   }
 
   // ===== PLATFORM ADMIN METHODS =====
@@ -1558,87 +1508,77 @@ class EnhancedApiService {
   }): Promise<MentorshipRequest[]> {
     const user = checkAuthorization();
 
-    // Check if we have a valid API URL configuration
-    const apiUrl = import.meta.env.VITE_API_URL;
-    const isCloudEnvironment =
-      window.location.hostname.includes(".fly.dev") ||
-      window.location.hostname.includes(".vercel.app") ||
-      window.location.hostname.includes(".netlify.app");
+    // Use data sync service with backend-first approach
+    const filters: Record<string, string> = {};
 
-    // Skip API request if no backend is configured or we're in a cloud environment without API URL
-    if (apiUrl && !isCloudEnvironment) {
-      try {
-        const queryParams = new URLSearchParams();
-
-        // Role-based filtering
-        if (user.userType === "coach") {
-          queryParams.append("coachId", user.id);
-        } else if (user.userType === "company_admin" && user.companyId) {
-          queryParams.append("companyId", user.companyId);
-        }
-
-        // Additional filters
-        if (params?.status) queryParams.append("status", params.status);
-        if (params?.companyId && user.userType === "platform_admin") {
-          queryParams.append("companyId", params.companyId);
-        }
-        if (params?.coachId && user.userType === "platform_admin") {
-          queryParams.append("coachId", params.coachId);
-        }
-        if (params?.limit) queryParams.append("limit", params.limit.toString());
-
-        const response = await this.request<MentorshipRequest[]>(
-          `/mentorship-requests?${queryParams.toString()}`,
-        );
-
-        analytics.trackAction({
-          action: "mentorship_requests_viewed",
-          component: "dashboard",
-          metadata: {
-            params,
-            userType: user.userType,
-            resultCount: response.data.length,
-          },
-        });
-
-        return response.data;
-      } catch (error) {
-        console.warn("API not available, using filtered mock requests:", error);
-      }
-    } else {
-      console.log("🗃️ No backend configured, using filtered mock requests");
+    // Role-based filtering
+    if (user.userType === "coach") {
+      filters.coachId = user.id;
+    } else if (user.userType === "company_admin" && user.companyId) {
+      filters.companyId = user.companyId;
     }
 
-    // Get and filter data from localStorage
-    let allRequests = JSON.parse(
-      localStorage.getItem("mentorship_requests") || "[]",
+    // Additional filters
+    if (params?.status) filters.status = params.status;
+    if (params?.companyId && user.userType === "platform_admin") {
+      filters.companyId = params.companyId;
+    }
+    if (params?.coachId && user.userType === "platform_admin") {
+      filters.coachId = params.coachId;
+    }
+    if (params?.limit) filters.limit = params.limit.toString();
+
+    const result = await dataSyncService.getData<MentorshipRequest>(
+      DATA_SYNC_CONFIGS.MENTORSHIP_REQUESTS,
+      filters,
     );
 
-    // Apply role-based filtering
-    if (user.userType === "coach") {
-      allRequests = allRequests.filter(
-        (req: MentorshipRequest) =>
-          req.assignedCoachId === user.id ||
-          (req.status === "pending" && !req.assignedCoachId),
-      );
-    } else if (user.userType === "company_admin" && user.companyId) {
-      allRequests = allRequests.filter(
-        (req: MentorshipRequest) => req.companyId === user.companyId,
-      );
+    analytics.trackAction({
+      action: "mentorship_requests_viewed",
+      component: "dashboard",
+      metadata: {
+        params,
+        userType: user.userType,
+        resultCount: result.data?.length || 0,
+        source: result.source,
+        backendAvailable: result.backendAvailable,
+      },
+    });
+
+    // Apply client-side filtering for localStorage fallback
+    let filteredData = result.data || [];
+
+    if (result.source === "localStorage") {
+      // Apply role-based filtering for localStorage
+      if (user.userType === "coach") {
+        filteredData = filteredData.filter(
+          (req: MentorshipRequest) =>
+            req.assignedCoachId === user.id ||
+            (req.status === "pending" && !req.assignedCoachId),
+        );
+      } else if (user.userType === "company_admin" && user.companyId) {
+        filteredData = filteredData.filter(
+          (req: MentorshipRequest) => req.companyId === user.companyId,
+        );
+      }
+
+      // Apply additional filters
+      if (params?.status) {
+        filteredData = filteredData.filter(
+          (req: MentorshipRequest) => req.status === params.status,
+        );
+      }
+
+      if (params?.limit) {
+        filteredData = filteredData.slice(0, params.limit);
+      }
     }
 
-    // Apply additional filters
-    if (params?.status) {
-      allRequests = allRequests.filter(
-        (req: MentorshipRequest) => req.status === params.status,
-      );
-    }
+    console.log(
+      `📊 Retrieved ${filteredData.length} mentorship requests from ${result.source}`,
+    );
 
-    if (params?.limit) {
-      allRequests = allRequests.slice(0, params.limit);
-    }
-
-    return allRequests;
+    return filteredData;
   }
 
   // ===== ANALYTICS METHODS =====
@@ -2447,7 +2387,7 @@ class EnhancedApiService {
 
     // If all backend endpoints fail, throw error to trigger offline sync
     console.error(
-      "❌ Failed to save invitation to backend database via all endpoints",
+      "��� Failed to save invitation to backend database via all endpoints",
     );
     throw new Error(
       `Failed to save invitation to backend database: ${lastError?.message || "All endpoints unavailable"}`,
@@ -2911,6 +2851,63 @@ class EnhancedApiService {
       });
 
       return { success: true, data: { matches: mockMatches } };
+    }
+  }
+
+  // ===== USER INTERACTION LOGGING =====
+
+  async logUserInteractions(interactions: any[]): Promise<any> {
+    try {
+      // Try to send to backend first
+      const response = await this.request<any>("/interactions/batch", {
+        method: "POST",
+        body: { interactions },
+      });
+
+      analytics.trackAction({
+        action: "interactions_logged",
+        component: "api_enhanced",
+        metadata: {
+          interactionCount: interactions.length,
+          source: "backend_api",
+        },
+      });
+
+      return response.data;
+    } catch (error) {
+      console.warn(
+        "Backend API not available, storing interactions locally:",
+        error,
+      );
+
+      // Store interactions locally if backend is not available
+      const existingInteractions = JSON.parse(
+        localStorage.getItem("user_interactions") || "[]",
+      );
+
+      existingInteractions.push(...interactions);
+
+      // Keep only last 1000 interactions to prevent storage overflow
+      if (existingInteractions.length > 1000) {
+        existingInteractions.splice(0, existingInteractions.length - 1000);
+      }
+
+      localStorage.setItem(
+        "user_interactions",
+        JSON.stringify(existingInteractions),
+      );
+
+      analytics.trackAction({
+        action: "interactions_stored_locally",
+        component: "api_enhanced",
+        metadata: {
+          interactionCount: interactions.length,
+          totalStored: existingInteractions.length,
+          source: "local_storage",
+        },
+      });
+
+      return { success: true, stored: "locally" };
     }
   }
 }

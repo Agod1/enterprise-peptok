@@ -72,7 +72,7 @@ const Header = ({ userType: propUserType }: HeaderProps) => {
       case "platform_admin":
         return "/platform-admin";
       case "coach":
-        return "/coach/dashboard";
+        return "/coach-dashboard";
       case "team_member":
         return "/team-member/dashboard";
       case "company_admin":
@@ -90,7 +90,7 @@ const Header = ({ userType: propUserType }: HeaderProps) => {
     {
       label: "New Program",
       path: "/coaching/new",
-      roles: ["company_admin", "platform_admin"],
+      roles: ["company_admin"],
     },
     {
       label: "Coaches",

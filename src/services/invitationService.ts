@@ -5,6 +5,8 @@ import { toast } from "sonner";
 import { emailService } from "./email";
 import { apiEnhanced } from "./apiEnhanced";
 import { databaseConfig } from "./databaseConfig";
+import { dataSyncService } from "./dataSyncService";
+import { SYNC_CONFIGS } from "./syncConfigs";
 
 export interface TeamInvitation {
   id: string;
@@ -155,7 +157,7 @@ class InvitationService {
   }
 
   /**
-   * Create a new team member invitation - Backend Database with localStorage fallback
+   * Create a new team member invitation - Backend-first with localStorage fallback
    */
   async createInvitation(data: {
     email: string;
@@ -169,56 +171,43 @@ class InvitationService {
     role: "participant" | "observer";
     metadata?: TeamInvitation["metadata"];
   }): Promise<TeamInvitation> {
-    // If API is not configured, use localStorage immediately
-    if (!this.isApiConfigured()) {
-      return this.createInvitationInLocalStorage(data);
-    }
+    console.log("🗃️ Creating team invitation using data sync service");
 
+    const invitation: TeamInvitation = {
+      id: `inv_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      token: `token_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      email: data.email.toLowerCase(),
+      name: data.name,
+      programId: data.programId,
+      programTitle: data.programTitle,
+      companyId: data.companyId,
+      companyName: data.companyName,
+      inviterName: data.inviterName,
+      inviterEmail: data.inviterEmail,
+      role: data.role,
+      status: "pending",
+      createdAt: new Date().toISOString(),
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days
+      metadata: data.metadata,
+    };
+
+    // Use data sync service for backend-first creation
+    const result = await dataSyncService.createData<TeamInvitation>(
+      SYNC_CONFIGS.TEAM_INVITATIONS,
+      invitation,
+    );
+
+    console.log(`✅ Created invitation ${invitation.id} via ${result.source}`);
+
+    // Send invitation email regardless of storage method
     try {
-      console.log("🗃️ Creating invitation in backend database");
-
-      // Verify database connection (but don't throw on failure)
-      await this.verifyDatabaseConnection();
-
-      // Try backend API first
-      if (databaseConfig.isDatabaseReady()) {
-        const invitation = await apiEnhanced.createTeamInvitation({
-          email: data.email.toLowerCase(),
-          name: data.name,
-          programId: data.programId,
-          programTitle: data.programTitle,
-          companyId: data.companyId,
-          companyName: data.companyName,
-          inviterName: data.inviterName,
-          inviterEmail: data.inviterEmail,
-          role: data.role,
-          metadata: data.metadata,
-        });
-
-        // Verify invitation was saved to database
-        if (invitation.id && !invitation.id.includes("temp_")) {
-          console.log(
-            `✅ Invitation ${invitation.id} saved to backend database`,
-          );
-
-          // Send invitation email
-          await this.sendInvitationEmail(invitation, data);
-          return invitation;
-        }
-      }
-
-      // Fall back to localStorage if backend failed
-      console.log(
-        "⚠️ Backend unavailable, creating invitation in localStorage",
-      );
-      return this.createInvitationInLocalStorage(data);
+      await this.sendInvitationEmail(invitation, data);
     } catch (error) {
-      console.warn(
-        "❌ Failed to create invitation in backend, using localStorage:",
-        error,
-      );
-      return this.createInvitationInLocalStorage(data);
+      console.warn("Failed to send invitation email:", error);
+      // Don't fail the invitation creation due to email issues
     }
+
+    return invitation;
   }
 
   private async createInvitationInLocalStorage(
@@ -616,21 +605,32 @@ class InvitationService {
    * Get pending invitations for a user by email
    */
   async getPendingInvitations(email: string): Promise<TeamInvitation[]> {
+    console.log(`📥 Getting pending invitations for ${email}`);
+
     try {
-      // Try backend API first if available
-      if (this.isApiConfigured() && databaseConfig.isDatabaseReady()) {
-        const invitations = await apiEnhanced.getPendingInvitations(email);
-        return invitations;
+      // Use data sync service for backend-first retrieval
+      const result = await dataSyncService.getData<TeamInvitation>(
+        SYNC_CONFIGS.TEAM_INVITATIONS,
+        { email: email.toLowerCase(), status: "pending" },
+      );
+
+      let invitations = result.data || [];
+
+      // Filter for localStorage fallback (backend should handle this filtering)
+      if (result.source === "localStorage") {
+        invitations = invitations.filter(
+          (inv) =>
+            inv.email.toLowerCase() === email.toLowerCase() &&
+            inv.status === "pending" &&
+            new Date() <= new Date(inv.expiresAt),
+        );
       }
 
-      // Fall back to localStorage
-      const invitations = this.getInvitationsFromLocalStorage();
-      return invitations.filter(
-        (inv) =>
-          inv.email.toLowerCase() === email.toLowerCase() &&
-          inv.status === "pending" &&
-          new Date() <= new Date(inv.expiresAt),
+      console.log(
+        `✅ Found ${invitations.length} pending invitations for ${email} from ${result.source}`,
       );
+
+      return invitations;
     } catch (error) {
       console.error("Failed to get pending invitations:", error);
       return [];

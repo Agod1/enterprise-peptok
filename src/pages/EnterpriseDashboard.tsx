@@ -45,6 +45,7 @@ import { MentorshipRequest, Connection } from "@/types";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { toast } from "sonner";
 import { SessionManagement } from "@/components/sessions/SessionManagement";
+import { initializeSampleData } from "@/utils/sampleDataInitializer";
 
 const EnterpriseDashboard = () => {
   const { user } = useAuth();
@@ -63,9 +64,12 @@ const EnterpriseDashboard = () => {
       try {
         setIsLoading(true);
 
-        // Fetch mentorship requests for the user's company with proper authorization
-        const requests = await apiEnhanced.getMentorshipRequests();
-        console.log("Loaded mentorship requests:", requests);
+        // Initialize sample data for testing (this ensures we have data to display)
+        initializeSampleData();
+
+        // Fetch coaching requests for the user's company with proper authorization
+        const requests = await apiEnhanced.getCoachingRequests();
+        console.log("Loaded coaching requests:", requests);
         setMentorshipRequests(requests || []);
 
         // Get connections (with fallback)
@@ -219,8 +223,7 @@ const EnterpriseDashboard = () => {
                 Welcome back, {user?.name || "Enterprise User"}!
               </h1>
               <p className="text-gray-600 mt-2">
-                Track your coaching progress and continue your learning
-                journey
+                Track your coaching progress and continue your learning journey
               </p>
             </div>
             <Button onClick={() => navigate("/coaching/new")} size="lg">

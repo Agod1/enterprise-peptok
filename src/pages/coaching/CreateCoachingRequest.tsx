@@ -35,6 +35,10 @@ import { useAuth } from "@/contexts/AuthContext";
 import { BackendStatus } from "@/components/ui/BackendStatus";
 import { duplicateCleanup } from "@/utils/duplicateCleanup";
 import LocalStorageService from "@/services/localStorageService";
+import {
+  logProgramCreation,
+  logProgramUpdate,
+} from "@/services/interactionLogger";
 
 export default function CreateCoachingRequest() {
   const navigate = useNavigate();
@@ -173,6 +177,8 @@ export default function CreateCoachingRequest() {
       toast.error(
         `A program with the title "${data.title}" already exists. Please choose a different title.`,
       );
+      isSubmittingRef.current = false;
+      setIsSubmitting(false);
       return;
     }
 
@@ -184,8 +190,22 @@ export default function CreateCoachingRequest() {
       const currentTeamMembers =
         teamMembers.length > 0 ? teamMembers : data.teamMembers;
 
-      // Team members are now optional - programs can be created without initial team members
+      // Check if we have team members and warn if none are added
       const hasTeamMembers = currentTeamMembers.length > 0;
+
+      if (!hasTeamMembers) {
+        const shouldContinue = window.confirm(
+          "⚠️ No team members have been added to this program.\n\n" +
+            "You can add team members later, but the program will not be visible to participants until team members are assigned.\n\n" +
+            "Do you want to continue creating the program without team members?",
+        );
+
+        if (!shouldContinue) {
+          isSubmittingRef.current = false;
+          setIsSubmitting(false);
+          return;
+        }
+      }
 
       // Note: With session-based pricing, team size validation is less restrictive
       // Pricing is calculated per session with additional participant fees
@@ -212,6 +232,17 @@ export default function CreateCoachingRequest() {
 
       // Store in localStorage for persistence
       LocalStorageService.addCoachingRequest(request);
+
+      // Log interaction for backend tracking (Issues #6 & #7)
+      if (user?.id && request?.id) {
+        try {
+          await logProgramCreation(user.id, request.id, data);
+          console.log("✅ Program creation interaction logged");
+        } catch (logError) {
+          console.warn("⚠️ Failed to log program creation:", logError);
+          // Don't fail the request creation if logging fails
+        }
+      }
 
       // Send program details email to team members (if any)
       try {

@@ -16,13 +16,6 @@ import {
   UserStatus,
   AuthProvider,
 } from "../users/entities/user.entity";
-import { CreateUserDto } from "../users/dto/create-user.dto";
-import { LoginDto } from "./dto/login.dto";
-import { RegisterDto } from "./dto/register.dto";
-import { ChangePasswordDto } from "./dto/change-password.dto";
-import { ForgotPasswordDto } from "./dto/forgot-password.dto";
-import { ResetPasswordDto } from "./dto/reset-password.dto";
-import { GoogleProfileDto } from "./dto/google-profile.dto";
 
 export interface JwtPayload {
   sub: string;
@@ -47,7 +40,7 @@ export class AuthService {
     private readonly configService: ConfigService,
   ) {}
 
-  async register(registerDto: RegisterDto): Promise<AuthResult> {
+  async register(registerDto: any): Promise<AuthResult> {
     const { email, password, firstName, lastName, username } = registerDto;
 
     // Check if user already exists
@@ -88,77 +81,10 @@ export class AuthService {
     };
   }
 
-  async login(loginDto: LoginDto): Promise<AuthResult> {
-    const { email, password } = loginDto;
-
-    // Find user by email or username
-    const user = await this.userRepository.findOne({
-      where: [{ email }, { username: email }],
-      relations: ["company"],
-    });
-
-    if (!user) {
-      throw new UnauthorizedException("Invalid credentials");
-    }
-
-    // Check password
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      throw new UnauthorizedException("Invalid credentials");
-    }
-
+  async login(user: User): Promise<AuthResult> {
     // Check if user is active
     if (user.status === UserStatus.SUSPENDED) {
       throw new UnauthorizedException("Account is suspended");
-    }
-
-    // Update last login
-    await this.userRepository.update(user.id, {
-      lastLoginAt: new Date(),
-    });
-
-    // Generate access token
-    const accessToken = this.generateAccessToken(user);
-
-    return {
-      user,
-      accessToken,
-    };
-  }
-
-  async googleLogin(profile: GoogleProfileDto): Promise<AuthResult> {
-    let user = await this.userRepository.findOne({
-      where: { googleId: profile.id },
-      relations: ["company"],
-    });
-
-    if (!user) {
-      // Check if user exists with same email
-      user = await this.userRepository.findOne({
-        where: { email: profile.email },
-        relations: ["company"],
-      });
-
-      if (user) {
-        // Link Google account to existing user
-        user.googleId = profile.id;
-        user.authProvider = AuthProvider.GOOGLE;
-        await this.userRepository.save(user);
-      } else {
-        // Create new user
-        user = this.userRepository.create({
-          email: profile.email,
-          firstName: profile.firstName,
-          lastName: profile.lastName,
-          avatar: profile.picture,
-          googleId: profile.id,
-          authProvider: AuthProvider.GOOGLE,
-          emailVerified: true,
-          role: UserRole.EMPLOYEE,
-          status: UserStatus.ACTIVE,
-        });
-        user = await this.userRepository.save(user);
-      }
     }
 
     // Update last login
@@ -204,43 +130,8 @@ export class AuthService {
     return user;
   }
 
-  async changePassword(
-    userId: string,
-    changePasswordDto: ChangePasswordDto,
-  ): Promise<void> {
-    const { currentPassword, newPassword } = changePasswordDto;
-
-    const user = await this.userRepository.findOne({
-      where: { id: userId },
-      select: ["id", "password"],
-    });
-
-    if (!user) {
-      throw new NotFoundException("User not found");
-    }
-
-    // Verify current password
-    const isCurrentPasswordValid = await bcrypt.compare(
-      currentPassword,
-      user.password,
-    );
-
-    if (!isCurrentPasswordValid) {
-      throw new BadRequestException("Current password is incorrect");
-    }
-
-    // Hash new password
-    const saltRounds = 12;
-    const hashedNewPassword = await bcrypt.hash(newPassword, saltRounds);
-
-    // Update password
-    await this.userRepository.update(userId, {
-      password: hashedNewPassword,
-    });
-  }
-
-  async forgotPassword(forgotPasswordDto: ForgotPasswordDto): Promise<void> {
-    const { email } = forgotPasswordDto;
+  async forgotPassword(dto: { email: string }): Promise<void> {
+    const { email } = dto;
 
     const user = await this.userRepository.findOne({
       where: { email },
@@ -264,7 +155,7 @@ export class AuthService {
     // await this.emailService.sendPasswordReset(user.email, resetToken);
   }
 
-  async resetPassword(resetPasswordDto: ResetPasswordDto): Promise<void> {
+  async resetPassword(resetPasswordDto: any): Promise<void> {
     const { token, newPassword } = resetPasswordDto;
 
     const user = await this.userRepository.findOne({
@@ -304,25 +195,5 @@ export class AuthService {
       Math.random().toString(36).substring(2, 15) +
       Math.random().toString(36).substring(2, 15)
     );
-  }
-
-  async refreshToken(userId: string): Promise<string> {
-    const user = await this.userRepository.findOne({
-      where: { id: userId },
-    });
-
-    if (!user) {
-      throw new UnauthorizedException("User not found");
-    }
-
-    return this.generateAccessToken(user);
-  }
-
-  async logout(userId: string): Promise<void> {
-    // In a production app, you might want to blacklist the token
-    // or store refresh tokens and invalidate them
-    await this.userRepository.update(userId, {
-      lastLoginAt: new Date(),
-    });
   }
 }

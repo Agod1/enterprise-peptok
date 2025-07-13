@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import {
   Card,
@@ -52,6 +53,7 @@ interface Connection {
 
 export default function Connections() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [connections, setConnections] = useState<Connection[]>([]);
   const [filteredConnections, setFilteredConnections] = useState<Connection[]>(
     [],
@@ -156,8 +158,25 @@ export default function Connections() {
   };
 
   const handleStartSession = (connectionId: string) => {
-    // In real app, this would start a video session
-    toast.success("Starting video session...");
+    try {
+      // Find the connection to get session details
+      const connection = connections.find((c) => c.id === connectionId);
+      if (!connection) {
+        toast.error("Connection not found");
+        return;
+      }
+
+      // Create a session ID (in real app, this would come from the backend)
+      const sessionId = `session-${connectionId}-${Date.now()}`;
+
+      // Navigate to video session
+      navigate(`/session/${sessionId}`);
+
+      toast.success("Starting video session...");
+    } catch (error) {
+      console.error("Failed to start session:", error);
+      toast.error("Failed to start session. Please try again.");
+    }
   };
 
   const handleSendMessage = (connectionId: string) => {

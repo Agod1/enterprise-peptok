@@ -60,6 +60,9 @@ import { analytics } from "@/services/analytics";
 import { toast } from "sonner";
 import { crossBrowserSync, SYNC_CONFIGS } from "@/services/crossBrowserSync";
 import LocalStorageService from "@/services/localStorageService";
+import { emailService } from "@/services/email";
+import { websocketService } from "@/services/websocket";
+import { logMatchAction } from "@/services/interactionLogger";
 
 interface CoachProfile {
   id: string;
@@ -229,9 +232,27 @@ export const CoachDashboard: React.FC = () => {
 
       setProfile(profileData);
       setStats(statsData);
-      setPendingMatches(
-        matchesData.filter((match) => match.status === "pending"),
-      );
+
+      // Filter out matches that have been acted upon locally
+      const pendingMatches = matchesData.filter((match) => {
+        if (match.status !== "pending") return false;
+
+        // Check if this match has been acted upon locally
+        const matchAction = LocalStorageService.getItem(
+          `match_action_${match.id}`,
+        );
+        if (matchAction && matchAction.coachId === user.id) {
+          console.log(
+            `Filtering out match ${match.id} due to local action:`,
+            matchAction.action,
+          );
+          return false;
+        }
+
+        return true;
+      });
+
+      setPendingMatches(pendingMatches);
       setUpcomingSessions(sessionsData);
       setRecentActivity(activityData);
 
@@ -272,12 +293,53 @@ export const CoachDashboard: React.FC = () => {
       const result = await apiEnhanced.acceptMatch(matchId);
 
       if (result.success) {
-        // Remove from pending matches
-        setPendingMatches((prev) =>
-          prev.filter((match) => match.id !== matchId),
+        // Remove from pending matches and persist the action
+        const updatedMatches = pendingMatches.filter(
+          (match) => match.id !== matchId,
         );
+        setPendingMatches(updatedMatches);
+
+        // Persist match action to prevent data loss on refresh
+        LocalStorageService.setItem(`match_action_${matchId}`, {
+          action: "accepted",
+          timestamp: new Date().toISOString(),
+          coachId: user.id,
+        });
 
         toast.success("Match accepted successfully!");
+
+        // Notify company admin about match acceptance
+        try {
+          const match = pendingMatches.find((m) => m.id === matchId);
+          if (match) {
+            await emailService.sendCoachAcceptanceNotification({
+              companyId: match.companyId,
+              companyName: match.companyName,
+              coachName: user.name,
+              programTitle: match.title,
+              matchId: matchId,
+            });
+
+            // Send real-time notification to company admin
+            websocketService.sendMessage({
+              userId: match.companyId,
+              type: "match_accepted",
+              message: `Coach ${user.name} has accepted your coaching program "${match.title}"`,
+              data: { matchId, coachId: user.id, programTitle: match.title },
+            });
+          }
+        } catch (notificationError) {
+          console.warn("Failed to send admin notification:", notificationError);
+          // Don't fail the match acceptance if notification fails
+        }
+
+        // Log interaction for backend tracking (Issues #6 & #7)
+        try {
+          await logMatchAction(user.id, "coach", matchId, "accepted");
+          console.log("✅ Match acceptance interaction logged");
+        } catch (logError) {
+          console.warn("⚠️ Failed to log match action:", logError);
+        }
 
         // Refresh stats
         await loadDashboardData();
@@ -308,12 +370,51 @@ export const CoachDashboard: React.FC = () => {
       const result = await apiEnhanced.declineMatch(matchId, reason);
 
       if (result.success) {
-        // Remove from pending matches
-        setPendingMatches((prev) =>
-          prev.filter((match) => match.id !== matchId),
+        // Remove from pending matches and persist the action
+        const updatedMatches = pendingMatches.filter(
+          (match) => match.id !== matchId,
         );
+        setPendingMatches(updatedMatches);
+
+        // Persist match action to prevent data loss on refresh
+        LocalStorageService.setItem(`match_action_${matchId}`, {
+          action: "declined",
+          timestamp: new Date().toISOString(),
+          coachId: user.id,
+          reason: reason,
+        });
 
         toast.success("Match declined");
+
+        // Notify company admin about match decline
+        try {
+          const match = pendingMatches.find((m) => m.id === matchId);
+          if (match) {
+            // Send real-time notification to company admin
+            websocketService.sendMessage({
+              userId: match.companyId,
+              type: "match_declined",
+              message: `Coach ${user.name} has declined your coaching program "${match.title}". Reason: ${reason}`,
+              data: {
+                matchId,
+                coachId: user.id,
+                programTitle: match.title,
+                reason,
+              },
+            });
+          }
+        } catch (notificationError) {
+          console.warn("Failed to send admin notification:", notificationError);
+          // Don't fail the match decline if notification fails
+        }
+
+        // Log interaction for backend tracking (Issues #6 & #7)
+        try {
+          await logMatchAction(user.id, "coach", matchId, "declined", reason);
+          console.log("✅ Match decline interaction logged");
+        } catch (logError) {
+          console.warn("⚠️ Failed to log match action:", logError);
+        }
 
         setIsMatchDialogOpen(false);
         setSelectedMatch(null);
@@ -482,7 +583,7 @@ export const CoachDashboard: React.FC = () => {
               />
               Refresh
             </Button>
-            <Button onClick={() => navigate("/coach/settings")}>
+            <Button onClick={() => navigate("/coach-settings")}>
               <Settings className="w-4 h-4 mr-2" />
               Settings
             </Button>
@@ -709,8 +810,16 @@ export const CoachDashboard: React.FC = () => {
                           <Button
                             variant="outline"
                             onClick={() => {
-                              setSelectedMatch(match);
-                              setIsMatchDialogOpen(true);
+                              console.log("Opening match details for:", match);
+                              if (match && match.id) {
+                                setSelectedMatch(match);
+                                setIsMatchDialogOpen(true);
+                              } else {
+                                console.error("Invalid match data:", match);
+                                toast.error(
+                                  "Match details not available. Please refresh and try again.",
+                                );
+                              }
                             }}
                           >
                             <Eye className="w-4 h-4 mr-2" />
@@ -980,7 +1089,7 @@ export const CoachDashboard: React.FC = () => {
               Review the complete details of this coaching opportunity
             </DialogDescription>
           </DialogHeader>
-          {selectedMatch && (
+          {selectedMatch ? (
             <div className="space-y-6">
               <div>
                 <h3 className="text-lg font-semibold mb-2">
@@ -1094,6 +1203,10 @@ export const CoachDashboard: React.FC = () => {
                   Accept Match
                 </Button>
               </div>
+            </div>
+          ) : (
+            <div className="text-center py-6">
+              <p className="text-gray-500">Match details not available</p>
             </div>
           )}
         </DialogContent>

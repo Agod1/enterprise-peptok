@@ -168,6 +168,10 @@ export default function AnalyticsSettings() {
       "conversion_rate",
       "revenue",
       "error_rate",
+      "employee_engagement",
+      "performance_ratings",
+      "goal_achievement",
+      "retention_rate",
     ],
     customDashboards: [
       {
@@ -235,6 +239,7 @@ export default function AnalyticsSettings() {
   });
 
   const availableMetrics = [
+    // Technical/Platform Metrics
     "user_registrations",
     "session_duration",
     "page_views",
@@ -242,11 +247,21 @@ export default function AnalyticsSettings() {
     "revenue",
     "error_rate",
     "bounce_rate",
-    "user_engagement",
     "api_calls",
     "load_time",
     "active_users",
     "churn_rate",
+    // Coaching Program Metrics (synchronized with CoachingRequestForm)
+    "employee_engagement",
+    "performance_ratings",
+    "skill_assessments",
+    "goal_achievement",
+    "team_collaboration",
+    "leadership_effectiveness",
+    "innovation_metrics",
+    "time_to_proficiency",
+    "retention_rate",
+    "customer_satisfaction",
   ];
 
   const availableEvents = [
@@ -960,6 +975,10 @@ export default function AnalyticsSettings() {
                   <PieChart className="w-5 h-5" />
                   Enabled Metrics
                 </CardTitle>
+                <div className="text-sm text-muted-foreground">
+                  Metrics selected here will be available for tracking in
+                  coaching programs
+                </div>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">

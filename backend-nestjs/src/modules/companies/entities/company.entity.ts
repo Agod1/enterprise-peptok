@@ -9,7 +9,7 @@ import {
 } from "typeorm";
 import { User } from "../../users/entities/user.entity";
 import { Session } from "../../sessions/entities/session.entity";
-import { Payment } from "../../payments/entities/payment.entity";
+
 import { MatchingRequest } from "../../matching/entities/matching-request.entity";
 
 export enum CompanyStatus {
@@ -130,9 +130,6 @@ export class Company {
 
   @OneToMany(() => Session, (session) => session.company)
   sessions: Session[];
-
-  @OneToMany(() => Payment, (payment) => payment.company)
-  payments: Payment[];
 
   @OneToMany(() => MatchingRequest, (request) => request.company)
   matchingRequests: MatchingRequest[];
