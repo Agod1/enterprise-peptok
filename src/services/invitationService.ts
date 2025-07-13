@@ -60,7 +60,9 @@ class InvitationService {
     });
 
     // Only verify database connection if we have an explicit API URL
-    if (apiUrl) {
+    const hasValidApiUrl = apiUrl && apiUrl.trim() && apiUrl !== "";
+
+    if (hasValidApiUrl) {
       console.log("🗃️ API URL configured, verifying database connection...");
       this.verifyDatabaseConnection().catch(() => {
         console.log(
@@ -69,7 +71,8 @@ class InvitationService {
       });
     } else {
       console.log(
-        "🗃️ No API URL configured - InvitationService using localStorage mode",
+        "🗃️ No valid API URL configured - InvitationService using localStorage mode",
+        { apiUrl, hasValidApiUrl },
       );
     }
   }
@@ -650,7 +653,7 @@ class InvitationService {
       }
 
       // Fall back to localStorage
-      console.log("⚠️ Backend unavailable, resending via localStorage");
+      console.log("⚠�� Backend unavailable, resending via localStorage");
       const invitations = this.getInvitationsFromLocalStorage();
       const invitation = invitations.find((inv) => inv.id === invitationId);
 
