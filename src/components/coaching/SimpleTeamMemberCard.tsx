@@ -204,8 +204,8 @@ export function SimpleTeamMemberCard({
           </Badge>
         </CardTitle>
         <CardDescription>
-          Add team members to participate in "{programTitle}". Each team member
-          will be notified about the program.
+          Team members are optional - you can add them now or later. Each team
+          member will be notified about "{programTitle}" when added.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
