@@ -2913,6 +2913,63 @@ class EnhancedApiService {
       return { success: true, data: { matches: mockMatches } };
     }
   }
+
+  // ===== USER INTERACTION LOGGING =====
+
+  async logUserInteractions(interactions: any[]): Promise<any> {
+    try {
+      // Try to send to backend first
+      const response = await this.request<any>("/interactions/batch", {
+        method: "POST",
+        body: { interactions },
+      });
+
+      analytics.trackAction({
+        action: "interactions_logged",
+        component: "api_enhanced",
+        metadata: {
+          interactionCount: interactions.length,
+          source: "backend_api",
+        },
+      });
+
+      return response.data;
+    } catch (error) {
+      console.warn(
+        "Backend API not available, storing interactions locally:",
+        error,
+      );
+
+      // Store interactions locally if backend is not available
+      const existingInteractions = JSON.parse(
+        localStorage.getItem("user_interactions") || "[]",
+      );
+
+      existingInteractions.push(...interactions);
+
+      // Keep only last 1000 interactions to prevent storage overflow
+      if (existingInteractions.length > 1000) {
+        existingInteractions.splice(0, existingInteractions.length - 1000);
+      }
+
+      localStorage.setItem(
+        "user_interactions",
+        JSON.stringify(existingInteractions),
+      );
+
+      analytics.trackAction({
+        action: "interactions_stored_locally",
+        component: "api_enhanced",
+        metadata: {
+          interactionCount: interactions.length,
+          totalStored: existingInteractions.length,
+          source: "local_storage",
+        },
+      });
+
+      return { success: true, stored: "locally" };
+    }
+  }
 }
 
 // Export singleton instance
