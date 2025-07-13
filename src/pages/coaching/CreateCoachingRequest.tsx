@@ -233,6 +233,17 @@ export default function CreateCoachingRequest() {
       // Store in localStorage for persistence
       LocalStorageService.addCoachingRequest(request);
 
+      // Log interaction for backend tracking (Issues #6 & #7)
+      if (user?.id && request?.id) {
+        try {
+          await logProgramCreation(user.id, request.id, data);
+          console.log("✅ Program creation interaction logged");
+        } catch (logError) {
+          console.warn("⚠️ Failed to log program creation:", logError);
+          // Don't fail the request creation if logging fails
+        }
+      }
+
       // Send program details email to team members (if any)
       try {
         if (hasTeamMembers) {
