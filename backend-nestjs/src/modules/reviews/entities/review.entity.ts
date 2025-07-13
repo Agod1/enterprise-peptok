@@ -6,12 +6,14 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
+  Check,
 } from "typeorm";
 import { User } from "../../users/entities/user.entity";
 import { Coach } from "../../coaches/entities/coach.entity";
 import { Session } from "../../sessions/entities/session.entity";
 
 @Entity("reviews")
+@Check(`"rating" >= 1 AND "rating" <= 5`)
 export class Review {
   @PrimaryGeneratedColumn("uuid")
   id: string;
@@ -37,7 +39,7 @@ export class Review {
   @Column({ nullable: true })
   sessionId: string;
 
-  @Column({ type: "int", minimum: 1, maximum: 5 })
+  @Column({ type: "int" })
   rating: number;
 
   @Column({ type: "text" })
