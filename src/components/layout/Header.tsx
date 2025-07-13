@@ -90,7 +90,7 @@ const Header = ({ userType: propUserType }: HeaderProps) => {
     {
       label: "New Program",
       path: "/coaching/new",
-      roles: ["company_admin", "platform_admin"],
+      roles: ["company_admin"],
     },
     {
       label: "Coaches",
