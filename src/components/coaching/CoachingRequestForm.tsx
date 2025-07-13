@@ -37,7 +37,7 @@ import {
   Users,
   Clock,
 } from "lucide-react";
-import { TeamManagement } from "./TeamManagement";
+
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { toast } from "sonner";
@@ -578,8 +578,6 @@ export function CoachingRequestForm({
               </div>
             </div>
           </div>
-
-          {/* Submit Button (handled by parent component) */}
         </form>
       </CardContent>
     </Card>
