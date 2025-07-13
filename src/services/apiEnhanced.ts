@@ -1,10 +1,12 @@
 import {
   MentorshipRequest,
+  CoachingRequest,
   SubscriptionTier,
   SessionPricingTier,
   CoachSessionLimits,
   User,
 } from "../types";
+import LocalStorageService from "./localStorageService";
 import { Mentor, MatchingFilters, MatchingResult } from "../types/mentor";
 import {
   Coach,
@@ -855,6 +857,234 @@ class EnhancedApiService {
       );
 
       return newRequest;
+    }
+  }
+
+  // ===== COACHING REQUEST METHODS =====
+
+  async createCoachingRequest(
+    request: Partial<CoachingRequest>,
+  ): Promise<CoachingRequest> {
+    const user = checkAuthorization(["company_admin"]);
+
+    try {
+      const response = await this.request<CoachingRequest>(
+        "/coaching-requests",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            ...request,
+            companyId: user.companyId,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          }),
+        },
+      );
+
+      analytics.company.requestCreated(
+        response.data.id,
+        user.companyId!,
+        request.title || "Untitled Request",
+      );
+
+      // Store in localStorage for persistence
+      LocalStorageService.addCoachingRequest(response.data);
+
+      return response.data;
+    } catch (error) {
+      console.warn("API not available, storing request locally:", error);
+
+      const newRequest: CoachingRequest = {
+        id: `request_${Date.now()}`,
+        companyId: user.companyId!,
+        ...request,
+        status: "submitted",
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      } as CoachingRequest;
+
+      // Store in localStorage for persistence
+      LocalStorageService.addCoachingRequest(newRequest);
+
+      analytics.company.requestCreated(
+        newRequest.id,
+        user.companyId!,
+        request.title || "Untitled Request",
+      );
+
+      return newRequest;
+    }
+  }
+
+  async getCoachingRequests(params?: {
+    status?: string;
+    companyId?: string;
+    coachId?: string;
+    limit?: number;
+  }): Promise<CoachingRequest[]> {
+    const user = checkAuthorization();
+
+    try {
+      const queryParams = new URLSearchParams();
+
+      // Role-based filtering
+      if (user.userType === "coach") {
+        queryParams.append("coachId", user.id);
+      } else if (user.userType === "company_admin" && user.companyId) {
+        queryParams.append("companyId", user.companyId);
+      }
+
+      // Additional filters
+      if (params?.status) queryParams.append("status", params.status);
+      if (params?.companyId && user.userType === "platform_admin") {
+        queryParams.append("companyId", params.companyId);
+      }
+      if (params?.coachId && user.userType === "platform_admin") {
+        queryParams.append("coachId", params.coachId);
+      }
+      if (params?.limit) queryParams.append("limit", params.limit.toString());
+
+      const response = await this.request<CoachingRequest[]>(
+        `/coaching-requests?${queryParams.toString()}`,
+      );
+
+      analytics.trackAction({
+        action: "coaching_requests_viewed",
+        component: "dashboard",
+        metadata: {
+          params,
+          userType: user.userType,
+          resultCount: response.data.length,
+        },
+      });
+
+      return response.data;
+    } catch (error) {
+      console.warn("API not available, using localStorage requests:", error);
+
+      // Get data from localStorage
+      let allRequests = LocalStorageService.getCoachingRequests();
+
+      // Apply role-based filtering
+      if (user.userType === "coach") {
+        allRequests = allRequests.filter(
+          (req: CoachingRequest) =>
+            req.assignedCoachId === user.id ||
+            (req.status === "submitted" && !req.assignedCoachId),
+        );
+      } else if (user.userType === "company_admin" && user.companyId) {
+        allRequests = allRequests.filter(
+          (req: CoachingRequest) => req.companyId === user.companyId,
+        );
+      }
+
+      // Apply additional filters
+      if (params?.status) {
+        allRequests = allRequests.filter(
+          (req: CoachingRequest) => req.status === params.status,
+        );
+      }
+
+      if (params?.limit) {
+        allRequests = allRequests.slice(0, params.limit);
+      }
+
+      return allRequests;
+    }
+  }
+
+  async getCoachingRequest(id: string): Promise<CoachingRequest | null> {
+    const user = checkAuthorization();
+
+    try {
+      const response = await this.request<CoachingRequest>(
+        `/coaching-requests/${id}`,
+      );
+
+      analytics.trackAction({
+        action: "coaching_request_viewed",
+        component: "dashboard",
+        metadata: { requestId: id },
+      });
+
+      return response.data;
+    } catch (error) {
+      console.warn("API not available, checking localStorage:", error);
+
+      // Get from localStorage
+      const allRequests = LocalStorageService.getCoachingRequests();
+      const request = allRequests.find((req) => req.id === id);
+
+      if (request) {
+        // Check authorization
+        if (
+          user.userType === "platform_admin" ||
+          request.companyId === user.companyId ||
+          request.assignedCoachId === user.id
+        ) {
+          return request;
+        } else {
+          throw new Error("Access denied");
+        }
+      }
+
+      return null;
+    }
+  }
+
+  async updateCoachingRequest(
+    id: string,
+    updates: Partial<CoachingRequest>,
+  ): Promise<CoachingRequest> {
+    const user = checkAuthorization();
+
+    try {
+      const response = await this.request<CoachingRequest>(
+        `/coaching-requests/${id}`,
+        {
+          method: "PUT",
+          body: JSON.stringify({
+            ...updates,
+            updatedAt: new Date().toISOString(),
+          }),
+        },
+      );
+
+      analytics.trackAction({
+        action: "coaching_request_updated",
+        component: "dashboard",
+        metadata: { requestId: id, updates: Object.keys(updates) },
+      });
+
+      // Update in localStorage
+      LocalStorageService.updateCoachingRequest(id, {
+        ...updates,
+        updatedAt: new Date().toISOString(),
+      });
+
+      return response.data;
+    } catch (error) {
+      console.warn("API not available, updating localStorage:", error);
+
+      // Update in localStorage
+      LocalStorageService.updateCoachingRequest(id, {
+        ...updates,
+        updatedAt: new Date().toISOString(),
+      });
+
+      // Get updated request
+      const updatedRequest = LocalStorageService.getCoachingRequest(id);
+      if (!updatedRequest) {
+        throw new Error("Request not found");
+      }
+
+      analytics.trackAction({
+        action: "coaching_request_updated",
+        component: "dashboard",
+        metadata: { requestId: id, updates: Object.keys(updates) },
+      });
+
+      return updatedRequest;
     }
   }
 
