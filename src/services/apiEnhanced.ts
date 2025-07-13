@@ -967,55 +967,32 @@ class EnhancedApiService {
   ): Promise<MentorshipRequest> {
     const user = checkAuthorization(["company_admin"]);
 
-    try {
-      const response = await this.request<MentorshipRequest>(
-        "/mentorship-requests",
-        {
-          method: "POST",
-          body: JSON.stringify({
-            ...request,
-            companyId: user.companyId,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-          }),
-        },
-      );
+    const newRequest: MentorshipRequest = {
+      id: `request_${Date.now()}`,
+      companyId: user.companyId!,
+      ...request,
+      status: "pending",
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    } as MentorshipRequest;
 
-      analytics.company.requestCreated(
-        response.data.id,
-        user.companyId!,
-        request.title || "Untitled Request",
-      );
+    // Use data sync service for backend-first creation
+    const result = await dataSyncService.createData<MentorshipRequest>(
+      DATA_SYNC_CONFIGS.MENTORSHIP_REQUESTS,
+      newRequest,
+    );
 
-      // Note: Cache invalidation removed for simplification
+    analytics.company.requestCreated(
+      newRequest.id,
+      user.companyId!,
+      request.title || "Untitled Request",
+    );
 
-      return response.data;
-    } catch (error) {
-      console.warn("API not available, storing request locally:", error);
+    console.log(
+      `✅ Created mentorship request ${newRequest.id} via ${result.source}`,
+    );
 
-      const newRequest: MentorshipRequest = {
-        id: `request_${Date.now()}`,
-        companyId: user.companyId!,
-        ...request,
-        status: "pending",
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      } as MentorshipRequest;
-
-      const requests = JSON.parse(
-        localStorage.getItem("mentorship_requests") || "[]",
-      );
-      requests.push(newRequest);
-      localStorage.setItem("mentorship_requests", JSON.stringify(requests));
-
-      analytics.company.requestCreated(
-        newRequest.id,
-        user.companyId!,
-        request.title || "Untitled Request",
-      );
-
-      return newRequest;
-    }
+    return newRequest;
   }
 
   // ===== COACHING REQUEST METHODS =====
@@ -2410,7 +2387,7 @@ class EnhancedApiService {
 
     // If all backend endpoints fail, throw error to trigger offline sync
     console.error(
-      "❌ Failed to save invitation to backend database via all endpoints",
+      "��� Failed to save invitation to backend database via all endpoints",
     );
     throw new Error(
       `Failed to save invitation to backend database: ${lastError?.message || "All endpoints unavailable"}`,
