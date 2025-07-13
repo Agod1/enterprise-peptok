@@ -1093,73 +1093,77 @@ class EnhancedApiService {
   }): Promise<CoachingRequest[]> {
     const user = checkAuthorization();
 
-    try {
-      const queryParams = new URLSearchParams();
+    // Use data sync service with backend-first approach
+    const filters: Record<string, string> = {};
 
-      // Role-based filtering
+    // Role-based filtering
+    if (user.userType === "coach") {
+      filters.coachId = user.id;
+    } else if (user.userType === "company_admin" && user.companyId) {
+      filters.companyId = user.companyId;
+    }
+
+    // Additional filters
+    if (params?.status) filters.status = params.status;
+    if (params?.companyId && user.userType === "platform_admin") {
+      filters.companyId = params.companyId;
+    }
+    if (params?.coachId && user.userType === "platform_admin") {
+      filters.coachId = params.coachId;
+    }
+    if (params?.limit) filters.limit = params.limit.toString();
+
+    const result = await dataSyncService.getData<CoachingRequest>(
+      DATA_SYNC_CONFIGS.COACHING_REQUESTS,
+      filters,
+    );
+
+    analytics.trackAction({
+      action: "coaching_requests_viewed",
+      component: "dashboard",
+      metadata: {
+        params,
+        userType: user.userType,
+        resultCount: result.data?.length || 0,
+        source: result.source,
+        backendAvailable: result.backendAvailable,
+      },
+    });
+
+    // Apply client-side filtering for localStorage fallback
+    let filteredData = result.data || [];
+
+    if (result.source === "localStorage") {
+      // Apply role-based filtering for localStorage
       if (user.userType === "coach") {
-        queryParams.append("coachId", user.id);
-      } else if (user.userType === "company_admin" && user.companyId) {
-        queryParams.append("companyId", user.companyId);
-      }
-
-      // Additional filters
-      if (params?.status) queryParams.append("status", params.status);
-      if (params?.companyId && user.userType === "platform_admin") {
-        queryParams.append("companyId", params.companyId);
-      }
-      if (params?.coachId && user.userType === "platform_admin") {
-        queryParams.append("coachId", params.coachId);
-      }
-      if (params?.limit) queryParams.append("limit", params.limit.toString());
-
-      const response = await this.request<CoachingRequest[]>(
-        `/coaching-requests?${queryParams.toString()}`,
-      );
-
-      analytics.trackAction({
-        action: "coaching_requests_viewed",
-        component: "dashboard",
-        metadata: {
-          params,
-          userType: user.userType,
-          resultCount: response.data.length,
-        },
-      });
-
-      return response.data;
-    } catch (error) {
-      console.warn("API not available, using localStorage requests:", error);
-
-      // Get data from localStorage
-      let allRequests = LocalStorageService.getCoachingRequests();
-
-      // Apply role-based filtering
-      if (user.userType === "coach") {
-        allRequests = allRequests.filter(
+        filteredData = filteredData.filter(
           (req: CoachingRequest) =>
             req.assignedCoachId === user.id ||
             (req.status === "submitted" && !req.assignedCoachId),
         );
       } else if (user.userType === "company_admin" && user.companyId) {
-        allRequests = allRequests.filter(
+        filteredData = filteredData.filter(
           (req: CoachingRequest) => req.companyId === user.companyId,
         );
       }
 
       // Apply additional filters
       if (params?.status) {
-        allRequests = allRequests.filter(
+        filteredData = filteredData.filter(
           (req: CoachingRequest) => req.status === params.status,
         );
       }
 
       if (params?.limit) {
-        allRequests = allRequests.slice(0, params.limit);
+        filteredData = filteredData.slice(0, params.limit);
       }
-
-      return allRequests;
     }
+
+    console.log(
+      `📊 Retrieved ${filteredData.length} coaching requests from ${result.source}`,
+    );
+
+    return filteredData;
   }
 
   async getCoachingRequest(id: string): Promise<CoachingRequest | null> {
