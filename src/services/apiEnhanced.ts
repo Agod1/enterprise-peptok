@@ -1594,7 +1594,7 @@ class EnhancedApiService {
 
       return allRequests;
     }
-  }
+    }
 
   // ===== ANALYTICS METHODS =====
 
