@@ -830,4 +830,12 @@ class InvitationService {
   }
 }
 
-export const invitationService = new InvitationService();
+// Create singleton instance safely
+let invitationServiceInstance: InvitationService | null = null;
+
+export const invitationService = (() => {
+  if (!invitationServiceInstance) {
+    invitationServiceInstance = new InvitationService();
+  }
+  return invitationServiceInstance;
+})();
