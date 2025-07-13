@@ -577,8 +577,15 @@ class EnhancedApiService {
   }
 
   async getAllCoaches(): Promise<Coach[]> {
-    // Skip API request if backend is not available/configured
-    if (!Environment.shouldTryBackend()) {
+    // Check if we have a valid API URL configuration
+    const apiUrl = import.meta.env.VITE_API_URL;
+    const isCloudEnvironment =
+      window.location.hostname.includes(".fly.dev") ||
+      window.location.hostname.includes(".vercel.app") ||
+      window.location.hostname.includes(".netlify.app");
+
+    // Skip API request if no backend is configured or we're in a cloud environment without API URL
+    if (!apiUrl || (isCloudEnvironment && !apiUrl)) {
       console.log("🗃️ No backend configured, using mock coaches data");
     } else {
       try {
