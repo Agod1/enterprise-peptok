@@ -51,6 +51,200 @@ import {
   SessionPricingTier,
 } from "@/types";
 
+// Auto-fill coaching program templates
+const COACHING_TEMPLATES = {
+  A: {
+    title: "Agile Leadership Transformation",
+    description:
+      "Comprehensive coaching program focused on developing agile leadership skills, adaptive thinking, and team empowerment. Participants will learn to navigate change, foster innovation, and build resilient teams in dynamic business environments.",
+    goals: [
+      {
+        title: "Master Agile Leadership Principles",
+        description:
+          "Learn and apply core agile leadership methodologies and frameworks",
+        category: "leadership" as const,
+        priority: "high" as const,
+      },
+      {
+        title: "Enhance Team Adaptability",
+        description:
+          "Develop skills to help teams adapt quickly to changing requirements",
+        category: "leadership" as const,
+        priority: "high" as const,
+      },
+      {
+        title: "Build Innovation Culture",
+        description:
+          "Foster an environment that encourages experimentation and continuous improvement",
+        category: "business" as const,
+        priority: "medium" as const,
+      },
+    ],
+    skills: [
+      "Agile Methodologies",
+      "Change Management",
+      "Team Leadership",
+      "Innovation",
+    ],
+    timeline: "12 weeks",
+    participantGoal: 8,
+    budgetMin: 8000,
+    budgetMax: 15000,
+  },
+  B: {
+    title: "Business Strategy & Executive Coaching",
+    description:
+      "Executive-level coaching program designed to enhance strategic thinking, decision-making, and organizational leadership. Focus on developing C-suite and senior leadership capabilities for business transformation and growth.",
+    goals: [
+      {
+        title: "Strategic Vision Development",
+        description:
+          "Create and communicate compelling strategic visions for organizational growth",
+        category: "business" as const,
+        priority: "high" as const,
+      },
+      {
+        title: "Executive Presence & Communication",
+        description:
+          "Enhance executive presence and high-impact communication skills",
+        category: "leadership" as const,
+        priority: "high" as const,
+      },
+      {
+        title: "Board & Stakeholder Relations",
+        description:
+          "Master effective board presentations and stakeholder management",
+        category: "business" as const,
+        priority: "medium" as const,
+      },
+    ],
+    skills: [
+      "Strategic Planning",
+      "Executive Leadership",
+      "Stakeholder Management",
+      "Business Transformation",
+    ],
+    timeline: "16 weeks",
+    participantGoal: 5,
+    budgetMin: 15000,
+    budgetMax: 30000,
+  },
+  C: {
+    title: "Communication Excellence & Team Dynamics",
+    description:
+      "Intensive coaching program focused on developing superior communication skills, emotional intelligence, and team collaboration. Designed to enhance interpersonal effectiveness and build high-performing team cultures.",
+    goals: [
+      {
+        title: "Master Effective Communication",
+        description:
+          "Develop advanced verbal and non-verbal communication techniques",
+        category: "personal" as const,
+        priority: "high" as const,
+      },
+      {
+        title: "Build Emotional Intelligence",
+        description:
+          "Enhance self-awareness, empathy, and relationship management skills",
+        category: "personal" as const,
+        priority: "high" as const,
+      },
+      {
+        title: "Facilitate Team Collaboration",
+        description:
+          "Learn to facilitate effective team meetings and collaborative decision-making",
+        category: "leadership" as const,
+        priority: "medium" as const,
+      },
+    ],
+    skills: [
+      "Communication",
+      "Emotional Intelligence",
+      "Team Facilitation",
+      "Conflict Resolution",
+    ],
+    timeline: "10 weeks",
+    participantGoal: 12,
+    budgetMin: 6000,
+    budgetMax: 12000,
+  },
+  D: {
+    title: "Digital Transformation Leadership",
+    description:
+      "Specialized coaching for leaders navigating digital transformation initiatives. Focus on technology adoption, digital culture change, and leading teams through technological disruption and innovation.",
+    goals: [
+      {
+        title: "Digital Strategy Implementation",
+        description:
+          "Develop skills to create and execute effective digital transformation strategies",
+        category: "technical" as const,
+        priority: "high" as const,
+      },
+      {
+        title: "Change Management in Tech",
+        description:
+          "Master change management techniques specific to technology implementations",
+        category: "leadership" as const,
+        priority: "high" as const,
+      },
+      {
+        title: "Digital Culture Development",
+        description:
+          "Build organizational cultures that embrace digital innovation and continuous learning",
+        category: "business" as const,
+        priority: "medium" as const,
+      },
+    ],
+    skills: [
+      "Digital Strategy",
+      "Technology Leadership",
+      "Change Management",
+      "Innovation Management",
+    ],
+    timeline: "14 weeks",
+    participantGoal: 6,
+    budgetMin: 10000,
+    budgetMax: 20000,
+  },
+  E: {
+    title: "Entrepreneurial Mindset & Innovation",
+    description:
+      "Dynamic coaching program for developing entrepreneurial thinking, innovation capabilities, and startup leadership skills. Perfect for intrapreneurs, startup founders, and innovation leaders seeking to drive growth and transformation.",
+    goals: [
+      {
+        title: "Develop Entrepreneurial Thinking",
+        description:
+          "Cultivate mindset and skills for identifying and pursuing opportunities",
+        category: "business" as const,
+        priority: "high" as const,
+      },
+      {
+        title: "Innovation & Product Development",
+        description:
+          "Learn methodologies for innovation, product development, and market validation",
+        category: "technical" as const,
+        priority: "high" as const,
+      },
+      {
+        title: "Startup Leadership Skills",
+        description:
+          "Master the unique leadership challenges of fast-growth and startup environments",
+        category: "leadership" as const,
+        priority: "medium" as const,
+      },
+    ],
+    skills: [
+      "Entrepreneurship",
+      "Innovation",
+      "Product Development",
+      "Startup Leadership",
+    ],
+    timeline: "12 weeks",
+    participantGoal: 10,
+    budgetMin: 7000,
+    budgetMax: 14000,
+  },
+};
+
 export interface CoachingRequestFormData {
   title: string;
   description: string;
