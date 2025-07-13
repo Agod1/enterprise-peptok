@@ -168,6 +168,10 @@ export default function AnalyticsSettings() {
       "conversion_rate",
       "revenue",
       "error_rate",
+      "employee_engagement",
+      "performance_ratings",
+      "goal_achievement",
+      "retention_rate",
     ],
     customDashboards: [
       {
