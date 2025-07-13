@@ -525,6 +525,14 @@ export function CoachingRequestForm({
       return;
     }
 
+    if (
+      formData.communicationChannel.type === "custom" &&
+      !formData.communicationChannel.customLink?.trim()
+    ) {
+      toast.error("Please enter a custom meeting link");
+      return;
+    }
+
     onSubmit(formData);
   };
 
