@@ -127,6 +127,8 @@ export default function PlatformAdminDashboard() {
   const [isCreateCompanyOpen, setIsCreateCompanyOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isUserDetailsOpen, setIsUserDetailsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   // New user form state
   const [newUser, setNewUser] = useState({
@@ -195,6 +197,9 @@ export default function PlatformAdminDashboard() {
 
   const loadPlatformData = async () => {
     try {
+      setIsLoading(true);
+      setError(null);
+
       // Track page view
       analytics.pageView({
         page: "platform_admin_dashboard",
@@ -300,7 +305,10 @@ export default function PlatformAdminDashboard() {
       setCompanies(mockCompanies);
     } catch (error) {
       console.error("Error loading platform data:", error);
+      setError("Failed to load platform data");
       toast.error("Failed to load platform data");
+    } finally {
+      setIsLoading(false);
     }
   };
 
