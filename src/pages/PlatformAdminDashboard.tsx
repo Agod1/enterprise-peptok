@@ -933,7 +933,7 @@ export default function PlatformAdminDashboard() {
 
             <Card
               className="hover:shadow-md transition-shadow cursor-pointer"
-              onClick={() => navigate("/admin/analytics-settings")}
+              onClick={() => navigate("/admin/analytics")}
             >
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
