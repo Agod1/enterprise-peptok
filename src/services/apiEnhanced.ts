@@ -154,6 +154,19 @@ class EnhancedApiService {
   ): Promise<{ data: T; error?: string }> {
     const startTime = Date.now();
 
+    // Check if we're in a cloud environment without backend
+    const isCloudEnvironment =
+      window.location.hostname.includes(".fly.dev") ||
+      window.location.hostname.includes(".vercel.app") ||
+      window.location.hostname.includes(".netlify.app");
+
+    const apiUrl = import.meta.env.VITE_API_URL;
+
+    // If in cloud environment without configured backend, skip API call
+    if (isCloudEnvironment && !apiUrl) {
+      throw new Error("Backend not available in demo environment");
+    }
+
     try {
       const response = await fetch(`${API_BASE_URL}${endpoint}`, {
         headers: {
