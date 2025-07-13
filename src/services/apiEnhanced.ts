@@ -1616,11 +1616,7 @@ class EnhancedApiService {
       window.location.hostname.includes(".netlify.app");
 
     // Skip API request if no backend is configured or we're in a cloud environment without API URL
-    if (!apiUrl || (isCloudEnvironment && !apiUrl)) {
-      console.log(
-        "🗃️ No backend configured, using cross-browser synchronized storage for pricing config",
-      );
-    } else {
+    if (apiUrl && !isCloudEnvironment) {
       try {
         const response = await this.request<any>("/admin/pricing-config");
 
@@ -1637,6 +1633,10 @@ class EnhancedApiService {
           error,
         );
       }
+    } else {
+      console.log(
+        "🗃️ No backend configured, using cross-browser synchronized storage for pricing config",
+      );
     }
 
     // Use centralized cross-browser sync service
