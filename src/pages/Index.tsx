@@ -43,6 +43,7 @@ import {
 import { Link } from "react-router-dom";
 import { apiEnhanced as api } from "@/services/apiEnhanced";
 import { SubscriptionTier } from "@/types";
+import LeadCapture from "@/components/common/LeadCapture";
 
 const features = [
   {
@@ -616,54 +617,66 @@ const Index = () => {
             </div>
           </section>
 
-          {/* Enhanced CTA Section */}
-          <section className="py-20 md:py-28">
+          {/* Enhanced CTA Section with Lead Capture */}
+          <section className="py-20 md:py-28 bg-gradient-to-r from-blue-50/30 via-white to-blue-50/30">
             <div className="container">
-              <div className="max-w-4xl mx-auto text-center space-y-8">
-                <Badge variant="outline" className="mb-4">
-                  Get Started
-                </Badge>
-                <h2 className="text-4xl md:text-5xl font-bold">
-                  Ready to transform your workforce development?
-                </h2>
-                <p className="text-xl text-muted-foreground leading-relaxed">
-                  Join leading companies using Peptok to connect their
-                  enterprises with expert coaches and drive measurable business
-                  outcomes. Get started today.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-6 justify-center">
-                  <Button
-                    asChild
-                    size="lg"
-                    className="text-lg px-8 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 transition-all duration-300 hover:scale-105 hover:shadow-xl group"
-                  >
-                    <Link to="/signup">
-                      Get Started
-                      <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                    </Link>
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="lg"
-                    className="text-lg px-8 transition-all duration-300 hover:scale-105 hover:shadow-lg border-blue-200 hover:border-blue-300 group"
-                  >
-                    <Calendar className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
-                    Schedule Demo
-                  </Button>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+                {/* CTA Content */}
+                <div className="space-y-8">
+                  <Badge variant="outline" className="mb-4">
+                    Get Started
+                  </Badge>
+                  <h2 className="text-4xl md:text-5xl font-bold">
+                    Ready to transform your workforce development?
+                  </h2>
+                  <p className="text-xl text-muted-foreground leading-relaxed">
+                    Join leading companies using Peptok to connect their
+                    enterprises with expert coaches and drive measurable
+                    business outcomes. Get started today.
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-6">
+                    <Button
+                      asChild
+                      size="lg"
+                      className="text-lg px-8 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 transition-all duration-300 hover:scale-105 hover:shadow-xl group"
+                    >
+                      <Link to="/signup">
+                        Get Started
+                        <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                      </Link>
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="lg"
+                      className="text-lg px-8 transition-all duration-300 hover:scale-105 hover:shadow-lg border-blue-200 hover:border-blue-300 group"
+                    >
+                      <Calendar className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
+                      Schedule Demo
+                    </Button>
+                  </div>
+                  <div className="flex flex-col sm:flex-row items-center gap-4 text-sm text-muted-foreground">
+                    <div className="flex items-center space-x-1">
+                      <CheckCircle className="h-4 w-4 text-green-500" />
+                      <span>No credit card required</span>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <CheckCircle className="h-4 w-4 text-green-500" />
+                      <span>Instant access</span>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <CheckCircle className="h-4 w-4 text-green-500" />
+                      <span>Cancel anytime</span>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-4 text-sm text-muted-foreground">
-                  <div className="flex items-center space-x-1">
-                    <CheckCircle className="h-4 w-4 text-green-500" />
-                    <span>No credit card required</span>
-                  </div>
-                  <div className="flex items-center space-x-1">
-                    <CheckCircle className="h-4 w-4 text-green-500" />
-                    <span>Instant access</span>
-                  </div>
-                  <div className="flex items-center space-x-1">
-                    <CheckCircle className="h-4 w-4 text-green-500" />
-                    <span>Cancel anytime</span>
-                  </div>
+
+                {/* Lead Capture Form */}
+                <div className="animate-in slide-in-from-right duration-1000 delay-300">
+                  <LeadCapture
+                    source="landing_page_cta"
+                    title="Start Your Free Trial"
+                    description="Get instant access to our coaching platform and see results in 30 days."
+                  />
                 </div>
               </div>
             </div>

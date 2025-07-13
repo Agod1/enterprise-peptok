@@ -35,17 +35,17 @@ const VideoConference = React.lazy(
   () => import("@/components/sessions/VideoConference"),
 );
 const Messages = React.lazy(() => import("@/pages/Messages"));
-const CreateMentorshipRequest = React.lazy(
+const CreateCoachingRequestLegacy = React.lazy(
   () => import("@/pages/mentorship/CreateMentorshipRequest"),
 );
 const CreateCoachingRequest = React.lazy(
   () => import("@/pages/coaching/CreateCoachingRequest"),
 );
-const MentorshipRequestDetails = React.lazy(
-  () => import("@/pages/mentorship/MentorshipRequestDetails"),
-);
 const CoachingRequestDetails = React.lazy(
   () => import("@/pages/coaching/CoachingRequestDetails"),
+);
+const CoachingRequestDetailsLegacy = React.lazy(
+  () => import("@/pages/mentorship/MentorshipRequestDetails"),
 );
 const CoachMatching = React.lazy(() =>
   import("@/pages/coach/CoachMatching").then((module) => ({
@@ -205,7 +205,7 @@ export const FullApp: React.FC = () => {
             path="/mentorship/new"
             element={
               <ProtectedRoute requiredUserType="company_admin">
-                <CreateCoachingRequest />
+                <CreateCoachingRequestLegacy />
               </ProtectedRoute>
             }
           />
@@ -213,14 +213,14 @@ export const FullApp: React.FC = () => {
             path="/mentorship/requests/:id"
             element={
               <ProtectedRoute>
-                <CoachingRequestDetails />
+                <CoachingRequestDetailsLegacy />
               </ProtectedRoute>
             }
           />
 
           {/* Coach Matching */}
           <Route
-            path="/coach/matching/:mentorshipRequestId"
+            path="/coach/matching/:coachingRequestId"
             element={
               <ProtectedRoute requiredUserType="coach">
                 <CoachMatching />

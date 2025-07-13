@@ -19,10 +19,18 @@ export const QuickNav: React.FC = () => {
   }
 
   const links = [
-    { path: "/platform-admin", label: "Platform Admin Dashboard" },
-    { path: "/admin/security-settings", label: "Platform Settings (NEW)" },
-    { path: "/admin/matching-settings", label: "Matching Algorithm" },
-    { path: "/admin/email-settings", label: "Email Settings" },
+    { path: "/", label: "🏠 Landing Page" },
+    { path: "/dashboard", label: "📊 Company Dashboard" },
+    { path: "/coaching/new", label: "➕ Create New Program" },
+    { path: "/mentorship/new", label: "📝 Create Program (Legacy)" },
+    { path: "/coach/dashboard", label: "👨‍🏫 Coach Dashboard" },
+    { path: "/platform-admin", label: "⚙️ Platform Admin" },
+    { path: "/admin/matching", label: "🎯 Matching Settings" },
+    { path: "/admin/email", label: "📧 Email Settings" },
+    { path: "/pricing", label: "💰 Pricing" },
+    { path: "/coaches", label: "👥 Coach Directory" },
+    { path: "/login", label: "🔐 Login" },
+    { path: "/signup", label: "✍️ Sign Up" },
   ];
 
   return (
