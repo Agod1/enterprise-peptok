@@ -1202,54 +1202,37 @@ class EnhancedApiService {
   ): Promise<CoachingRequest> {
     const user = checkAuthorization();
 
-    try {
-      const response = await this.request<CoachingRequest>(
-        `/coaching-requests/${id}`,
-        {
-          method: "PUT",
-          body: JSON.stringify({
-            ...updates,
-            updatedAt: new Date().toISOString(),
-          }),
-        },
-      );
+    const updatesWithTimestamp = {
+      ...updates,
+      updatedAt: new Date().toISOString(),
+    };
 
-      analytics.trackAction({
-        action: "coaching_request_updated",
-        component: "dashboard",
-        metadata: { requestId: id, updates: Object.keys(updates) },
-      });
+    // Use data sync service for backend-first update
+    const result = await dataSyncService.updateData<CoachingRequest>(
+      DATA_SYNC_CONFIGS.COACHING_REQUESTS,
+      id,
+      updatesWithTimestamp,
+    );
 
-      // Update in localStorage
-      LocalStorageService.updateCoachingRequest(id, {
-        ...updates,
-        updatedAt: new Date().toISOString(),
-      });
+    analytics.trackAction({
+      action: "coaching_request_updated",
+      component: "dashboard",
+      metadata: {
+        requestId: id,
+        updates: Object.keys(updates),
+        source: result.source,
+      },
+    });
 
-      return response.data;
-    } catch (error) {
-      console.warn("API not available, updating localStorage:", error);
+    console.log(`✅ Updated coaching request ${id} via ${result.source}`);
 
-      // Update in localStorage
-      LocalStorageService.updateCoachingRequest(id, {
-        ...updates,
-        updatedAt: new Date().toISOString(),
-      });
-
-      // Get updated request
-      const updatedRequest = LocalStorageService.getCoachingRequest(id);
-      if (!updatedRequest) {
-        throw new Error("Request not found");
-      }
-
-      analytics.trackAction({
-        action: "coaching_request_updated",
-        component: "dashboard",
-        metadata: { requestId: id, updates: Object.keys(updates) },
-      });
-
-      return updatedRequest;
+    // Return the updated request from localStorage
+    const updatedRequest = LocalStorageService.getCoachingRequest(id);
+    if (!updatedRequest) {
+      throw new Error("Request not found after update");
     }
+
+    return { ...updatedRequest, ...updatesWithTimestamp };
   }
 
   // ===== PLATFORM ADMIN METHODS =====
