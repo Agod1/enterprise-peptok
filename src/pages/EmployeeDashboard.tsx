@@ -361,7 +361,7 @@ const EmployeeDashboard = () => {
                 <div>
                   <CardTitle className="flex items-center gap-2">
                     <Target className="w-5 h-5" />
-                    Company Mentorship Requests
+                    Company Coaching Requests
                   </CardTitle>
                   <CardDescription>
                     Track progress of coaching programs your company has

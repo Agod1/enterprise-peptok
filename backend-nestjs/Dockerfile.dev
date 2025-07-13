@@ -4,35 +4,33 @@ FROM node:18-alpine
 # Set environment variables
 ENV NODE_ENV=development
 
-# Install dumb-init and development dependencies
+# Install dumb-init and dev tools
 RUN apk add --no-cache dumb-init git curl
+
+# Install NestJS CLI globally
+RUN npm install -g @nestjs/cli
 
 # Set work directory
 WORKDIR /app
 
-# Copy package files
+# Copy package files and install dependencies
 COPY package*.json ./
+RUN npm install
 
-# Install dependencies (including devDependencies for development)
-RUN npm ci --include=dev
-
-# Copy source code
+# Copy the source code
 COPY . .
 
-# Create app user for security
-RUN addgroup -g 1001 -S nodejs && \
-    adduser -S nestjs -u 1001 -G nodejs
-
-# Set ownership
+# Create app user and set permissions
+RUN addgroup -g 1001 -S nodejs && adduser -S nestjs -u 1001 -G nodejs
 RUN chown -R nestjs:nodejs /app
 USER nestjs
 
-# Expose port
+# Expose development port
 EXPOSE 3000
 
-# Health check
+# Health check endpoint
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
-    CMD curl -f http://localhost:3000/health || exit 1
+  CMD curl -f http://localhost:3000/health || exit 1
 
-# Run development server with watch mode
+# Start development server
 CMD ["dumb-init", "npm", "run", "start:dev"]

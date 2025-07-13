@@ -49,6 +49,13 @@ class AvailabilityRequirement(BaseModel):
     timezone: str = Field(default="UTC", description="Timezone")
     flexibility: float = Field(default=0.5, ge=0.0, le=1.0, description="Schedule flexibility")
 
+    @validator('days_of_week', pre=True)
+    def validate_days_of_week(cls, v):
+        if isinstance(v, list):
+            for day in v:
+                if not 0 <= day <= 6:
+                    raise ValueError("Days of week must be between 0 (Monday) and 6 (Sunday)")
+        return v
 class MatchingRequest(BaseModel):
     """Main matching request model"""
     request_id: str = Field(..., description="Unique request identifier")
@@ -81,15 +88,6 @@ class MatchingRequest(BaseModel):
     
     # Timestamp
     created_at: datetime = Field(default_factory=datetime.utcnow, description="Request creation time")
-    
-    @validator('days_of_week', pre=True)
-    def validate_days_of_week(cls, v):
-        """Validate days of week are in valid range"""
-        if isinstance(v, list):
-            for day in v:
-                if not 0 <= day <= 6:
-                    raise ValueError("Days of week must be between 0 (Monday) and 6 (Sunday)")
-        return v
 
 class CoachSkill(BaseModel):
     """Coach skill model"""

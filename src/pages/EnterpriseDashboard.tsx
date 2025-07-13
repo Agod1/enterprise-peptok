@@ -219,7 +219,7 @@ const EnterpriseDashboard = () => {
                 Welcome back, {user?.name || "Enterprise User"}!
               </h1>
               <p className="text-gray-600 mt-2">
-                Track your mentorship progress and continue your learning
+                Track your coaching progress and continue your learning
                 journey
               </p>
             </div>
@@ -252,7 +252,7 @@ const EnterpriseDashboard = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-gray-600 mb-1">
-                      Active Mentorships
+                      Active Coaching
                     </p>
                     <p className="text-2xl font-bold text-gray-900">2</p>
                   </div>
@@ -297,7 +297,7 @@ const EnterpriseDashboard = () => {
         <Tabs defaultValue="overview" className="space-y-6">
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="mentorships">My Mentorships</TabsTrigger>
+            <TabsTrigger value="mentorships">My Coaching</TabsTrigger>
             <TabsTrigger value="sessions">Sessions</TabsTrigger>
             <TabsTrigger value="progress">Progress</TabsTrigger>
           </TabsList>
@@ -310,7 +310,7 @@ const EnterpriseDashboard = () => {
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <div>
-                      <CardTitle>Company Mentorship Requests</CardTitle>
+                      <CardTitle>Company Coaching Requests</CardTitle>
                       <CardDescription>
                         Track progress of coaching programs your company has
                         created

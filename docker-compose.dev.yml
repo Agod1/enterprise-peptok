@@ -7,12 +7,13 @@ services:
     environment:
       - NODE_ENV=development
       - PORT=3001
-      - FRONTEND_URL=http://localhost:3000
     volumes:
-      - ./backend/src:/app/src:ro
-      - ./backend/package.json:/app/package.json:ro
+      - ./backend/src:/app/src
+      - ./backend/.env:/app/.env
       - backend-node-modules:/app/node_modules
-    command: npm run dev
+    ports:
+      - "3001:3000"
+    command: npm run start:dev
 
   # Development frontend with hot reload
   frontend:

@@ -20,7 +20,7 @@ const Logo = ({ className, size = "md", variant = "full" }: LogoProps) => {
         alt="Peptok Logo"
         className={cn("w-auto object-contain", sizeClasses[size])}
         style={{
-          maxWidth: "200px",
+          maxWidth: "100px",
           height: "auto",
         }}
         loading="eager"
