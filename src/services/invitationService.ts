@@ -59,8 +59,18 @@ class InvitationService {
       isLocal: this.isLocalDevelopment(),
     });
 
-    // Only verify database connection if we have an explicit API URL
-    const hasValidApiUrl = apiUrl && apiUrl.trim() && apiUrl !== "";
+    // NEVER verify database connections in cloud environments without explicit API URL
+    const hasValidApiUrl =
+      apiUrl && apiUrl.trim() && apiUrl !== "" && apiUrl.length > 0;
+    const shouldSkipDatabaseCheck = isCloudEnvironment || !hasValidApiUrl;
+
+    if (shouldSkipDatabaseCheck) {
+      console.log(
+        "🗃️ Skipping database verification - InvitationService using localStorage mode",
+        { isCloudEnvironment, hasValidApiUrl, hostname },
+      );
+      return; // Exit early, don't do any database operations
+    }
 
     if (hasValidApiUrl) {
       console.log("🗃️ API URL configured, verifying database connection...");
