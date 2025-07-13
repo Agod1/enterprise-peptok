@@ -280,6 +280,31 @@ export const CoachDashboard: React.FC = () => {
 
         toast.success("Match accepted successfully!");
 
+        // Notify company admin about match acceptance
+        try {
+          const match = pendingMatches.find((m) => m.id === matchId);
+          if (match) {
+            await emailService.sendCoachAcceptanceNotification({
+              companyId: match.companyId,
+              companyName: match.companyName,
+              coachName: user.name,
+              programTitle: match.title,
+              matchId: matchId,
+            });
+
+            // Send real-time notification to company admin
+            websocketService.sendMessage({
+              userId: match.companyId,
+              type: "match_accepted",
+              message: `Coach ${user.name} has accepted your coaching program "${match.title}"`,
+              data: { matchId, coachId: user.id, programTitle: match.title },
+            });
+          }
+        } catch (notificationError) {
+          console.warn("Failed to send admin notification:", notificationError);
+          // Don't fail the match acceptance if notification fails
+        }
+
         // Refresh stats
         await loadDashboardData();
 
