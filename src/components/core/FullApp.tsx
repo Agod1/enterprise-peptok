@@ -89,6 +89,9 @@ const PlatformSettings = React.lazy(
 const PlatformValidationDashboard = React.lazy(
   () => import("@/pages/PlatformValidationDashboard"),
 );
+const DataSyncTestingDashboard = React.lazy(
+  () => import("@/pages/DataSyncTestingDashboard"),
+);
 
 // Loading component for lazy-loaded pages
 const PageLoader = () => (
