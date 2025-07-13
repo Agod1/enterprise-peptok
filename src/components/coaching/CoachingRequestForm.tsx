@@ -332,6 +332,10 @@ export function CoachingRequestForm({
       endDate: "",
       sessionFrequency: "bi-weekly",
     },
+    communicationChannel: {
+      type: "google_meet",
+      customLink: "",
+    },
     ...initialData,
   });
 
