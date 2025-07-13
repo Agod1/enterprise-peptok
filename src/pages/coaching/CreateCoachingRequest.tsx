@@ -184,11 +184,8 @@ export default function CreateCoachingRequest() {
       const currentTeamMembers =
         teamMembers.length > 0 ? teamMembers : data.teamMembers;
 
-      if (currentTeamMembers.length === 0) {
-        toast.error("Please add at least one team member to the program");
-        setIsSubmitting(false);
-        return;
-      }
+      // Team members are now optional - programs can be created without initial team members
+      const hasTeamMembers = currentTeamMembers.length > 0;
 
       // Note: With session-based pricing, team size validation is less restrictive
       // Pricing is calculated per session with additional participant fees
