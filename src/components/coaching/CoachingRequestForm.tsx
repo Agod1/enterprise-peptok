@@ -369,6 +369,82 @@ export function CoachingRequestForm({
     setFormData((prev) => ({ ...prev, ...updates }));
   };
 
+  // Auto-fill logic
+  const handleTitleChange = (value: string) => {
+    updateFormData({ title: value });
+
+    // Check if user typed A, B, C, D, or E at the beginning
+    const firstChar = value.charAt(0).toUpperCase();
+    if (["A", "B", "C", "D", "E"].includes(firstChar) && value.length === 1) {
+      const matchingSuggestions = Object.keys(COACHING_TEMPLATES)
+        .filter((key) => key === firstChar)
+        .map(
+          (key) =>
+            COACHING_TEMPLATES[key as keyof typeof COACHING_TEMPLATES].title,
+        );
+
+      setSuggestions(matchingSuggestions);
+      setShowSuggestions(true);
+    } else {
+      setShowSuggestions(false);
+    }
+  };
+
+  const applyTemplate = (templateKey: string) => {
+    const template =
+      COACHING_TEMPLATES[templateKey as keyof typeof COACHING_TEMPLATES];
+    if (!template) return;
+
+    // Fill form with template data
+    updateFormData({
+      title: template.title,
+      description: template.description,
+      skills: template.skills,
+      timeline: template.timeline,
+      participantGoal: template.participantGoal,
+      budget: {
+        min: template.budgetMin,
+        max: template.budgetMax,
+        currency: "CAD",
+      },
+      goals: template.goals.map((goal) => ({
+        ...goal,
+        id: `goal_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      })),
+    });
+
+    setShowSuggestions(false);
+    toast.success(`Applied "${template.title}" template`);
+  };
+
+  const handleSuggestionClick = (title: string) => {
+    const templateKey = Object.keys(COACHING_TEMPLATES).find(
+      (key) =>
+        COACHING_TEMPLATES[key as keyof typeof COACHING_TEMPLATES].title ===
+        title,
+    );
+    if (templateKey) {
+      applyTemplate(templateKey);
+    }
+  };
+
+  // Close suggestions when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        suggestionsRef.current &&
+        !suggestionsRef.current.contains(event.target as Node) &&
+        titleInputRef.current &&
+        !titleInputRef.current.contains(event.target as Node)
+      ) {
+        setShowSuggestions(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   const addGoal = () => {
     if (!newGoal.title.trim()) {
       toast.error("Please enter a goal title");
