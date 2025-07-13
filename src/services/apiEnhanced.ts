@@ -1509,7 +1509,7 @@ class EnhancedApiService {
     companyId?: string;
     coachId?: string;
     limit?: number;
-    }): Promise<MentorshipRequest[]> {
+  }): Promise<MentorshipRequest[]> {
     const user = checkAuthorization();
 
     // Check if we have a valid API URL configuration
@@ -1563,38 +1563,37 @@ class EnhancedApiService {
       console.log("🗃️ No backend configured, using filtered mock requests");
     }
 
-      // Get and filter data from localStorage
-      let allRequests = JSON.parse(
-        localStorage.getItem("mentorship_requests") || "[]",
+    // Get and filter data from localStorage
+    let allRequests = JSON.parse(
+      localStorage.getItem("mentorship_requests") || "[]",
+    );
+
+    // Apply role-based filtering
+    if (user.userType === "coach") {
+      allRequests = allRequests.filter(
+        (req: MentorshipRequest) =>
+          req.assignedCoachId === user.id ||
+          (req.status === "pending" && !req.assignedCoachId),
       );
-
-      // Apply role-based filtering
-      if (user.userType === "coach") {
-        allRequests = allRequests.filter(
-          (req: MentorshipRequest) =>
-            req.assignedCoachId === user.id ||
-            (req.status === "pending" && !req.assignedCoachId),
-        );
-      } else if (user.userType === "company_admin" && user.companyId) {
-        allRequests = allRequests.filter(
-          (req: MentorshipRequest) => req.companyId === user.companyId,
-        );
-      }
-
-      // Apply additional filters
-      if (params?.status) {
-        allRequests = allRequests.filter(
-          (req: MentorshipRequest) => req.status === params.status,
-        );
-      }
-
-      if (params?.limit) {
-        allRequests = allRequests.slice(0, params.limit);
-      }
-
-      return allRequests;
+    } else if (user.userType === "company_admin" && user.companyId) {
+      allRequests = allRequests.filter(
+        (req: MentorshipRequest) => req.companyId === user.companyId,
+      );
     }
+
+    // Apply additional filters
+    if (params?.status) {
+      allRequests = allRequests.filter(
+        (req: MentorshipRequest) => req.status === params.status,
+      );
     }
+
+    if (params?.limit) {
+      allRequests = allRequests.slice(0, params.limit);
+    }
+
+    return allRequests;
+  }
 
   // ===== ANALYTICS METHODS =====
 
