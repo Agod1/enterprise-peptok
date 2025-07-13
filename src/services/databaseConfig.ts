@@ -100,11 +100,29 @@ class DatabaseConfigService {
       return envApiUrl.replace("/api", ""); // Remove /api suffix if present
     }
 
+    // In cloud development environment, don't try to connect to localhost
+    if (this.isCloudEnvironment()) {
+      return ""; // Return empty to skip database connections
+    }
+
     if (this.isLocalDevelopment()) {
       return "http://localhost:3001";
     }
 
     return window.location.origin;
+  }
+
+  private isCloudEnvironment(): boolean {
+    const hostname = window.location.hostname;
+    // Detect cloud/remote development environments
+    return (
+      hostname.includes("fly.dev") ||
+      hostname.includes("vercel.app") ||
+      hostname.includes("netlify.app") ||
+      hostname.includes("gitpod.io") ||
+      hostname.includes("codespaces.dev") ||
+      !this.isLocalDevelopment()
+    );
   }
 
   /**
