@@ -343,10 +343,19 @@ export const CoachDashboard: React.FC = () => {
       const result = await apiEnhanced.declineMatch(matchId, reason);
 
       if (result.success) {
-        // Remove from pending matches
-        setPendingMatches((prev) =>
-          prev.filter((match) => match.id !== matchId),
+        // Remove from pending matches and persist the action
+        const updatedMatches = pendingMatches.filter(
+          (match) => match.id !== matchId,
         );
+        setPendingMatches(updatedMatches);
+
+        // Persist match action to prevent data loss on refresh
+        LocalStorageService.setItem(`match_action_${matchId}`, {
+          action: "declined",
+          timestamp: new Date().toISOString(),
+          coachId: user.id,
+          reason: reason,
+        });
 
         toast.success("Match declined");
 
