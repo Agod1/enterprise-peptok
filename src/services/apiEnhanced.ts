@@ -596,8 +596,8 @@ class EnhancedApiService {
       }
     }
 
-    // Return mock coaches data for the directory
-      const mockCoaches: Coach[] = [
+        // Return mock coaches data for the directory
+    const mockCoaches: Coach[] = [
         {
           id: "coach_1",
           name: "Sarah Wilson",
