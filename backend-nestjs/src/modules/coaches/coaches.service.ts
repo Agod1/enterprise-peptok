@@ -101,7 +101,7 @@ export class CoachesService {
   async findOne(id: string): Promise<Coach> {
     const coach = await this.coachRepository.findOne({
       where: { id },
-      relations: ["user", "sessions", "reviews"],
+      relations: ["user"],
     });
 
     if (!coach) {
@@ -124,9 +124,9 @@ export class CoachesService {
     }
   }
 
-  async updateStatus(id: string, status: CoachStatus): Promise<Coach> {
+  async updateStatus(id: string, status: string): Promise<Coach> {
     const coach = await this.findOne(id);
-    coach.status = status;
+    coach.status = status as CoachStatus;
     return this.coachRepository.save(coach);
   }
 
