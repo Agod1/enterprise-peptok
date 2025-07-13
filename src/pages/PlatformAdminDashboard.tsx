@@ -903,7 +903,7 @@ export default function PlatformAdminDashboard() {
 
             <Card
               className="hover:shadow-md transition-shadow cursor-pointer"
-              onClick={() => navigate("/admin/security-settings")}
+              onClick={() => navigate("/admin/platform")}
             >
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
