@@ -213,29 +213,35 @@ export default function CreateCoachingRequest() {
       // Store in localStorage for persistence
       LocalStorageService.addCoachingRequest(request);
 
-      // Send program details email to all team members
+      // Send program details email to team members (if any)
       try {
-        const programDetails = {
-          programTitle: data.title,
-          programDescription: data.description,
-          startDate: data.timeline.startDate,
-          endDate: data.timeline.endDate,
-          sessionFrequency: data.timeline.sessionFrequency,
-          companyName: user?.businessDetails?.companyName || "Your Company",
-          adminName: user?.name || "Program Administrator",
-          goals: data.goals.map((g) => g.title),
-          metricsToTrack: data.metricsToTrack,
-        };
+        if (hasTeamMembers) {
+          const programDetails = {
+            programTitle: data.title,
+            programDescription: data.description,
+            startDate: data.timeline.startDate,
+            endDate: data.timeline.endDate,
+            sessionFrequency: data.timeline.sessionFrequency,
+            companyName: user?.businessDetails?.companyName || "Your Company",
+            adminName: user?.name || "Program Administrator",
+            goals: data.goals.map((g) => g.title),
+            metricsToTrack: data.metricsToTrack,
+          };
 
-        // Send email to each team member
-        const emailPromises = currentTeamMembers.map((member) =>
-          emailService.sendProgramDetails(member.email, programDetails),
-        );
+          // Send email to each team member
+          const emailPromises = currentTeamMembers.map((member) =>
+            emailService.sendProgramDetails(member.email, programDetails),
+          );
 
-        await Promise.all(emailPromises);
-        console.log(
-          `📧 Program details sent to ${currentTeamMembers.length} team members`,
-        );
+          await Promise.all(emailPromises);
+          console.log(
+            `📧 Program details sent to ${currentTeamMembers.length} team members`,
+          );
+        } else {
+          console.log(
+            "📧 No team members to notify - program created without initial team",
+          );
+        }
       } catch (emailError) {
         // Don't fail the whole process if emails fail
         console.error("Failed to send program details emails:", emailError);
