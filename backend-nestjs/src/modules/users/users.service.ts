@@ -17,7 +17,7 @@ export class UsersService {
       ...createUserDto,
       password: hashedPassword,
     });
-    return this.userRepository.save(user) as Promise<User>;
+    return this.userRepository.save(user) as unknown as Promise<User>;
   }
 
   async findAll(query: any): Promise<User[]> {
@@ -51,7 +51,7 @@ export class UsersService {
     }
 
     Object.assign(user, updateUserDto);
-    return this.userRepository.save(user) as Promise<User>;
+    return this.userRepository.save(user) as unknown as Promise<User>;
   }
 
   async remove(id: string): Promise<void> {
