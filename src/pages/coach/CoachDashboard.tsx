@@ -333,6 +333,14 @@ export const CoachDashboard: React.FC = () => {
           // Don't fail the match acceptance if notification fails
         }
 
+        // Log interaction for backend tracking (Issues #6 & #7)
+        try {
+          await logMatchAction(user.id, "coach", matchId, "accepted");
+          console.log("✅ Match acceptance interaction logged");
+        } catch (logError) {
+          console.warn("⚠️ Failed to log match action:", logError);
+        }
+
         // Refresh stats
         await loadDashboardData();
 
