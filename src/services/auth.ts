@@ -2,6 +2,7 @@ import { toast } from "sonner";
 import { User } from "../types";
 import { demoUsers } from "../data/demoDatabase";
 import { backendStorage } from "./backendStorage";
+import LocalStorageService from "./localStorageService";
 
 // OAuth Configuration
 const OAUTH_CONFIG = {
@@ -56,20 +57,12 @@ class AuthService {
     try {
       console.log("🔄 Loading user from localStorage (demo mode)...");
 
-      const userStr = localStorage.getItem("peptok_user");
-      const token = localStorage.getItem("peptok_token");
+      const user = LocalStorageService.getUser();
+      const token = LocalStorageService.getToken();
 
-      if (userStr && token) {
-        const user = JSON.parse(userStr);
+      if (user && token) {
         this.currentUser = {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          userType: user.userType,
-          companyId: user.companyId,
-          status: user.status,
-          createdAt: user.createdAt,
-          updatedAt: user.updatedAt,
+          ...user,
           isAuthenticated: true,
         };
 
@@ -92,9 +85,9 @@ class AuthService {
         `💾 Saving user to localStorage (demo mode): ${user.email} (${user.userType})`,
       );
 
-      // Store in localStorage for demo mode
-      localStorage.setItem("peptok_user", JSON.stringify(user));
-      localStorage.setItem("peptok_token", token);
+      // Store using localStorage service
+      LocalStorageService.setUser(user);
+      LocalStorageService.setToken(token);
 
       this.currentUser = user;
       console.log(`✅ User saved successfully to localStorage (demo mode)`);
@@ -107,8 +100,7 @@ class AuthService {
   // Clear authentication data from backend database
   private async clearAuth() {
     try {
-      localStorage.removeItem("peptok_user");
-      localStorage.removeItem("peptok_token");
+      LocalStorageService.clearAuth();
       this.currentUser = null;
       console.log("🧹 Authentication data cleared from backend database");
     } catch (error) {
@@ -167,7 +159,7 @@ class AuthService {
     try {
       console.log(`🔐 Login attempt for email: ${email}`);
       console.log(
-        `📋 All available users:`,
+        `���� All available users:`,
         mockUsers.map((u) => ({
           email: u.email,
           id: u.id,
