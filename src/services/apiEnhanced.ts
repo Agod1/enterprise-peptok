@@ -1607,16 +1607,19 @@ class EnhancedApiService {
   }
 
   // Existing methods from original API service that don't need auth changes
-    async getPricingConfig(): Promise<any> {
+  async getPricingConfig(): Promise<any> {
     // Check if we have a valid API URL configuration
     const apiUrl = import.meta.env.VITE_API_URL;
-    const isCloudEnvironment = window.location.hostname.includes('.fly.dev') ||
-                              window.location.hostname.includes('.vercel.app') ||
-                              window.location.hostname.includes('.netlify.app');
+    const isCloudEnvironment =
+      window.location.hostname.includes(".fly.dev") ||
+      window.location.hostname.includes(".vercel.app") ||
+      window.location.hostname.includes(".netlify.app");
 
     // Skip API request if no backend is configured or we're in a cloud environment without API URL
     if (!apiUrl || (isCloudEnvironment && !apiUrl)) {
-      console.log("🗃️ No backend configured, using cross-browser synchronized storage for pricing config");
+      console.log(
+        "🗃️ No backend configured, using cross-browser synchronized storage for pricing config",
+      );
     } else {
       try {
         const response = await this.request<any>("/admin/pricing-config");
@@ -1636,29 +1639,28 @@ class EnhancedApiService {
       }
     }
 
-      // Use centralized cross-browser sync service
-      const config = crossBrowserSync.load(SYNC_CONFIGS.PRICING_CONFIG);
+    // Use centralized cross-browser sync service
+    const config = crossBrowserSync.load(SYNC_CONFIGS.PRICING_CONFIG);
 
-      if (config) {
-        return config;
-      }
-
-      // Default configuration if no data exists
-      const defaultConfig = {
-        companyServiceFee: 0.1,
-        coachCommission: 0.2,
-        minCoachCommissionAmount: 5,
-        additionalParticipantFee: 25,
-        maxParticipantsIncluded: 1,
-        currency: "CAD",
-        lastUpdated: new Date().toISOString(),
-        version: "1.0",
-        createdBy: "system",
-      };
-
-      return defaultConfig;
+    if (config) {
+      return config;
     }
-    }
+
+    // Default configuration if no data exists
+    const defaultConfig = {
+      companyServiceFee: 0.1,
+      coachCommission: 0.2,
+      minCoachCommissionAmount: 5,
+      additionalParticipantFee: 25,
+      maxParticipantsIncluded: 1,
+      currency: "CAD",
+      lastUpdated: new Date().toISOString(),
+      version: "1.0",
+      createdBy: "system",
+    };
+
+    return defaultConfig;
+  }
 
   private getSharedPlatformConfig(): any {
     // Use multiple storage mechanisms to simulate true backend database
