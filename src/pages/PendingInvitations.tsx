@@ -55,20 +55,26 @@ export default function PendingInvitations() {
     setHasSearched(true);
 
     try {
-      const pendingInvitations = invitationService.getPendingInvitations(
+      const pendingInvitations = await invitationService.getPendingInvitations(
         email.toLowerCase(),
       );
-      setInvitations(pendingInvitations);
 
-      if (pendingInvitations.length === 0) {
+      // Ensure pendingInvitations is always an array
+      const safeInvitations = Array.isArray(pendingInvitations)
+        ? pendingInvitations
+        : [];
+      setInvitations(safeInvitations);
+
+      if (safeInvitations.length === 0) {
         toast.info("No pending invitations found for this email address");
       } else {
         toast.success(
-          `Found ${pendingInvitations.length} pending invitation${pendingInvitations.length > 1 ? "s" : ""}`,
+          `Found ${safeInvitations.length} pending invitation${safeInvitations.length > 1 ? "s" : ""}`,
         );
       }
     } catch (error) {
       console.error("Failed to search invitations:", error);
+      setInvitations([]); // Ensure invitations is set to empty array on error
       toast.error("Failed to search for invitations");
     } finally {
       setIsLoading(false);
