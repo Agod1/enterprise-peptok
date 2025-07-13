@@ -74,9 +74,15 @@ class DatabaseConfigService {
   private isApiConfigured(): boolean {
     const envApiUrl = import.meta.env.VITE_API_URL;
     const isLocalDev = this.isLocalDevelopment();
+    const isCloud = this.isCloudEnvironment();
+
+    // In cloud environments without explicit API URL, disable database
+    if (isCloud && !envApiUrl) {
+      return false;
+    }
 
     // In production, require explicit API URL
-    if (!isLocalDev) {
+    if (!isLocalDev && !isCloud) {
       return !!envApiUrl;
     }
 
