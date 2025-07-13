@@ -17,7 +17,7 @@ export class UsersService {
       ...createUserDto,
       password: hashedPassword,
     });
-    return this.userRepository.save(user);
+    return await this.userRepository.save(user);
   }
 
   async findAll(query: any): Promise<User[]> {
@@ -51,7 +51,7 @@ export class UsersService {
     }
 
     Object.assign(user, updateUserDto);
-    return this.userRepository.save(user);
+    return await this.userRepository.save(user);
   }
 
   async remove(id: string): Promise<void> {
