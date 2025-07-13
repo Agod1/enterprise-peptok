@@ -51,7 +51,7 @@ export class UsersService {
     }
 
     Object.assign(user, updateUserDto);
-    return await this.userRepository.save(user);
+    return this.userRepository.save(user) as Promise<User>;
   }
 
   async remove(id: string): Promise<void> {
