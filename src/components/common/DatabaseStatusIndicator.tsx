@@ -56,7 +56,39 @@ export function DatabaseStatusIndicator({
     return () => clearInterval(interval);
   }, []);
 
+  const isCloudEnvironment = () => {
+    const hostname = window.location.hostname;
+    return (
+      hostname.includes("fly.dev") ||
+      hostname.includes("vercel.app") ||
+      hostname.includes("netlify.app") ||
+      hostname.includes("gitpod.io") ||
+      hostname.includes("codespaces.dev") ||
+      hostname.includes("herokuapp.com") ||
+      hostname.includes("amazonaws.com")
+    );
+  };
+
+  const hasValidApiUrl = () => {
+    const envApiUrl = import.meta.env.VITE_API_URL;
+    return (
+      envApiUrl &&
+      !envApiUrl.includes("localhost") &&
+      !envApiUrl.includes("127.0.0.1")
+    );
+  };
+
   const handleRefreshConnection = async () => {
+    // Skip refresh in cloud environments without valid API URL
+    if (isCloudEnvironment() && !hasValidApiUrl()) {
+      toast.info("🌍 Cloud environment detected", {
+        description:
+          "Database connections disabled - no backend API configured",
+        duration: 4000,
+      });
+      return;
+    }
+
     setIsRefreshing(true);
 
     try {
@@ -69,13 +101,22 @@ export function DatabaseStatusIndicator({
           duration: 3000,
         });
       } else {
-        toast.error("❌ Database connection failed", {
-          description: "Unable to connect to backend database",
+        const description = isCloudEnvironment()
+          ? "Cloud environment - backend API not available"
+          : "Unable to connect to backend database";
+        toast.warning("⚠️ Database connection unavailable", {
+          description,
           duration: 5000,
         });
       }
     } catch (error) {
-      toast.error("❌ Connection test failed");
+      const description = isCloudEnvironment()
+        ? "Cloud environment - backend API not configured"
+        : "Connection test failed";
+      toast.warning("⚠️ Connection test failed", {
+        description,
+        duration: 4000,
+      });
     } finally {
       setIsRefreshing(false);
     }
@@ -267,15 +308,25 @@ export function DatabaseStatusIndicator({
                     variant="outline"
                     size="sm"
                     onClick={handleRefreshConnection}
-                    disabled={isRefreshing}
+                    disabled={
+                      isRefreshing ||
+                      (isCloudEnvironment() && !hasValidApiUrl())
+                    }
                     className="flex-1"
+                    title={
+                      isCloudEnvironment() && !hasValidApiUrl()
+                        ? "Database connections disabled in cloud environment"
+                        : "Test database connection"
+                    }
                   >
                     {isRefreshing ? (
                       <Loader2 className="w-3 h-3 mr-1 animate-spin" />
                     ) : (
                       <RefreshCw className="w-3 h-3 mr-1" />
                     )}
-                    Test Connection
+                    {isCloudEnvironment() && !hasValidApiUrl()
+                      ? "Disabled"
+                      : "Test Connection"}
                   </Button>
 
                   <Button
@@ -318,7 +369,9 @@ export function DatabaseStatusIndicator({
                       >
                         {status.isConnected
                           ? "All invitations are saved to and loaded from the backend database. No localStorage fallbacks are used."
-                          : "Backend database is unavailable. Invitation operations will fail until connection is restored."}
+                          : isCloudEnvironment() && !hasValidApiUrl()
+                            ? "Running in cloud environment without backend API. Using local data storage for demonstration purposes."
+                            : "Backend database is unavailable. Invitation operations will fail until connection is restored."}
                       </div>
                     </div>
                   </div>

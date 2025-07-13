@@ -37,23 +37,15 @@ class DatabaseConfigService {
       failedEndpoints: [],
     };
 
-    // Only test database connection if API is properly configured and we're not in a cloud environment without API
-    const apiUrl = import.meta.env.VITE_API_URL;
-    const hostname = window.location.hostname;
-    const isCloudEnvironment =
-      hostname.includes(".fly.dev") ||
-      hostname.includes(".vercel.app") ||
-      hostname.includes(".netlify.app") ||
-      hostname.includes(".herokuapp.com") ||
-      hostname.includes(".amazonaws.com");
-
-    if (apiUrl && this.isApiConfigured()) {
+    // Only test database connection if API is properly configured
+    if (this.isApiConfigured() && this.config.baseUrl) {
       console.log("🗃️ Testing database connection on service initialization");
       this.testDatabaseConnection();
     } else {
-      console.log(
-        "🗃️ Database service disabled - no API configuration or cloud environment without backend",
-      );
+      const reason = this.isCloudEnvironment()
+        ? "cloud environment without valid backend API URL"
+        : "no API configuration";
+      console.log(`🗃️ Database service disabled - ${reason}`);
       this.status.isConnected = false;
     }
   }
@@ -88,9 +80,21 @@ class DatabaseConfigService {
     const isLocalDev = this.isLocalDevelopment();
     const isCloud = this.isCloudEnvironment();
 
-    // In cloud environments without explicit API URL, disable database
-    if (isCloud && !envApiUrl) {
-      return false;
+    // In cloud environments, disable database connections unless a valid cloud API URL is provided
+    if (isCloud) {
+      // If no API URL or it's a localhost URL, disable database
+      if (
+        !envApiUrl ||
+        envApiUrl.includes("localhost") ||
+        envApiUrl.includes("127.0.0.1")
+      ) {
+        console.log(
+          "🗃️ Cloud environment detected with localhost API URL - disabling database",
+        );
+        return false;
+      }
+      // Only allow if API URL is a valid remote URL
+      return true;
     }
 
     // In production, require explicit API URL
@@ -113,13 +117,27 @@ class DatabaseConfigService {
 
   private getApiBaseUrl(): string {
     const envApiUrl = import.meta.env.VITE_API_URL;
+    const isCloud = this.isCloudEnvironment();
 
     if (envApiUrl) {
+      // In cloud environments, reject localhost URLs
+      if (
+        isCloud &&
+        (envApiUrl.includes("localhost") || envApiUrl.includes("127.0.0.1"))
+      ) {
+        console.log(
+          "🗃️ Cloud environment with localhost API URL - disabling database",
+        );
+        return ""; // Return empty to skip database connections
+      }
       return envApiUrl.replace("/api", ""); // Remove /api suffix if present
     }
 
     // In cloud development environment, don't try to connect to localhost
-    if (this.isCloudEnvironment()) {
+    if (isCloud) {
+      console.log(
+        "🗃️ Cloud environment without valid API URL - disabling database",
+      );
       return ""; // Return empty to skip database connections
     }
 
@@ -139,7 +157,13 @@ class DatabaseConfigService {
       hostname.includes("netlify.app") ||
       hostname.includes("gitpod.io") ||
       hostname.includes("codespaces.dev") ||
-      !this.isLocalDevelopment()
+      hostname.includes("herokuapp.com") ||
+      hostname.includes("amazonaws.com") ||
+      hostname.includes("surge.sh") ||
+      hostname.includes("firebase.app") ||
+      (!this.isLocalDevelopment() &&
+        !hostname.includes("192.168.") &&
+        !hostname.includes("10."))
     );
   }
 
@@ -267,7 +291,7 @@ class DatabaseConfigService {
     method: "GET" | "POST" | "PUT" | "DELETE" = "GET",
     data?: any,
   ): Promise<any> {
-    console.log(`🗃️ Making database request: ${method} ${endpoint}`);
+    console.log(`��️ Making database request: ${method} ${endpoint}`);
 
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), this.config.timeout);
@@ -429,6 +453,14 @@ class DatabaseConfigService {
         throw new Error("No API base URL configured");
       }
 
+      // Additional check for cloud environments with localhost URLs
+      if (
+        this.isCloudEnvironment() &&
+        this.config.baseUrl.includes("localhost")
+      ) {
+        throw new Error("Cannot connect to localhost from cloud environment");
+      }
+
       const fullUrl = this.config.baseUrl + endpoint;
 
       const response = await fetch(fullUrl, {
@@ -448,7 +480,7 @@ class DatabaseConfigService {
           console.warn(`⏱️ Request timeout for ${endpoint}`);
         } else if (error.message.includes("fetch")) {
           console.warn(
-            `🌐 Network error for ${endpoint}: Backend not available`,
+            `��� Network error for ${endpoint}: Backend not available`,
           );
         } else {
           console.warn(`❌ Request failed for ${endpoint}:`, error.message);

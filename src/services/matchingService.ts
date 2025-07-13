@@ -323,13 +323,61 @@ class MatchingService {
     ];
   }
 
+  private async getAvailableCoaches(): Promise<
+    Omit<CoachMatch, "matchScore" | "matchReasons" | "estimatedCost">[]
+  > {
+    try {
+      // Try to get real coaches from the platform
+      const coaches = await apiEnhanced.getAllCoaches();
+
+      if (coaches && coaches.length > 0) {
+        // Transform platform coaches to matching format
+        return coaches.map((coach: any) => ({
+          id: coach.id,
+          name: `${coach.firstName} ${coach.lastName}`,
+          title: coach.title || "Professional Coach",
+          skills: coach.skills || coach.coaching?.map((c: any) => c.name) || [],
+          experience: this.mapExperienceLevel(
+            coach.yearsExperience || coach.experience,
+          ),
+          rating: coach.metrics?.averageRating || coach.rating || 4.0,
+          availability: coach.status === "active" ? "immediate" : "next_week",
+          hourlyRate: coach.hourlyRate || 120,
+          profileImage: coach.profilePicture || coach.avatar || "",
+          bio:
+            coach.bio ||
+            "Experienced professional coach dedicated to helping individuals and teams achieve their goals.",
+          expertise: coach.specializations || coach.expertise || [],
+          yearsExperience: coach.yearsExperience || coach.experience || 3,
+          languages: coach.languages || ["English"],
+          timezone: coach.timezone || "EST",
+        }));
+      }
+    } catch (error) {
+      console.warn("Could not fetch real coaches, using mock data:", error);
+    }
+
+    // Fallback to mock coaches if real ones are not available
+    const mockCoaches = this.generateMockCoaches();
+    console.log("🤖 Using mock coaches for matching");
+    return mockCoaches;
+  }
+
+  private mapExperienceLevel(years: number | string): string {
+    if (typeof years === "string") return years;
+    if (years < 2) return "junior";
+    if (years < 5) return "mid-level";
+    if (years < 10) return "senior";
+    return "expert";
+  }
+
   async findMatches(request: MatchingRequest): Promise<MatchingResult> {
     try {
       // Get current algorithm configuration from admin settings
       const weights = await this.getAlgorithmConfiguration();
 
-      // Get available coaches (in production, this would come from a database)
-      const availableCoaches = this.generateMockCoaches();
+      // Get available coaches from the platform
+      const availableCoaches = await this.getAvailableCoaches();
 
       // Calculate match scores for each coach
       const matchedCoaches: CoachMatch[] = availableCoaches.map((coach) => {

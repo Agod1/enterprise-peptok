@@ -89,6 +89,9 @@ const PlatformSettings = React.lazy(
 const PlatformValidationDashboard = React.lazy(
   () => import("@/pages/PlatformValidationDashboard"),
 );
+const DataSyncTestingDashboard = React.lazy(
+  () => import("@/pages/DataSyncTestingDashboard"),
+);
 
 // Loading component for lazy-loaded pages
 const PageLoader = () => (
@@ -166,7 +169,23 @@ export const FullApp: React.FC = () => {
             }
           />
           <Route
+            path="/coach/dashboard"
+            element={
+              <ProtectedRoute requiredUserType="coach">
+                <CoachDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/coach-settings"
+            element={
+              <ProtectedRoute requiredUserType="coach">
+                <CoachSettings />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/coach/settings"
             element={
               <ProtectedRoute requiredUserType="coach">
                 <CoachSettings />
@@ -328,6 +347,9 @@ export const FullApp: React.FC = () => {
 
           {/* Public Validation Dashboard (for development/testing) */}
           <Route path="/validation" element={<PlatformValidationDashboard />} />
+
+          {/* Data Sync Testing Dashboard (for development/debugging) */}
+          <Route path="/sync-testing" element={<DataSyncTestingDashboard />} />
 
           {/* Legal Pages */}
           <Route path="/privacy" element={<Privacy />} />

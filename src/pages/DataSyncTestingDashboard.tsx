@@ -2,6 +2,7 @@ import { useState } from "react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { DataSyncTester } from "@/components/testing/DataSyncTester";
+import { DatabaseServiceTest } from "@/components/testing/DatabaseServiceTest";
 import {
   Card,
   CardContent,
@@ -105,14 +106,30 @@ export default function DataSyncTestingDashboard() {
 
           {/* Implementation Details */}
           <Tabs defaultValue="testing" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="testing">Testing Dashboard</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-4">
+              <TabsTrigger value="testing">Data Sync Testing</TabsTrigger>
+              <TabsTrigger value="database">Database Service</TabsTrigger>
               <TabsTrigger value="architecture">Architecture</TabsTrigger>
               <TabsTrigger value="compliance">Compliance Report</TabsTrigger>
             </TabsList>
 
             <TabsContent value="testing" className="space-y-6">
               <DataSyncTester />
+            </TabsContent>
+
+            <TabsContent value="database" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Database Service Connection Test</CardTitle>
+                  <CardDescription>
+                    Test and validate database service configuration and cloud
+                    environment handling
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <DatabaseServiceTest />
+                </CardContent>
+              </Card>
             </TabsContent>
 
             <TabsContent value="architecture" className="space-y-6">
