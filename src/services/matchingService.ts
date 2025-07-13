@@ -328,8 +328,8 @@ class MatchingService {
       // Get current algorithm configuration from admin settings
       const weights = await this.getAlgorithmConfiguration();
 
-      // Get available coaches (in production, this would come from a database)
-      const availableCoaches = this.generateMockCoaches();
+      // Get available coaches from the platform
+      const availableCoaches = await this.getAvailableCoaches();
 
       // Calculate match scores for each coach
       const matchedCoaches: CoachMatch[] = availableCoaches.map((coach) => {
