@@ -1542,87 +1542,77 @@ class EnhancedApiService {
   }): Promise<MentorshipRequest[]> {
     const user = checkAuthorization();
 
-    // Check if we have a valid API URL configuration
-    const apiUrl = import.meta.env.VITE_API_URL;
-    const isCloudEnvironment =
-      window.location.hostname.includes(".fly.dev") ||
-      window.location.hostname.includes(".vercel.app") ||
-      window.location.hostname.includes(".netlify.app");
+    // Use data sync service with backend-first approach
+    const filters: Record<string, string> = {};
 
-    // Skip API request if no backend is configured or we're in a cloud environment without API URL
-    if (apiUrl && !isCloudEnvironment) {
-      try {
-        const queryParams = new URLSearchParams();
-
-        // Role-based filtering
-        if (user.userType === "coach") {
-          queryParams.append("coachId", user.id);
-        } else if (user.userType === "company_admin" && user.companyId) {
-          queryParams.append("companyId", user.companyId);
-        }
-
-        // Additional filters
-        if (params?.status) queryParams.append("status", params.status);
-        if (params?.companyId && user.userType === "platform_admin") {
-          queryParams.append("companyId", params.companyId);
-        }
-        if (params?.coachId && user.userType === "platform_admin") {
-          queryParams.append("coachId", params.coachId);
-        }
-        if (params?.limit) queryParams.append("limit", params.limit.toString());
-
-        const response = await this.request<MentorshipRequest[]>(
-          `/mentorship-requests?${queryParams.toString()}`,
-        );
-
-        analytics.trackAction({
-          action: "mentorship_requests_viewed",
-          component: "dashboard",
-          metadata: {
-            params,
-            userType: user.userType,
-            resultCount: response.data.length,
-          },
-        });
-
-        return response.data;
-      } catch (error) {
-        console.warn("API not available, using filtered mock requests:", error);
-      }
-    } else {
-      console.log("🗃️ No backend configured, using filtered mock requests");
+    // Role-based filtering
+    if (user.userType === "coach") {
+      filters.coachId = user.id;
+    } else if (user.userType === "company_admin" && user.companyId) {
+      filters.companyId = user.companyId;
     }
 
-    // Get and filter data from localStorage
-    let allRequests = JSON.parse(
-      localStorage.getItem("mentorship_requests") || "[]",
+    // Additional filters
+    if (params?.status) filters.status = params.status;
+    if (params?.companyId && user.userType === "platform_admin") {
+      filters.companyId = params.companyId;
+    }
+    if (params?.coachId && user.userType === "platform_admin") {
+      filters.coachId = params.coachId;
+    }
+    if (params?.limit) filters.limit = params.limit.toString();
+
+    const result = await dataSyncService.getData<MentorshipRequest>(
+      DATA_SYNC_CONFIGS.MENTORSHIP_REQUESTS,
+      filters,
     );
 
-    // Apply role-based filtering
-    if (user.userType === "coach") {
-      allRequests = allRequests.filter(
-        (req: MentorshipRequest) =>
-          req.assignedCoachId === user.id ||
-          (req.status === "pending" && !req.assignedCoachId),
-      );
-    } else if (user.userType === "company_admin" && user.companyId) {
-      allRequests = allRequests.filter(
-        (req: MentorshipRequest) => req.companyId === user.companyId,
-      );
+    analytics.trackAction({
+      action: "mentorship_requests_viewed",
+      component: "dashboard",
+      metadata: {
+        params,
+        userType: user.userType,
+        resultCount: result.data?.length || 0,
+        source: result.source,
+        backendAvailable: result.backendAvailable,
+      },
+    });
+
+    // Apply client-side filtering for localStorage fallback
+    let filteredData = result.data || [];
+
+    if (result.source === "localStorage") {
+      // Apply role-based filtering for localStorage
+      if (user.userType === "coach") {
+        filteredData = filteredData.filter(
+          (req: MentorshipRequest) =>
+            req.assignedCoachId === user.id ||
+            (req.status === "pending" && !req.assignedCoachId),
+        );
+      } else if (user.userType === "company_admin" && user.companyId) {
+        filteredData = filteredData.filter(
+          (req: MentorshipRequest) => req.companyId === user.companyId,
+        );
+      }
+
+      // Apply additional filters
+      if (params?.status) {
+        filteredData = filteredData.filter(
+          (req: MentorshipRequest) => req.status === params.status,
+        );
+      }
+
+      if (params?.limit) {
+        filteredData = filteredData.slice(0, params.limit);
+      }
     }
 
-    // Apply additional filters
-    if (params?.status) {
-      allRequests = allRequests.filter(
-        (req: MentorshipRequest) => req.status === params.status,
-      );
-    }
+    console.log(
+      `📊 Retrieved ${filteredData.length} mentorship requests from ${result.source}`,
+    );
 
-    if (params?.limit) {
-      allRequests = allRequests.slice(0, params.limit);
-    }
-
-    return allRequests;
+    return filteredData;
   }
 
   // ===== ANALYTICS METHODS =====
