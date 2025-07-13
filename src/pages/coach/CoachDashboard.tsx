@@ -341,6 +341,28 @@ export const CoachDashboard: React.FC = () => {
 
         toast.success("Match declined");
 
+        // Notify company admin about match decline
+        try {
+          const match = pendingMatches.find((m) => m.id === matchId);
+          if (match) {
+            // Send real-time notification to company admin
+            websocketService.sendMessage({
+              userId: match.companyId,
+              type: "match_declined",
+              message: `Coach ${user.name} has declined your coaching program "${match.title}". Reason: ${reason}`,
+              data: {
+                matchId,
+                coachId: user.id,
+                programTitle: match.title,
+                reason,
+              },
+            });
+          }
+        } catch (notificationError) {
+          console.warn("Failed to send admin notification:", notificationError);
+          // Don't fail the match decline if notification fails
+        }
+
         setIsMatchDialogOpen(false);
         setSelectedMatch(null);
         setDeclineReason("");
