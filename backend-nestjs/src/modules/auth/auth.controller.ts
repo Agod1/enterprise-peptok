@@ -40,9 +40,9 @@ export class AuthController {
   @Get("google/callback")
   @UseGuards(GoogleAuthGuard)
   async googleAuthCallback(@Request() req: any, @Res() res: Response) {
-    const { access_token } = await this.authService.login(req.user);
+    const { accessToken } = await this.authService.login(req.user);
     res.redirect(
-      `${process.env.FRONTEND_URL}/auth/success?token=${access_token}`,
+      `${process.env.FRONTEND_URL}/auth/success?token=${accessToken}`,
     );
   }
 
@@ -60,7 +60,7 @@ export class AuthController {
 
   @Post("forgot-password")
   async forgotPassword(@Body("email") email: string) {
-    return this.authService.forgotPassword(email);
+    return this.authService.forgotPassword({ email });
   }
 
   @Post("reset-password")
