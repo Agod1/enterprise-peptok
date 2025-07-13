@@ -114,7 +114,7 @@ export class CoachesService {
   async update(id: string, updateCoachDto: any): Promise<Coach> {
     const coach = await this.findOne(id);
     Object.assign(coach, updateCoachDto);
-    return await this.coachRepository.save(coach);
+    return this.coachRepository.save(coach) as Promise<Coach>;
   }
 
   async remove(id: string): Promise<void> {
