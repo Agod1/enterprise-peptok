@@ -86,6 +86,9 @@ const EmailSettings = React.lazy(() => import("@/pages/admin/EmailSettings"));
 const PlatformSettings = React.lazy(
   () => import("@/pages/admin/PlatformSettings"),
 );
+const PlatformValidationDashboard = React.lazy(
+  () => import("@/pages/PlatformValidationDashboard"),
+);
 
 // Loading component for lazy-loaded pages
 const PageLoader = () => (
