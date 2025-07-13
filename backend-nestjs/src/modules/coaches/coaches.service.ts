@@ -127,7 +127,7 @@ export class CoachesService {
   async updateStatus(id: string, status: string): Promise<Coach> {
     const coach = await this.findOne(id);
     coach.status = status as CoachStatus;
-    return await this.coachRepository.save(coach);
+    return this.coachRepository.save(coach) as Promise<Coach>;
   }
 
   async applyToProgram(coachId: string, applicationDto: any): Promise<any> {
