@@ -1509,46 +1509,59 @@ class EnhancedApiService {
     companyId?: string;
     coachId?: string;
     limit?: number;
-  }): Promise<MentorshipRequest[]> {
+    }): Promise<MentorshipRequest[]> {
     const user = checkAuthorization();
 
-    try {
-      const queryParams = new URLSearchParams();
+    // Check if we have a valid API URL configuration
+    const apiUrl = import.meta.env.VITE_API_URL;
+    const isCloudEnvironment =
+      window.location.hostname.includes(".fly.dev") ||
+      window.location.hostname.includes(".vercel.app") ||
+      window.location.hostname.includes(".netlify.app");
 
-      // Role-based filtering
-      if (user.userType === "coach") {
-        queryParams.append("coachId", user.id);
-      } else if (user.userType === "company_admin" && user.companyId) {
-        queryParams.append("companyId", user.companyId);
+    // Skip API request if no backend is configured or we're in a cloud environment without API URL
+    if (apiUrl && !isCloudEnvironment) {
+      try {
+        const queryParams = new URLSearchParams();
+
+        // Role-based filtering
+        if (user.userType === "coach") {
+          queryParams.append("coachId", user.id);
+        } else if (user.userType === "company_admin" && user.companyId) {
+          queryParams.append("companyId", user.companyId);
+        }
+
+        // Additional filters
+        if (params?.status) queryParams.append("status", params.status);
+        if (params?.companyId && user.userType === "platform_admin") {
+          queryParams.append("companyId", params.companyId);
+        }
+        if (params?.coachId && user.userType === "platform_admin") {
+          queryParams.append("coachId", params.coachId);
+        }
+        if (params?.limit) queryParams.append("limit", params.limit.toString());
+
+        const response = await this.request<MentorshipRequest[]>(
+          `/mentorship-requests?${queryParams.toString()}`,
+        );
+
+        analytics.trackAction({
+          action: "mentorship_requests_viewed",
+          component: "dashboard",
+          metadata: {
+            params,
+            userType: user.userType,
+            resultCount: response.data.length,
+          },
+        });
+
+        return response.data;
+      } catch (error) {
+        console.warn("API not available, using filtered mock requests:", error);
       }
-
-      // Additional filters
-      if (params?.status) queryParams.append("status", params.status);
-      if (params?.companyId && user.userType === "platform_admin") {
-        queryParams.append("companyId", params.companyId);
-      }
-      if (params?.coachId && user.userType === "platform_admin") {
-        queryParams.append("coachId", params.coachId);
-      }
-      if (params?.limit) queryParams.append("limit", params.limit.toString());
-
-      const response = await this.request<MentorshipRequest[]>(
-        `/mentorship-requests?${queryParams.toString()}`,
-      );
-
-      analytics.trackAction({
-        action: "mentorship_requests_viewed",
-        component: "dashboard",
-        metadata: {
-          params,
-          userType: user.userType,
-          resultCount: response.data.length,
-        },
-      });
-
-      return response.data;
-    } catch (error) {
-      console.warn("API not available, using filtered mock requests:", error);
+    } else {
+      console.log("🗃️ No backend configured, using filtered mock requests");
+    }
 
       // Get and filter data from localStorage
       let allRequests = JSON.parse(
