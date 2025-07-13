@@ -173,6 +173,8 @@ export default function CreateCoachingRequest() {
       toast.error(
         `A program with the title "${data.title}" already exists. Please choose a different title.`,
       );
+      isSubmittingRef.current = false;
+      setIsSubmitting(false);
       return;
     }
 
