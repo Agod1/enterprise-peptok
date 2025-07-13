@@ -706,7 +706,7 @@ export const CoachDashboard: React.FC = () => {
                         </div>
 
                         <div className="flex items-center justify-between pt-4 border-t">
-                          <Button
+                                                    <Button
                             variant="outline"
                             onClick={() => {
                               console.log("Opening match details for:", match);
@@ -715,9 +715,7 @@ export const CoachDashboard: React.FC = () => {
                                 setIsMatchDialogOpen(true);
                               } else {
                                 console.error("Invalid match data:", match);
-                                toast.error(
-                                  "Match details not available. Please refresh and try again.",
-                                );
+                                toast.error("Match details not available. Please refresh and try again.");
                               }
                             }}
                           >
@@ -988,7 +986,7 @@ export const CoachDashboard: React.FC = () => {
               Review the complete details of this coaching opportunity
             </DialogDescription>
           </DialogHeader>
-          {selectedMatch && (
+                    {selectedMatch ? (
             <div className="space-y-6">
               <div>
                 <h3 className="text-lg font-semibold mb-2">
