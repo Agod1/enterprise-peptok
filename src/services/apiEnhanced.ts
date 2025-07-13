@@ -1658,7 +1658,7 @@ class EnhancedApiService {
 
       return defaultConfig;
     }
-  }
+    }
 
   private getSharedPlatformConfig(): any {
     // Use multiple storage mechanisms to simulate true backend database
