@@ -262,7 +262,9 @@ export default function CreateCoachingRequest() {
             startDate: data.timeline.startDate,
             endDate: data.timeline.endDate,
           },
-          teamMembers: currentTeamMembers.map((member) => member.email),
+          teamMembers: hasTeamMembers
+            ? currentTeamMembers.map((member) => member.email)
+            : [],
           goals: data.goals.map((g) => g.title),
         };
 
