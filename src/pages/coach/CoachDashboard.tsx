@@ -61,6 +61,7 @@ import { toast } from "sonner";
 import { crossBrowserSync, SYNC_CONFIGS } from "@/services/crossBrowserSync";
 import LocalStorageService from "@/services/localStorageService";
 import { emailService } from "@/services/email";
+import { websocketService } from "@/services/websocket";
 
 interface CoachProfile {
   id: string;
