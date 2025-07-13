@@ -412,7 +412,14 @@ class DatabaseConfigService {
     const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout for tests
 
     try {
-      const response = await fetch(endpoint, {
+      // Check if we have a valid base URL
+      if (!this.config.baseUrl) {
+        throw new Error("No API base URL configured");
+      }
+
+      const fullUrl = this.config.baseUrl + endpoint;
+
+      const response = await fetch(fullUrl, {
         method,
         headers: this.config.headers,
         signal: controller.signal,
@@ -422,6 +429,20 @@ class DatabaseConfigService {
       return response;
     } catch (error) {
       clearTimeout(timeoutId);
+
+      // Handle specific fetch errors gracefully
+      if (error instanceof Error) {
+        if (error.name === "AbortError") {
+          console.warn(`⏱️ Request timeout for ${endpoint}`);
+        } else if (error.message.includes("fetch")) {
+          console.warn(
+            `🌐 Network error for ${endpoint}: Backend not available`,
+          );
+        } else {
+          console.warn(`❌ Request failed for ${endpoint}:`, error.message);
+        }
+      }
+
       throw error;
     }
   }
