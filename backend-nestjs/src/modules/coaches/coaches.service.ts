@@ -15,7 +15,7 @@ export class CoachesService {
       ...createCoachDto,
       userId,
     });
-    return this.coachRepository.save(coach);
+    return await this.coachRepository.save(coach);
   }
 
   async findAll(query: any): Promise<{ coaches: Coach[]; total: number }> {
@@ -114,7 +114,7 @@ export class CoachesService {
   async update(id: string, updateCoachDto: any): Promise<Coach> {
     const coach = await this.findOne(id);
     Object.assign(coach, updateCoachDto);
-    return this.coachRepository.save(coach);
+    return await this.coachRepository.save(coach);
   }
 
   async remove(id: string): Promise<void> {
@@ -127,7 +127,7 @@ export class CoachesService {
   async updateStatus(id: string, status: string): Promise<Coach> {
     const coach = await this.findOne(id);
     coach.status = status as CoachStatus;
-    return this.coachRepository.save(coach);
+    return await this.coachRepository.save(coach);
   }
 
   async applyToProgram(coachId: string, applicationDto: any): Promise<any> {
