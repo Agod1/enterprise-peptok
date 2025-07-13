@@ -63,9 +63,9 @@ const EnterpriseDashboard = () => {
       try {
         setIsLoading(true);
 
-        // Fetch mentorship requests for the user's company with proper authorization
-        const requests = await apiEnhanced.getMentorshipRequests();
-        console.log("Loaded mentorship requests:", requests);
+        // Fetch coaching requests for the user's company with proper authorization
+        const requests = await apiEnhanced.getCoachingRequests();
+        console.log("Loaded coaching requests:", requests);
         setMentorshipRequests(requests || []);
 
         // Get connections (with fallback)
@@ -219,8 +219,7 @@ const EnterpriseDashboard = () => {
                 Welcome back, {user?.name || "Enterprise User"}!
               </h1>
               <p className="text-gray-600 mt-2">
-                Track your coaching progress and continue your learning
-                journey
+                Track your coaching progress and continue your learning journey
               </p>
             </div>
             <Button onClick={() => navigate("/coaching/new")} size="lg">
