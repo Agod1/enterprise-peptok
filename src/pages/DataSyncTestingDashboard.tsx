@@ -106,8 +106,9 @@ export default function DataSyncTestingDashboard() {
 
           {/* Implementation Details */}
           <Tabs defaultValue="testing" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="testing">Testing Dashboard</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-4">
+              <TabsTrigger value="testing">Data Sync Testing</TabsTrigger>
+              <TabsTrigger value="database">Database Service</TabsTrigger>
               <TabsTrigger value="architecture">Architecture</TabsTrigger>
               <TabsTrigger value="compliance">Compliance Report</TabsTrigger>
             </TabsList>
