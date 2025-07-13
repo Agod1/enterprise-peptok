@@ -17,7 +17,7 @@ export class UsersService {
       ...createUserDto,
       password: hashedPassword,
     });
-    return await this.userRepository.save(user);
+    return this.userRepository.save(user) as Promise<User>;
   }
 
   async findAll(query: any): Promise<User[]> {
