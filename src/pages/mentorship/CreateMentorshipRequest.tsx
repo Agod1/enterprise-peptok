@@ -15,6 +15,7 @@ import {
   MentorshipRequestFormData,
 } from "@/components/mentorship/MentorshipRequestForm";
 import { TeamMemberManagementCard } from "@/components/mentorship/TeamMemberManagementCard";
+import { SimpleTeamMemberCard } from "@/components/mentorship/SimpleTeamMemberCard";
 
 import Header from "@/components/layout/Header";
 import { ArrowLeft, CheckCircle, Clock, AlertTriangle } from "lucide-react";
@@ -541,7 +542,7 @@ export default function CreateMentorshipRequest() {
                 />
 
                 {/* Dedicated Team Member Management Card */}
-                <TeamMemberManagementCard
+                <SimpleTeamMemberCard
                   teamMembers={teamMembers}
                   onUpdateTeamMembers={(updatedTeamMembers) => {
                     setTeamMembers(updatedTeamMembers);
