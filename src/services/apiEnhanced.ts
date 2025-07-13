@@ -576,7 +576,7 @@ class EnhancedApiService {
     }
   }
 
-                  async getAllCoaches(): Promise<Coach[]> {
+  async getAllCoaches(): Promise<Coach[]> {
     // Skip API request if backend is not available/configured
     if (!Environment.shouldTryBackend()) {
       console.log("🗃️ No backend configured, using mock coaches data");
@@ -596,90 +596,127 @@ class EnhancedApiService {
       }
     }
 
-        // Return mock coaches data for the directory
+    // Return mock coaches data for the directory
     const mockCoaches: Coach[] = [
-        {
-          id: "coach_1",
-          name: "Sarah Wilson",
-          title: "Senior Full-Stack Developer & Tech Lead",
-          company: "TechCorp Inc.",
-          coaching: ["JavaScript", "React", "Node.js", "TypeScript", "AWS", "Leadership"],
-          rating: 4.9,
-          experience: 8,
-          totalSessions: 156,
-          avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b1-3c?w=150",
-          availableSlots: ["Mon 9:00", "Tue 10:00", "Wed 14:00", "Thu 15:00", "Fri 13:00"],
-        },
-        {
-          id: "coach_2",
-          name: "Michael Chen",
-          title: "React Specialist & UI/UX Expert",
-          company: "Design Systems Co.",
-          coaching: ["React", "TypeScript", "CSS", "Design Systems", "GraphQL"],
-          rating: 4.7,
-          experience: 6,
-          totalSessions: 78,
-          avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150",
-          availableSlots: ["Mon 14:00", "Wed 10:00", "Fri 16:00"],
-        },
-        {
-          id: "coach_3",
-          name: "Emma Rodriguez",
-          title: "JavaScript Expert & Mentor",
-          company: "Vue Innovations",
-          coaching: ["JavaScript", "Vue.js", "Node.js", "MongoDB", "Testing"],
-          rating: 4.6,
-          experience: 5,
-          totalSessions: 45,
-          avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150",
-          availableSlots: ["Tue 9:00", "Thu 11:00", "Fri 14:00"],
-        },
-        {
-          id: "coach_4",
-          name: "David Kumar",
-          title: "DevOps Engineer & Cloud Architect",
-          company: "CloudScale Solutions",
-          coaching: ["AWS", "Docker", "Kubernetes", "CI/CD", "Python", "Terraform"],
-          rating: 4.8,
-          experience: 10,
-          totalSessions: 87,
-          avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150",
-          availableSlots: ["Mon 8:00", "Wed 9:00", "Thu 13:00"],
-        },
-        {
-          id: "coach_5",
-          name: "Lisa Thompson",
-          title: "Product Manager & Agile Coach",
-          company: "ProductFirst LLC",
-          coaching: ["Product Management", "Agile", "Scrum", "User Research", "Analytics"],
-          rating: 4.5,
-          experience: 7,
-          totalSessions: 53,
-          avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b1-c?w=150",
-          availableSlots: ["Tue 10:00", "Wed 15:00", "Fri 11:00"],
-        },
-        {
-          id: "coach_6",
-          name: "James Anderson",
-          title: "Data Scientist & ML Engineer",
-          company: "DataDriven Analytics",
-          coaching: ["Python", "Machine Learning", "TensorFlow", "Data Analysis", "SQL"],
-          rating: 4.7,
-          experience: 9,
-          totalSessions: 67,
-          avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150",
-          availableSlots: ["Mon 11:00", "Tue 14:00", "Thu 10:00", "Fri 9:00"],
-        }
-      ];
+      {
+        id: "coach_1",
+        name: "Sarah Wilson",
+        title: "Senior Full-Stack Developer & Tech Lead",
+        company: "TechCorp Inc.",
+        coaching: [
+          "JavaScript",
+          "React",
+          "Node.js",
+          "TypeScript",
+          "AWS",
+          "Leadership",
+        ],
+        rating: 4.9,
+        experience: 8,
+        totalSessions: 156,
+        avatar:
+          "https://images.unsplash.com/photo-1494790108755-2616b612b1-3c?w=150",
+        availableSlots: [
+          "Mon 9:00",
+          "Tue 10:00",
+          "Wed 14:00",
+          "Thu 15:00",
+          "Fri 13:00",
+        ],
+      },
+      {
+        id: "coach_2",
+        name: "Michael Chen",
+        title: "React Specialist & UI/UX Expert",
+        company: "Design Systems Co.",
+        coaching: ["React", "TypeScript", "CSS", "Design Systems", "GraphQL"],
+        rating: 4.7,
+        experience: 6,
+        totalSessions: 78,
+        avatar:
+          "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150",
+        availableSlots: ["Mon 14:00", "Wed 10:00", "Fri 16:00"],
+      },
+      {
+        id: "coach_3",
+        name: "Emma Rodriguez",
+        title: "JavaScript Expert & Mentor",
+        company: "Vue Innovations",
+        coaching: ["JavaScript", "Vue.js", "Node.js", "MongoDB", "Testing"],
+        rating: 4.6,
+        experience: 5,
+        totalSessions: 45,
+        avatar:
+          "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150",
+        availableSlots: ["Tue 9:00", "Thu 11:00", "Fri 14:00"],
+      },
+      {
+        id: "coach_4",
+        name: "David Kumar",
+        title: "DevOps Engineer & Cloud Architect",
+        company: "CloudScale Solutions",
+        coaching: [
+          "AWS",
+          "Docker",
+          "Kubernetes",
+          "CI/CD",
+          "Python",
+          "Terraform",
+        ],
+        rating: 4.8,
+        experience: 10,
+        totalSessions: 87,
+        avatar:
+          "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150",
+        availableSlots: ["Mon 8:00", "Wed 9:00", "Thu 13:00"],
+      },
+      {
+        id: "coach_5",
+        name: "Lisa Thompson",
+        title: "Product Manager & Agile Coach",
+        company: "ProductFirst LLC",
+        coaching: [
+          "Product Management",
+          "Agile",
+          "Scrum",
+          "User Research",
+          "Analytics",
+        ],
+        rating: 4.5,
+        experience: 7,
+        totalSessions: 53,
+        avatar:
+          "https://images.unsplash.com/photo-1494790108755-2616b612b1-c?w=150",
+        availableSlots: ["Tue 10:00", "Wed 15:00", "Fri 11:00"],
+      },
+      {
+        id: "coach_6",
+        name: "James Anderson",
+        title: "Data Scientist & ML Engineer",
+        company: "DataDriven Analytics",
+        coaching: [
+          "Python",
+          "Machine Learning",
+          "TensorFlow",
+          "Data Analysis",
+          "SQL",
+        ],
+        rating: 4.7,
+        experience: 9,
+        totalSessions: 67,
+        avatar:
+          "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150",
+        availableSlots: ["Mon 11:00", "Tue 14:00", "Thu 10:00", "Fri 9:00"],
+      },
+    ];
 
-      analytics.trackAction({
-        action: "all_coaches_viewed_mock",
-        component: "coach_directory",
-        metadata: { coachCount: mockCoaches.length },
-      });
+    analytics.trackAction({
+      action: "all_coaches_viewed_mock",
+      component: "coach_directory",
+      metadata: { coachCount: mockCoaches.length },
+    });
 
-      return mockCoaches;
-    }
+    return mockCoaches;
   }
 
   async getCompanyCoaches(companyId?: string): Promise<any[]> {
