@@ -494,7 +494,7 @@ export default function PlatformAdminDashboard() {
             </div>
             <div className="flex gap-3">
               <Button
-                onClick={() => navigate("/admin/matching-settings")}
+                onClick={() => navigate("/admin/matching")}
                 variant="outline"
               >
                 <Brain className="w-4 h-4 mr-2" />
