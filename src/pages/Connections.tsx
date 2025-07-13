@@ -53,6 +53,7 @@ interface Connection {
 
 export default function Connections() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [connections, setConnections] = useState<Connection[]>([]);
   const [filteredConnections, setFilteredConnections] = useState<Connection[]>(
     [],
