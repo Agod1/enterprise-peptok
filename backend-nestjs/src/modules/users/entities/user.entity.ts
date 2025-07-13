@@ -120,8 +120,8 @@ export class User {
   @Column({ nullable: true })
   companyId: string;
 
-  @OneToMany(() => Coach, (coach) => coach.user)
-  coachProfile: Coach[];
+  @OneToOne(() => Coach, (coach) => coach.user)
+  coachProfile: Coach;
 
   @OneToMany(() => Session, (session) => session.employee)
   employeeSessions: Session[];
