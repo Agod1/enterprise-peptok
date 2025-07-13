@@ -169,7 +169,23 @@ export const FullApp: React.FC = () => {
             }
           />
           <Route
+            path="/coach/dashboard"
+            element={
+              <ProtectedRoute requiredUserType="coach">
+                <CoachDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/coach-settings"
+            element={
+              <ProtectedRoute requiredUserType="coach">
+                <CoachSettings />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/coach/settings"
             element={
               <ProtectedRoute requiredUserType="coach">
                 <CoachSettings />
