@@ -127,6 +127,8 @@ export default function PlatformAdminDashboard() {
   const [isCreateCompanyOpen, setIsCreateCompanyOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isUserDetailsOpen, setIsUserDetailsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   // New user form state
   const [newUser, setNewUser] = useState({
@@ -195,6 +197,9 @@ export default function PlatformAdminDashboard() {
 
   const loadPlatformData = async () => {
     try {
+      setIsLoading(true);
+      setError(null);
+
       // Track page view
       analytics.pageView({
         page: "platform_admin_dashboard",
@@ -204,14 +209,20 @@ export default function PlatformAdminDashboard() {
 
       // Try to get data from API first
       try {
-        const platformStats = await apiEnhanced.getPlatformStats();
-        const allUsers = await apiEnhanced.getAllUsers();
-        const allCompanies = await apiEnhanced.getAllCompanies();
+        const [platformStats, allUsers, allCompanies] = await Promise.all([
+          apiEnhanced.getPlatformStats().catch(() => null),
+          apiEnhanced.getAllUsers().catch(() => null),
+          apiEnhanced.getAllCompanies().catch(() => null),
+        ]);
 
-        setStats(platformStats);
-        setUsers(allUsers);
-        setCompanies(allCompanies);
-        return;
+        if (platformStats) setStats(platformStats);
+        if (allUsers) setUsers(allUsers);
+        if (allCompanies) setCompanies(allCompanies);
+
+        // If we got some data from API, we're done
+        if (platformStats || allUsers || allCompanies) {
+          return;
+        }
       } catch (apiError) {
         console.warn("API not available, using mock data:", apiError);
       }
@@ -294,7 +305,10 @@ export default function PlatformAdminDashboard() {
       setCompanies(mockCompanies);
     } catch (error) {
       console.error("Error loading platform data:", error);
+      setError("Failed to load platform data");
       toast.error("Failed to load platform data");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -476,6 +490,46 @@ export default function PlatformAdminDashboard() {
     return null;
   }
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Header />
+        <div className="container mx-auto px-4 py-8">
+          <div className="flex items-center justify-center min-h-64">
+            <div className="text-center">
+              <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+              <p className="text-gray-600">Loading platform data...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Header />
+        <div className="container mx-auto px-4 py-8">
+          <Alert className="max-w-md mx-auto">
+            <AlertTriangle className="h-4 w-4" />
+            <AlertDescription>
+              {error}
+              <Button
+                onClick={loadPlatformData}
+                variant="outline"
+                size="sm"
+                className="ml-4"
+              >
+                Retry
+              </Button>
+            </AlertDescription>
+          </Alert>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
@@ -494,7 +548,7 @@ export default function PlatformAdminDashboard() {
             </div>
             <div className="flex gap-3">
               <Button
-                onClick={() => navigate("/admin/matching-settings")}
+                onClick={() => navigate("/admin/matching")}
                 variant="outline"
               >
                 <Brain className="w-4 h-4 mr-2" />
@@ -909,7 +963,7 @@ export default function PlatformAdminDashboard() {
 
             <Card
               className="hover:shadow-md transition-shadow cursor-pointer"
-              onClick={() => navigate("/admin/matching-settings")}
+              onClick={() => navigate("/admin/matching")}
             >
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
