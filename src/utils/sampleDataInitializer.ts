@@ -3,7 +3,7 @@ import LocalStorageService from "@/services/localStorageService";
 import { TeamInvitation } from "@/services/invitationService";
 
 export function initializeSampleData() {
-  console.log("🔧 Initializing sample data for testing...");
+  console.log("🔧 Initializing sample data for testing with sync service...");
 
   // Add sample coaching requests if none exist
   const existingRequests = LocalStorageService.getCoachingRequests();
