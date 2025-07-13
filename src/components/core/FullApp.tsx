@@ -317,6 +317,17 @@ export const FullApp: React.FC = () => {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/admin/validation"
+            element={
+              <ProtectedRoute requiredUserType="platform_admin">
+                <PlatformValidationDashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Public Validation Dashboard (for development/testing) */}
+          <Route path="/validation" element={<PlatformValidationDashboard />} />
 
           {/* Legal Pages */}
           <Route path="/privacy" element={<Privacy />} />
