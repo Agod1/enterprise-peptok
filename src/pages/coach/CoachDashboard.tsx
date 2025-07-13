@@ -231,9 +231,27 @@ export const CoachDashboard: React.FC = () => {
 
       setProfile(profileData);
       setStats(statsData);
-      setPendingMatches(
-        matchesData.filter((match) => match.status === "pending"),
-      );
+
+      // Filter out matches that have been acted upon locally
+      const pendingMatches = matchesData.filter((match) => {
+        if (match.status !== "pending") return false;
+
+        // Check if this match has been acted upon locally
+        const matchAction = LocalStorageService.getItem(
+          `match_action_${match.id}`,
+        );
+        if (matchAction && matchAction.coachId === user.id) {
+          console.log(
+            `Filtering out match ${match.id} due to local action:`,
+            matchAction.action,
+          );
+          return false;
+        }
+
+        return true;
+      });
+
+      setPendingMatches(pendingMatches);
       setUpcomingSessions(sessionsData);
       setRecentActivity(activityData);
 
