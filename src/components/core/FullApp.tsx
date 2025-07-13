@@ -47,9 +47,6 @@ const CoachingRequestDetails = React.lazy(
 const CoachingRequestDetailsLegacy = React.lazy(
   () => import("@/pages/mentorship/MentorshipRequestDetails"),
 );
-const CoachingRequestDetails = React.lazy(
-  () => import("@/pages/coaching/CoachingRequestDetails"),
-);
 const CoachMatching = React.lazy(() =>
   import("@/pages/coach/CoachMatching").then((module) => ({
     default: module.CoachMatching,
