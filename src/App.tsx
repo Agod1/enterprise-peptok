@@ -24,35 +24,6 @@ if (import.meta.env.DEV) {
 const queryClient = new QueryClient();
 
 const App: React.FC = () => {
-  // Set up a mock admin user for development - do this immediately without hooks
-  if (import.meta.env.DEV && typeof window !== "undefined") {
-    try {
-      const existingUser = LocalStorageService.getUser();
-      if (!existingUser) {
-        const mockUser = {
-          id: "company-admin-1",
-          name: "Company Admin",
-          email: "admin@democompany.com",
-          userType: "company_admin" as const,
-          companyId: "demo-company-1",
-          status: "active" as const,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-          provider: "email" as const,
-        };
-
-        // Store using the localStorage service
-        LocalStorageService.setUser(mockUser);
-        LocalStorageService.setToken("mock-admin-token");
-        console.log(
-          "🧪 Dev: Mock company admin user created using localStorage service",
-        );
-      }
-    } catch (error) {
-      console.warn("Failed to set up mock user:", error);
-    }
-  }
-
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
