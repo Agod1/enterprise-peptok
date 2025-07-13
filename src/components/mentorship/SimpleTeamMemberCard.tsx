@@ -97,7 +97,15 @@ export function SimpleTeamMemberCard({
       onUpdateTeamMembers(updatedTeamMembers);
 
       // Save to localStorage for persistence
-      LocalStorageService.setTeamMembers(updatedTeamMembers);
+      try {
+        LocalStorageService.setTeamMembers(updatedTeamMembers);
+        console.log(
+          "✅ Team members saved to localStorage:",
+          updatedTeamMembers.length,
+        );
+      } catch (error) {
+        console.warn("Failed to save team members to localStorage:", error);
+      }
 
       // Reset form
       setNewMemberEmail("");
@@ -132,7 +140,12 @@ export function SimpleTeamMemberCard({
         (member) => member.id !== memberId,
       );
       onUpdateTeamMembers(updatedTeamMembers);
-      LocalStorageService.setTeamMembers(updatedTeamMembers);
+      try {
+        LocalStorageService.setTeamMembers(updatedTeamMembers);
+        console.log("✅ Team member removed and saved to localStorage");
+      } catch (error) {
+        console.warn("Failed to save team members to localStorage:", error);
+      }
       toast.success(`Removed ${member.email} from the program`);
     }
   };
@@ -145,7 +158,12 @@ export function SimpleTeamMemberCard({
       member.id === memberId ? { ...member, role: newRole } : member,
     );
     onUpdateTeamMembers(updatedMembers);
-    LocalStorageService.setTeamMembers(updatedMembers);
+    try {
+      LocalStorageService.setTeamMembers(updatedMembers);
+      console.log("✅ Team member role updated and saved to localStorage");
+    } catch (error) {
+      console.warn("Failed to save team members to localStorage:", error);
+    }
     toast.success("Team member role updated successfully");
   };
 
