@@ -38,6 +38,9 @@ import {
   Clock,
   ChevronDown,
   Zap,
+  Video,
+  Link,
+  Monitor,
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
