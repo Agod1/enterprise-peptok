@@ -293,9 +293,11 @@ export default function CreateCoachingRequest() {
       setTeamMembers([]);
       setProgramId("");
 
-      toast.success(
-        "Coaching request submitted successfully! Team members have been notified.",
-      );
+      const successMessage = hasTeamMembers
+        ? "Coaching request submitted successfully! Team members have been notified."
+        : "Coaching request submitted successfully! You can add team members later.";
+
+      toast.success(successMessage);
 
       // Navigate to appropriate dashboard based on user type
       const dashboardPath =
