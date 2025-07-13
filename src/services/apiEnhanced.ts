@@ -1263,31 +1263,42 @@ class EnhancedApiService {
   }> {
     checkAuthorization(["platform_admin"]);
 
-    try {
-      const response = await this.request<any>("/platform/stats");
+    // Check if we're in a cloud environment without backend
+    const isCloudEnvironment =
+      window.location.hostname.includes(".fly.dev") ||
+      window.location.hostname.includes(".vercel.app") ||
+      window.location.hostname.includes(".netlify.app");
 
-      analytics.trackAction({
-        action: "platform_stats_viewed",
-        component: "platform_dashboard",
-      });
+    const apiUrl = import.meta.env.VITE_API_URL;
 
-      return response.data;
-    } catch (error) {
-      console.warn("API not available, using mock platform stats:", error);
+    // Skip API request if in cloud environment without backend
+    if (!isCloudEnvironment || apiUrl) {
+      try {
+        const response = await this.request<any>("/platform/stats");
 
-      // Use real demo database statistics
-      const demoStats = getDemoStatistics();
-      const stats = demoStats.platformStats;
+        analytics.trackAction({
+          action: "platform_stats_viewed",
+          component: "platform_dashboard",
+        });
 
-      analytics.platform.dailyActiveUsers(stats.totalUsers, new Date());
-      analytics.platform.revenue(
-        stats.monthlyRevenue,
-        "subscriptions",
-        new Date(),
-      );
-
-      return stats;
+        return response.data;
+      } catch (error) {
+        console.warn("API not available, using mock platform stats:", error);
+      }
     }
+
+    // Use real demo database statistics
+    const demoStats = getDemoStatistics();
+    const stats = demoStats.platformStats;
+
+    analytics.platform.dailyActiveUsers(stats.totalUsers, new Date());
+    analytics.platform.revenue(
+      stats.monthlyRevenue,
+      "subscriptions",
+      new Date(),
+    );
+
+    return stats;
   }
 
   async getAllUsers(filters?: {
@@ -1298,98 +1309,120 @@ class EnhancedApiService {
   }): Promise<User[]> {
     checkAuthorization(["platform_admin"]);
 
-    try {
-      const queryParams = new URLSearchParams();
-      if (filters?.userType) queryParams.append("userType", filters.userType);
-      if (filters?.status) queryParams.append("status", filters.status);
-      if (filters?.companyId)
-        queryParams.append("companyId", filters.companyId);
-      if (filters?.search) queryParams.append("search", filters.search);
+    // Check if we're in a cloud environment without backend
+    const isCloudEnvironment =
+      window.location.hostname.includes(".fly.dev") ||
+      window.location.hostname.includes(".vercel.app") ||
+      window.location.hostname.includes(".netlify.app");
 
-      const response = await this.request<User[]>(
-        `/users?${queryParams.toString()}`,
-      );
+    const apiUrl = import.meta.env.VITE_API_URL;
 
-      analytics.trackAction({
-        action: "all_users_viewed",
-        component: "platform_dashboard",
-        metadata: { filters, resultCount: response.data.length },
-      });
+    // Skip API request if in cloud environment without backend
+    if (!isCloudEnvironment || apiUrl) {
+      try {
+        const queryParams = new URLSearchParams();
+        if (filters?.userType) queryParams.append("userType", filters.userType);
+        if (filters?.status) queryParams.append("status", filters.status);
+        if (filters?.companyId)
+          queryParams.append("companyId", filters.companyId);
+        if (filters?.search) queryParams.append("search", filters.search);
 
-      return response.data;
-    } catch (error) {
-      console.warn("API not available, using mock users:", error);
-
-      // Use demo database users
-      let mockUsers: User[] = demoUsers.map((user) => ({
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        userType: user.userType as any,
-        companyId: user.companyId,
-        status: user.status as any,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        picture: user.picture,
-        provider: user.provider,
-      }));
-
-      // Apply filters
-      if (filters?.userType) {
-        mockUsers = mockUsers.filter(
-          (user) => user.userType === filters.userType,
+        const response = await this.request<User[]>(
+          `/users?${queryParams.toString()}`,
         );
-      }
-      if (filters?.status) {
-        mockUsers = mockUsers.filter((user) => user.status === filters.status);
-      }
-      if (filters?.companyId) {
-        mockUsers = mockUsers.filter(
-          (user) => user.companyId === filters.companyId,
-        );
-      }
-      if (filters?.search) {
-        const search = filters.search.toLowerCase();
-        mockUsers = mockUsers.filter(
-          (user) =>
-            user.name.toLowerCase().includes(search) ||
-            user.email.toLowerCase().includes(search),
-        );
-      }
 
-      return mockUsers;
+        analytics.trackAction({
+          action: "all_users_viewed",
+          component: "platform_dashboard",
+          metadata: { filters, resultCount: response.data.length },
+        });
+
+        return response.data;
+      } catch (error) {
+        console.warn("API not available, using mock users:", error);
+      }
     }
+
+    // Use demo database users
+    let mockUsers: User[] = demoUsers.map((user) => ({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      userType: user.userType as any,
+      companyId: user.companyId,
+      status: user.status as any,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      picture: user.picture,
+      provider: user.provider,
+    }));
+
+    // Apply filters
+    if (filters?.userType) {
+      mockUsers = mockUsers.filter(
+        (user) => user.userType === filters.userType,
+      );
+    }
+    if (filters?.status) {
+      mockUsers = mockUsers.filter((user) => user.status === filters.status);
+    }
+    if (filters?.companyId) {
+      mockUsers = mockUsers.filter(
+        (user) => user.companyId === filters.companyId,
+      );
+    }
+    if (filters?.search) {
+      const search = filters.search.toLowerCase();
+      mockUsers = mockUsers.filter(
+        (user) =>
+          user.name.toLowerCase().includes(search) ||
+          user.email.toLowerCase().includes(search),
+      );
+    }
+
+    return mockUsers;
   }
 
   async getAllCompanies(): Promise<any[]> {
     checkAuthorization(["platform_admin"]);
 
-    try {
-      const response = await this.request<any[]>("/companies");
+    // Check if we're in a cloud environment without backend
+    const isCloudEnvironment =
+      window.location.hostname.includes(".fly.dev") ||
+      window.location.hostname.includes(".vercel.app") ||
+      window.location.hostname.includes(".netlify.app");
 
-      analytics.trackAction({
-        action: "all_companies_viewed",
-        component: "platform_dashboard",
-      });
+    const apiUrl = import.meta.env.VITE_API_URL;
 
-      return response.data;
-    } catch (error) {
-      console.warn("API not available, using mock companies:", error);
+    // Skip API request if in cloud environment without backend
+    if (!isCloudEnvironment || apiUrl) {
+      try {
+        const response = await this.request<any[]>("/companies");
 
-      return demoCompanies.map((company) => ({
-        id: company.id,
-        name: company.name,
-        industry: company.industry,
-        userCount: company.employeeCount,
-        status: company.status,
-        subscription: company.subscriptionTier,
-        joinedAt: company.joinedAt,
-        revenue: company.revenue,
-        adminId: company.adminId,
-        activePrograms: company.activePrograms,
-        totalSessions: company.totalSessions,
-      }));
+        analytics.trackAction({
+          action: "all_companies_viewed",
+          component: "platform_dashboard",
+        });
+
+        return response.data;
+      } catch (error) {
+        console.warn("API not available, using mock companies:", error);
+      }
     }
+
+    return demoCompanies.map((company) => ({
+      id: company.id,
+      name: company.name,
+      industry: company.industry,
+      userCount: company.employeeCount,
+      status: company.status,
+      subscription: company.subscriptionTier,
+      joinedAt: company.joinedAt,
+      revenue: company.revenue,
+      adminId: company.adminId,
+      activePrograms: company.activePrograms,
+      totalSessions: company.totalSessions,
+    }));
   }
 
   // ===== SESSION MANAGEMENT METHODS =====
