@@ -117,6 +117,21 @@ export default function DataSyncTestingDashboard() {
               <DataSyncTester />
             </TabsContent>
 
+            <TabsContent value="database" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Database Service Connection Test</CardTitle>
+                  <CardDescription>
+                    Test and validate database service configuration and cloud
+                    environment handling
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <DatabaseServiceTest />
+                </CardContent>
+              </Card>
+            </TabsContent>
+
             <TabsContent value="architecture" className="space-y-6">
               <Card>
                 <CardHeader>
