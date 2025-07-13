@@ -14,8 +14,6 @@ import { Coach } from "../../coaches/entities/coach.entity";
 import { Company } from "../../companies/entities/company.entity";
 import { Session } from "../../sessions/entities/session.entity";
 import { Review } from "../../reviews/entities/review.entity";
-import { ChatMessage } from "../../chat/entities/chat-message.entity";
-import { Notification } from "../../notifications/entities/notification.entity";
 
 export enum UserRole {
   ADMIN = "admin",
@@ -133,15 +131,6 @@ export class User {
 
   @OneToMany(() => Review, (review) => review.reviewer)
   reviewsGiven: Review[];
-
-  @OneToMany(() => Review, (review) => review.reviewee)
-  reviewsReceived: Review[];
-
-  @OneToMany(() => ChatMessage, (message) => message.sender)
-  chatMessages: ChatMessage[];
-
-  @OneToMany(() => Notification, (notification) => notification.user)
-  notifications: Notification[];
 
   @CreateDateColumn()
   createdAt: Date;
