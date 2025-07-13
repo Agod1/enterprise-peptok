@@ -108,7 +108,7 @@ export function SessionManagement({
 
   const handleJoinSession = (session: Session) => {
     // Navigate to video conference
-    navigate(`/session/video?sessionId=${session.id}`);
+    navigate(`/session/${session.id}`);
   };
 
   const handleCompleteOffline = async (session: Session) => {
