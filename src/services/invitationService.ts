@@ -91,6 +91,21 @@ class InvitationService {
    * Verify database connection before operations
    */
   private async verifyDatabaseConnection(): Promise<void> {
+    // Additional safety check - never verify in cloud environments
+    const hostname = window.location.hostname;
+    const isCloudEnvironment =
+      hostname.includes(".fly.dev") ||
+      hostname.includes(".vercel.app") ||
+      hostname.includes(".netlify.app");
+    const apiUrl = import.meta.env.VITE_API_URL;
+
+    if (isCloudEnvironment && !apiUrl) {
+      console.log(
+        "🗃️ Safety check: Skipping database verification in cloud environment without API URL",
+      );
+      return;
+    }
+
     if (!this.isApiConfigured()) {
       console.log(
         "🗃️ Database service not configured - using mock/localStorage mode",
