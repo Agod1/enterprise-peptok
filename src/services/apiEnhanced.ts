@@ -821,49 +821,38 @@ class EnhancedApiService {
   ): Promise<{ success: boolean; message?: string }> {
     const user = checkAuthorization(["coach"]);
 
-    try {
-      const response = await this.request<{
-        success: boolean;
-        message?: string;
-      }>(`/matches/${matchId}/accept`, {
-        method: "POST",
-        body: JSON.stringify({ coachId: user.id }),
-      });
+    // Use data sync service to update the match
+    const updates = {
+      assignedCoachId: user.id,
+      status: "in_progress",
+      updatedAt: new Date().toISOString(),
+    };
 
-      analytics.coach.matchAccepted(matchId, user.id);
-      analytics.trackAction({
-        action: "match_accepted",
-        component: "coach_matching",
-        metadata: { matchId, coachId: user.id },
-      });
+    const result = await dataSyncService.updateData<MentorshipRequest>(
+      DATA_SYNC_CONFIGS.MENTORSHIP_REQUESTS,
+      matchId,
+      updates,
+    );
 
-      return response.data;
-    } catch (error) {
-      console.warn("API not available, updating localStorage:", error);
+    analytics.coach.matchAccepted(matchId, user.id);
+    analytics.trackAction({
+      action: "match_accepted",
+      component: "coach_matching",
+      metadata: {
+        matchId,
+        coachId: user.id,
+        source: result.source,
+      },
+    });
 
-      // Update localStorage
-      const requests = JSON.parse(
-        localStorage.getItem("mentorship_requests") || "[]",
-      );
-      const updatedRequests = requests.map((req: MentorshipRequest) =>
-        req.id === matchId
-          ? {
-              ...req,
-              assignedCoachId: user.id,
-              status: "in_progress",
-              updatedAt: new Date().toISOString(),
-            }
-          : req,
-      );
-      localStorage.setItem(
-        "mentorship_requests",
-        JSON.stringify(updatedRequests),
-      );
+    console.log(`✅ Match ${matchId} accepted via ${result.source}`);
 
-      analytics.coach.matchAccepted(matchId, user.id);
-
-      return { success: true, message: "Match accepted successfully" };
-    }
+    return {
+      success: result.success,
+      message: result.success
+        ? "Match accepted successfully"
+        : "Failed to accept match",
+    };
   }
 
   async declineMatch(
