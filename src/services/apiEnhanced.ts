@@ -1607,22 +1607,34 @@ class EnhancedApiService {
   }
 
   // Existing methods from original API service that don't need auth changes
-  async getPricingConfig(): Promise<any> {
-    try {
-      const response = await this.request<any>("/admin/pricing-config");
+    async getPricingConfig(): Promise<any> {
+    // Check if we have a valid API URL configuration
+    const apiUrl = import.meta.env.VITE_API_URL;
+    const isCloudEnvironment = window.location.hostname.includes('.fly.dev') ||
+                              window.location.hostname.includes('.vercel.app') ||
+                              window.location.hostname.includes('.netlify.app');
 
-      analytics.trackAction({
-        action: "pricing_config_retrieved",
-        component: "api_enhanced",
-        metadata: { source: "backend_api" },
-      });
+    // Skip API request if no backend is configured or we're in a cloud environment without API URL
+    if (!apiUrl || (isCloudEnvironment && !apiUrl)) {
+      console.log("🗃️ No backend configured, using cross-browser synchronized storage for pricing config");
+    } else {
+      try {
+        const response = await this.request<any>("/admin/pricing-config");
 
-      return response.data;
-    } catch (error) {
-      console.warn(
-        "API not available, using cross-browser synchronized storage:",
-        error,
-      );
+        analytics.trackAction({
+          action: "pricing_config_retrieved",
+          component: "api_enhanced",
+          metadata: { source: "backend_api" },
+        });
+
+        return response.data;
+      } catch (error) {
+        console.warn(
+          "API not available, using cross-browser synchronized storage:",
+          error,
+        );
+      }
+    }
 
       // Use centralized cross-browser sync service
       const config = crossBrowserSync.load(SYNC_CONFIGS.PRICING_CONFIG);
