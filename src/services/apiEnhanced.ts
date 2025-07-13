@@ -764,16 +764,24 @@ class EnhancedApiService {
         `/companies/${targetCompanyId}/coaches`,
       );
 
+      // Filter only active, valid coaches
+      const activeCoaches = response.data.filter(
+        (coach: any) =>
+          coach.status === "active" &&
+          coach.isActive !== false &&
+          coach.isVerified !== false,
+      );
+
       analytics.trackAction({
         action: "company_coaches_viewed",
         component: "company_dashboard",
         metadata: {
           companyId: targetCompanyId,
-          coachCount: response.data.length,
+          coachCount: activeCoaches.length,
         },
       });
 
-      return response.data;
+      return activeCoaches;
     } catch (error) {
       console.warn("API not available, using demo coaches:", error);
 
