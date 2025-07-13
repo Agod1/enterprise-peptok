@@ -975,6 +975,10 @@ export default function AnalyticsSettings() {
                   <PieChart className="w-5 h-5" />
                   Enabled Metrics
                 </CardTitle>
+                <div className="text-sm text-muted-foreground">
+                  Metrics selected here will be available for tracking in
+                  coaching programs
+                </div>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
