@@ -40,6 +40,11 @@ export default function PendingInvitations() {
   const [isLoading, setIsLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
 
+  // Initialize sample data for testing
+  useEffect(() => {
+    initializeSampleData();
+  }, []);
+
   const handleSearchInvitations = async () => {
     if (!email.trim()) {
       toast.error("Please enter your email address");
