@@ -511,7 +511,16 @@ export default function CreateCoachingRequest() {
                   onFormDataChange={handleFormDataChange}
                 />
 
-                {/* Dedicated Team Member Management Card */}
+                {/* Optional Team Member Management Card */}
+                <Alert className="mb-6">
+                  <AlertTriangle className="h-4 w-4" />
+                  <AlertDescription>
+                    <strong>Team Members are Optional:</strong> You can create a
+                    coaching program without team members and add them later, or
+                    add them now to notify them immediately about the program.
+                  </AlertDescription>
+                </Alert>
+
                 <SimpleTeamMemberCard
                   teamMembers={teamMembers}
                   onUpdateTeamMembers={(updatedTeamMembers) => {
