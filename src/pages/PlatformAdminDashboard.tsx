@@ -204,14 +204,20 @@ export default function PlatformAdminDashboard() {
 
       // Try to get data from API first
       try {
-        const platformStats = await apiEnhanced.getPlatformStats();
-        const allUsers = await apiEnhanced.getAllUsers();
-        const allCompanies = await apiEnhanced.getAllCompanies();
+        const [platformStats, allUsers, allCompanies] = await Promise.all([
+          apiEnhanced.getPlatformStats().catch(() => null),
+          apiEnhanced.getAllUsers().catch(() => null),
+          apiEnhanced.getAllCompanies().catch(() => null),
+        ]);
 
-        setStats(platformStats);
-        setUsers(allUsers);
-        setCompanies(allCompanies);
-        return;
+        if (platformStats) setStats(platformStats);
+        if (allUsers) setUsers(allUsers);
+        if (allCompanies) setCompanies(allCompanies);
+
+        // If we got some data from API, we're done
+        if (platformStats || allUsers || allCompanies) {
+          return;
+        }
       } catch (apiError) {
         console.warn("API not available, using mock data:", apiError);
       }
