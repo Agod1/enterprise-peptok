@@ -1290,8 +1290,8 @@ class EnhancedApiService {
 
     const apiUrl = import.meta.env.VITE_API_URL;
 
-    // Skip API request if in cloud environment without backend
-    if (!isCloudEnvironment || apiUrl) {
+    // Only make API request if NOT in cloud environment AND we have an API URL
+    if (!isCloudEnvironment && apiUrl) {
       try {
         const queryParams = new URLSearchParams();
         if (filters?.userType) queryParams.append("userType", filters.userType);
@@ -1314,6 +1314,10 @@ class EnhancedApiService {
       } catch (error) {
         console.warn("API not available, using mock users:", error);
       }
+    } else {
+      console.log(
+        "🗃️ Using demo users in cloud environment or no API URL configured",
+      );
     }
 
     // Use demo database users
