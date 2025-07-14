@@ -77,10 +77,10 @@ const CompanyDashboardWithPrograms = () => {
     try {
       setIsLoading(true);
 
-      // Clear dummy data first
-      programService.clearDummyData();
+      // Comprehensive cleanup - clear ALL program data first
+      programService.clearAllData();
 
-      // Load programs for this company
+      // Load programs for this company (should be empty for fresh start)
       const companyPrograms = await programService.getPrograms({
         companyId: user?.companyId,
       });
