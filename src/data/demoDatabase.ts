@@ -185,6 +185,19 @@ export const demoSessions: DemoSession[] = [];
 // Clean Reviews - Empty to start fresh
 export const demoReviews: DemoReview[] = [];
 
+// Get demo login credentials for Login component
+export const getDemoLoginCredentials = () => {
+  return demoUsers.map((user) => ({
+    id: user.id,
+    email: user.email,
+    password: user.password,
+    name: user.name,
+    userType: user.userType,
+    companyId: user.companyId,
+    status: user.status,
+  }));
+};
+
 // Statistics based on clean data
 export const getDemoStatistics = () => {
   const totalUsers = demoUsers.length;
