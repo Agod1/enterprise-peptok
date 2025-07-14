@@ -1778,12 +1778,31 @@ class EnhancedApiService {
   }) {
     const user = checkAuthorization(["platform_admin", "company_admin"]);
 
-    // Company admins can only see their company's analytics
-    if (user.userType === "company_admin") {
-      query.filters = { ...query.filters, companyId: user.companyId };
-    }
+    try {
+      // Try backend first
+      const response = await this.request<any>("/analytics", {
+        method: "POST",
+        body: JSON.stringify(query),
+      });
+      return response.data;
+    } catch (error) {
+      console.warn(
+        "API not available, computing real statistics from local data:",
+        error,
+      );
 
-    return await analytics.getAnalytics(query);
+      // Import and use real statistics service
+      const { statisticsService } = await import("./statisticsService");
+
+      // Return real computed statistics based on user type
+      if (user.userType === "platform_admin") {
+        return await statisticsService.getPlatformStatistics();
+      } else if (user.userType === "company_admin") {
+        return await statisticsService.getCompanyStatistics(user.companyId);
+      }
+
+      return { message: "No analytics data available" };
+    }
   }
 
   async trackEvent(eventName: string, properties?: Record<string, any>) {
@@ -2573,7 +2592,7 @@ class EnhancedApiService {
 
     // If all backend endpoints fail, throw error to trigger offline sync
     console.error(
-      "��� Failed to save invitation to backend database via all endpoints",
+      "���� Failed to save invitation to backend database via all endpoints",
     );
     throw new Error(
       `Failed to save invitation to backend database: ${lastError?.message || "All endpoints unavailable"}`,
