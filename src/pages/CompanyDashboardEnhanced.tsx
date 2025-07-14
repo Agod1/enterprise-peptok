@@ -122,9 +122,12 @@ export default function CompanyDashboardEnhanced() {
 
     setLoading(true);
     try {
-      // Load fresh data
+      // Clear any existing program/request data first
+      localStorage.removeItem("mentorship_requests");
+      localStorage.removeItem("coaching_requests");
+      localStorage.removeItem("peptok_programs");
 
-      // Load company-specific requests with proper error handling
+      // Load fresh data (should be empty for clean start)
       const companyRequests = await apiEnhanced.getCompanyRequests(
         user.companyId,
       );
