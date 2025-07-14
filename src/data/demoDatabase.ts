@@ -442,7 +442,7 @@ export const demoUsers: DemoUser[] = [
   },
 ];
 
-// Clean Companies Database - Only TechCorp Industries for Sarah Johnson
+// Clean Companies Database - Three companies for the three admins
 export const demoCompanies: DemoCompany[] = [
   {
     id: "comp_001",
@@ -455,6 +455,34 @@ export const demoCompanies: DemoCompany[] = [
     totalSessions: 0,
     subscriptionTier: "Growth Plan",
     joinedAt: "2024-03-15T00:00:00Z",
+    status: "active",
+    revenue: 0,
+  },
+  {
+    id: "comp_002",
+    name: "InnovateHub Solutions",
+    industry: "Consulting",
+    size: "Large (200+ employees)",
+    adminId: "user_013",
+    employeeCount: 320,
+    activePrograms: 0,
+    totalSessions: 0,
+    subscriptionTier: "Enterprise Plan",
+    joinedAt: "2024-02-20T00:00:00Z",
+    status: "active",
+    revenue: 0,
+  },
+  {
+    id: "comp_003",
+    name: "GreenLeaf Enterprises",
+    industry: "Sustainability",
+    size: "Small (10-50 employees)",
+    adminId: "user_014",
+    employeeCount: 42,
+    activePrograms: 0,
+    totalSessions: 0,
+    subscriptionTier: "Starter Plan",
+    joinedAt: "2024-01-10T00:00:00Z",
     status: "active",
     revenue: 0,
   },
