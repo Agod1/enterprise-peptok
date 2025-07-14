@@ -16,6 +16,10 @@ export class DummyDataCleaner {
     "coaching_requests",
     "peptok_coaching_requests",
 
+    // Sarah Johnson specific data
+    "sarah_johnson_programs",
+    "leadership_development_q1_2024",
+
     // Session dummy data
     "peptok_sessions",
     "mock_sessions",
