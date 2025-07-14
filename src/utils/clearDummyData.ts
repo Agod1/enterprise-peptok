@@ -75,6 +75,7 @@ export class DummyDataCleaner {
   static clearAllProgramData(): void {
     try {
       const programKeys = [
+        // Program data
         "peptok_programs",
         "peptok_program_sessions",
         "peptok_current_program_id",
@@ -88,6 +89,17 @@ export class DummyDataCleaner {
         "current_program",
         "team_invitations",
         "sampleDataInitialized",
+        // Session and activity data
+        "peptok_sessions",
+        "peptok_analytics_data",
+        "peptok_dashboard_preferences",
+        "peptok_messages",
+        "peptok_match_scores",
+        "mock_sessions",
+        "analytics_data",
+        "dashboard_stats",
+        "recent_activity",
+        "upcoming_sessions",
       ];
 
       let clearedCount = 0;
