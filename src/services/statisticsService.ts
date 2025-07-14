@@ -48,12 +48,18 @@ export class StatisticsService {
 
       // Get real session data from programs
       let totalSessions = 0;
+      let activeSessions = 0;
       let completedSessions = 0;
       let totalRevenue = 0;
 
       for (const program of allPrograms) {
         const sessions = await programService.getProgramSessions(program.id);
         totalSessions += sessions.length;
+
+        // Count sessions by status
+        activeSessions += sessions.filter(
+          (s) => s.status === "scheduled" || s.status === "in_progress",
+        ).length;
         completedSessions += sessions.filter(
           (s) => s.status === "completed",
         ).length;
