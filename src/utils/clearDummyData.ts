@@ -100,6 +100,20 @@ export class DummyDataCleaner {
         "dashboard_stats",
         "recent_activity",
         "upcoming_sessions",
+        // Statistics and computed data
+        "platform_statistics",
+        "company_statistics",
+        "coach_statistics",
+        "user_analytics",
+        "session_analytics",
+        "revenue_data",
+        "engagement_metrics",
+        "performance_metrics",
+        // Activity feeds
+        "activity_feed",
+        "recent_activities",
+        "notification_data",
+        "dashboard_cache",
       ];
 
       let clearedCount = 0;
