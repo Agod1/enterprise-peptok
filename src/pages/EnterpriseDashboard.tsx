@@ -63,6 +63,11 @@ const EnterpriseDashboard = () => {
       try {
         setIsLoading(true);
 
+        // Clear any existing data first for clean start
+        localStorage.removeItem("mentorship_requests");
+        localStorage.removeItem("coaching_requests");
+        localStorage.removeItem("peptok_programs");
+
         // Fetch coaching requests for the user's company with proper authorization
         const requests = await apiEnhanced.getCoachingRequests();
         console.log("Loaded coaching requests:", requests);
