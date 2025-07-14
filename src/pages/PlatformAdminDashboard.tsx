@@ -207,20 +207,41 @@ export default function PlatformAdminDashboard() {
         userType: user?.userType,
       });
 
-      // Try to get data from API first
+      // Try to get data from API first, but handle failures gracefully
       try {
-        const [platformStats, allUsers, allCompanies] = await Promise.all([
-          apiEnhanced.getPlatformStats().catch(() => null),
-          apiEnhanced.getAllUsers().catch(() => null),
-          apiEnhanced.getAllCompanies().catch(() => null),
-        ]);
+        // Load data with individual error handling
+        const [platformStats, allUsers, allCompanies] =
+          await Promise.allSettled([
+            apiEnhanced.getPlatformStats(),
+            apiEnhanced.getAllUsers(),
+            apiEnhanced.getAllCompanies(),
+          ]);
 
-        if (platformStats) setStats(platformStats);
-        if (allUsers) setUsers(allUsers);
-        if (allCompanies) setCompanies(allCompanies);
+        // Process results
+        if (platformStats.status === "fulfilled") {
+          setStats(platformStats.value);
+        } else {
+          console.warn("Failed to load platform stats:", platformStats.reason);
+        }
+
+        if (allUsers.status === "fulfilled") {
+          setUsers(allUsers.value);
+        } else {
+          console.warn("Failed to load users:", allUsers.reason);
+        }
+
+        if (allCompanies.status === "fulfilled") {
+          setCompanies(allCompanies.value);
+        } else {
+          console.warn("Failed to load companies:", allCompanies.reason);
+        }
 
         // If we got some data from API, we're done
-        if (platformStats || allUsers || allCompanies) {
+        if (
+          platformStats.status === "fulfilled" ||
+          allUsers.status === "fulfilled" ||
+          allCompanies.status === "fulfilled"
+        ) {
           return;
         }
       } catch (apiError) {
