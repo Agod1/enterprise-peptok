@@ -174,8 +174,9 @@ export default function CompanyDashboardEnhanced() {
         metadata: {
           companyId: user.companyId,
           totalRequests: companyRequests.length,
-          activePrograms,
-          completedPrograms,
+          activePrograms: companyStats.activePrograms || 0,
+          completedPrograms: companyStats.completedPrograms || 0,
+          totalEmployees: companyStats.totalEmployees || 0,
         },
       });
     } catch (error) {
