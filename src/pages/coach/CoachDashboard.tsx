@@ -326,7 +326,7 @@ export const CoachDashboard: React.FC = () => {
           coachId: user.id,
           pendingMatches: matchesData.filter((m) => m.status === "pending")
             .length,
-          upcomingSessions: sessionsData.data.length,
+          upcomingSessions: sessionsData.length,
         },
       });
     } catch (error) {
