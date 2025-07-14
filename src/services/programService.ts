@@ -8,6 +8,7 @@ import {
 } from "@/types/program";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
+import { apiEnhanced } from "./apiEnhanced";
 
 /**
  * Program Management Service
