@@ -634,16 +634,34 @@ export const ProgramDetails: React.FC<ProgramDetailsProps> = ({
               <CardContent className="space-y-3">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Level</span>
-                  <Badge className="capitalize">{program.level}</Badge>
+                  <Badge className="capitalize">
+                    {program.level || "Not specified"}
+                  </Badge>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Created</span>
-                  <span>{formatDate(program.createdAt)}</span>
+                  <span>
+                    {program.createdAt
+                      ? formatDate(program.createdAt)
+                      : "Unknown"}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Last Updated</span>
-                  <span>{formatDate(program.updatedAt)}</span>
+                  <span>
+                    {program.updatedAt
+                      ? formatDate(program.updatedAt)
+                      : "Unknown"}
+                  </span>
                 </div>
+                {program.assignedCoachName && (
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">
+                      Assigned Coach
+                    </span>
+                    <span>{program.assignedCoachName}</span>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>
