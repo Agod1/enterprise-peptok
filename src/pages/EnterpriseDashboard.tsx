@@ -76,10 +76,34 @@ const EnterpriseDashboard = () => {
         localStorage.removeItem("coaching_requests");
         localStorage.removeItem("peptok_programs");
 
-        // Fetch coaching requests for the user's company with proper authorization
-        const requests = await apiEnhanced.getCoachingRequests();
+        // Load real data and compute metrics
+        const [requests, companyStats, upcomingSessions] = await Promise.all([
+          apiEnhanced.getCoachingRequests(),
+          apiEnhanced.getCompanyStatistics(user?.companyId),
+          apiEnhanced.getUpcomingSessions(),
+        ]);
+
         console.log("Loaded coaching requests:", requests);
         setMentorshipRequests(requests || []);
+
+        // Compute real dashboard metrics from actual data
+        const realMetrics = {
+          activeSessions: companyStats.completedSessions || 0, // Currently running sessions
+          activeCoaching: companyStats.activePrograms || 0, // Active coaching programs
+          goalsProgress:
+            companyStats.activePrograms > 0
+              ? Math.round(
+                  (companyStats.completedPrograms /
+                    (companyStats.activePrograms +
+                      companyStats.completedPrograms)) *
+                    100,
+                )
+              : 0,
+          totalHours: companyStats.totalSessions * 1.5 || 0, // Assuming 1.5 hours per session average
+        };
+
+        setDashboardMetrics(realMetrics);
+        console.log("Real dashboard metrics:", realMetrics);
 
         // Get connections (with fallback)
         try {
