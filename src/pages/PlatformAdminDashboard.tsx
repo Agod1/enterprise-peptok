@@ -344,7 +344,7 @@ export default function PlatformAdminDashboard() {
 
       const mockCompanies: Company[] = [
         {
-          id: "comp1",
+          id: "comp_001",
           name: "TechCorp Inc.",
           industry: "Technology",
           adminEmail: "alice@techcorp.com",
@@ -355,7 +355,7 @@ export default function PlatformAdminDashboard() {
           revenue: 4950,
         },
         {
-          id: "comp2",
+          id: "comp_002",
           name: "StartupCo",
           industry: "Fintech",
           adminEmail: "carol@startup.com",
@@ -364,6 +364,28 @@ export default function PlatformAdminDashboard() {
           subscription: "Starter Plan",
           joinedAt: "2024-01-05",
           revenue: 792,
+        },
+        {
+          id: "comp_003",
+          name: "Design Co",
+          industry: "Design",
+          adminEmail: "emma@design.co",
+          userCount: 12,
+          status: "active",
+          subscription: "Growth Plan",
+          joinedAt: "2024-01-08",
+          revenue: 2400,
+        },
+        {
+          id: "comp_004",
+          name: "NextGen Solutions",
+          industry: "Consulting",
+          adminEmail: "grace@nextgen.io",
+          userCount: 18,
+          status: "active",
+          subscription: "Enterprise Plan",
+          joinedAt: "2024-01-16",
+          revenue: 5600,
         },
       ];
 
