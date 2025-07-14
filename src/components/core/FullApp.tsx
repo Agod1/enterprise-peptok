@@ -52,16 +52,8 @@ const CoachMatching = React.lazy(() =>
     default: module.CoachMatching,
   })),
 );
-const CoachDashboard = React.lazy(() =>
-  import("@/pages/coach/CoachDashboard").then((module) => ({
-    default: module.CoachDashboard,
-  })),
-);
-const CoachSettings = React.lazy(() =>
-  import("@/pages/coach/CoachSettings").then((module) => ({
-    default: module.CoachSettings,
-  })),
-);
+const CoachDashboard = React.lazy(() => import("@/pages/coach/CoachDashboard"));
+const CoachSettings = React.lazy(() => import("@/pages/coach/CoachSettings"));
 const Connections = React.lazy(() => import("@/pages/Connections"));
 const ConnectionDetails = React.lazy(() => import("@/pages/ConnectionDetails"));
 const ExpertDirectory = React.lazy(() => import("@/pages/ExpertDirectory"));
