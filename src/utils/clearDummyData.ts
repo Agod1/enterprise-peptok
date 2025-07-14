@@ -95,6 +95,8 @@ export class DummyDataCleaner {
         "sarah",
         "react development",
         "leadership development",
+        "sample coaching request",
+        "executive coaching program",
       ];
       const allKeys = Object.keys(localStorage);
 
