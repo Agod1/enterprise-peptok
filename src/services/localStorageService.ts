@@ -302,6 +302,21 @@ export class LocalStorageService {
     );
   }
 
+  // Generic Methods
+  static getItem<T>(key: string, defaultValue?: T): T | null {
+    const value = localStorage.getItem(key);
+    if (!value) return defaultValue || null;
+    return this.safeJsonParse(value, defaultValue || null);
+  }
+
+  static setItem(key: string, value: any): void {
+    localStorage.setItem(key, this.safeJsonStringify(value));
+  }
+
+  static removeItem(key: string): void {
+    localStorage.removeItem(key);
+  }
+
   // Utility Methods
   static clearAllData(): void {
     Object.values(this.KEYS).forEach((key) => {
