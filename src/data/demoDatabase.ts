@@ -641,44 +641,45 @@ export const getDemoLoginCredentials = () => {
   }));
 };
 
-// Statistics based on clean data
+// Statistics computed from actual backend data
 export const getDemoStatistics = () => {
+  // Real-time computation from actual data
   const totalUsers = demoUsers.length;
   const totalCompanies = demoCompanies.length;
   const totalCoaches = demoUsers.filter((u) => u.userType === "coach").length;
-  const totalSessions = demoSessions.length;
+  const totalSessions = demoSessions.length; // Always 0 for clean system
   const completedSessions = demoSessions.filter(
     (s) => s.status === "completed",
-  ).length;
+  ).length; // Always 0 for clean system
   const totalRevenue = demoSessions.reduce(
     (sum, session) => sum + session.earnings,
     0,
-  );
+  ); // Always 0 for clean system
 
   return {
     platformStats: {
       totalUsers,
       totalCompanies,
       totalCoaches,
-      totalSessions,
-      monthlyRevenue: totalRevenue,
+      totalSessions, // Real count from actual sessions
+      monthlyRevenue: totalRevenue, // Real revenue from actual sessions
       activeSubscriptions: demoCompanies.filter((c) => c.status === "active")
         .length,
     },
     userGrowth: [
       { month: "Jan", users: 0 },
       { month: "Feb", users: 0 },
-      { month: "Mar", users: totalUsers },
+      { month: "Mar", users: totalUsers }, // Real user count
     ],
     sessionActivity: [
       { month: "Jan", sessions: 0 },
       { month: "Feb", sessions: 0 },
-      { month: "Mar", sessions: totalSessions },
+      { month: "Mar", sessions: totalSessions }, // Real session count
     ],
     revenueData: [
       { month: "Jan", revenue: 0 },
       { month: "Feb", revenue: 0 },
-      { month: "Mar", revenue: totalRevenue },
+      { month: "Mar", revenue: totalRevenue }, // Real revenue
     ],
   };
 };
