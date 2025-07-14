@@ -120,9 +120,8 @@ class EnhancedApiService {
         {
           id: "sample_request_1",
           companyId: "default-company-id",
-          title: "React Development Training",
-          description:
-            "Help our team improve their React skills and best practices.",
+          title: "Sample Coaching Request",
+          description: "Professional coaching session request.",
           goals: [
             {
               id: "goal_1",
