@@ -86,6 +86,8 @@ export class DummyDataCleaner {
         "sessions",
         "program_sessions",
         "current_program",
+        "team_invitations",
+        "sampleDataInitialized",
       ];
 
       let clearedCount = 0;
