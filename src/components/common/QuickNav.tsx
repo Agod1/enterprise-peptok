@@ -79,6 +79,7 @@ export const QuickNav: React.FC = () => {
     { path: "/login", label: "🔐 Login" },
     { path: "/signup", label: "✍️ Sign Up" },
     { path: "/validation", label: "🧪 Validation Dashboard" },
+    { path: "/test-coach", label: "👨‍🏫 Test Coach" },
   ];
 
   return (
