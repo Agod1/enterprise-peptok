@@ -70,7 +70,7 @@ export const QuickNav: React.FC = () => {
     { path: "/dashboard", label: "📊 Company Dashboard" },
     { path: "/coaching/new", label: "➕ Create New Program" },
     { path: "/mentorship/new", label: "📝 Create Program (Legacy)" },
-    { path: "/coach-dashboard", label: "👨‍🏫 Coach Dashboard" },
+    { path: "/coach/dashboard", label: "👨‍🏫 Coach Dashboard" },
     { path: "/platform-admin", label: "⚙️ Platform Admin" },
     { path: "/admin/matching", label: "🎯 Matching Settings" },
     { path: "/admin/email", label: "📧 Email Settings" },
