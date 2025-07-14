@@ -20,6 +20,9 @@ console.log(`🔌 Should try backend: ${Environment.shouldTryBackend()}`);
 console.log("🔄 PERFORMING COMPLETE DATA RESET FOR FRESH ACCOUNTS");
 dummyDataCleaner.initializeCompletelyCleanSystem();
 
+// Extra cleanup for program data specifically
+dummyDataCleaner.clearAllProgramData();
+
 // Verify the new accounts are properly set up
 setTimeout(() => {
   accountVerification.performCompleteVerification();
