@@ -1809,6 +1809,115 @@ class EnhancedApiService {
     analytics.track(eventName, properties);
   }
 
+  /**
+   * Get upcoming sessions from real program data
+   */
+  async getUpcomingSessions(): Promise<any[]> {
+    const user = checkAuthorization();
+
+    try {
+      // Try backend first
+      const response = await this.request<any[]>("/sessions/upcoming");
+      return response.data;
+    } catch (error) {
+      console.warn(
+        "API not available, computing upcoming sessions from local data:",
+        error,
+      );
+
+      // Import and use real statistics service
+      const { statisticsService } = await import("./statisticsService");
+      return await statisticsService.getUpcomingSessions(
+        user.id,
+        user.userType,
+        user.companyId,
+      );
+    }
+  }
+
+  /**
+   * Get recent activity from real program and session data
+   */
+  async getRecentActivity(): Promise<any[]> {
+    const user = checkAuthorization();
+
+    try {
+      // Try backend first
+      const response = await this.request<any[]>("/activity/recent");
+      return response.data;
+    } catch (error) {
+      console.warn(
+        "API not available, computing recent activity from local data:",
+        error,
+      );
+
+      // Import and use real statistics service
+      const { statisticsService } = await import("./statisticsService");
+      return await statisticsService.getRecentActivity(
+        user.id,
+        user.userType,
+        user.companyId,
+      );
+    }
+  }
+
+  /**
+   * Get platform statistics from real data
+   */
+  async getPlatformStatistics(): Promise<any> {
+    checkAuthorization(["platform_admin"]);
+
+    try {
+      // Try backend first
+      const response = await this.request<any>("/statistics/platform");
+      return response.data;
+    } catch (error) {
+      console.warn(
+        "API not available, computing platform statistics from local data:",
+        error,
+      );
+
+      // Import and use real statistics service
+      const { statisticsService } = await import("./statisticsService");
+      return await statisticsService.getPlatformStatistics();
+    }
+  }
+
+  /**
+   * Get company statistics from real data
+   */
+  async getCompanyStatistics(companyId?: string): Promise<any> {
+    const user = checkAuthorization(["platform_admin", "company_admin"]);
+    const targetCompanyId = companyId || user.companyId;
+
+    // Company admins can only see their own company stats
+    if (
+      user.userType === "company_admin" &&
+      targetCompanyId !== user.companyId
+    ) {
+      throw new Error(
+        "Company admins can only view their own company statistics",
+      );
+    }
+
+    try {
+      // Try backend first
+      const response = await this.request<any>(
+        `/statistics/company/${targetCompanyId}`,
+      );
+      return response.data;
+    } catch (error) {
+      console.warn(
+        "API not available, computing company statistics from local data:",
+        error,
+      );
+
+      // Import and use real statistics service
+      const { statisticsService } = await import("./statisticsService");
+      return await statisticsService.getCompanyStatistics(targetCompanyId);
+    }
+  }
+
   // Existing methods from original API service that don't need auth changes
   async getPricingConfig(): Promise<any> {
     // Check if we have a valid API URL configuration
@@ -2592,7 +2701,7 @@ class EnhancedApiService {
 
     // If all backend endpoints fail, throw error to trigger offline sync
     console.error(
-      "���� Failed to save invitation to backend database via all endpoints",
+      "��� Failed to save invitation to backend database via all endpoints",
     );
     throw new Error(
       `Failed to save invitation to backend database: ${lastError?.message || "All endpoints unavailable"}`,
