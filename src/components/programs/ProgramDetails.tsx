@@ -547,21 +547,33 @@ export const ProgramDetails: React.FC<ProgramDetailsProps> = ({
                 <div>
                   <h4 className="font-medium mb-2">Required Skills</h4>
                   <div className="flex flex-wrap gap-2">
-                    {program.skills.map((skill) => (
-                      <Badge key={skill} variant="secondary">
-                        {skill}
-                      </Badge>
-                    ))}
+                    {program.skills && program.skills.length > 0 ? (
+                      program.skills.map((skill) => (
+                        <Badge key={skill} variant="secondary">
+                          {skill}
+                        </Badge>
+                      ))
+                    ) : (
+                      <p className="text-sm text-muted-foreground">
+                        No specific skills defined
+                      </p>
+                    )}
                   </div>
                 </div>
                 <div>
                   <h4 className="font-medium mb-2">Focus Areas</h4>
                   <div className="flex flex-wrap gap-2">
-                    {program.focusAreas.map((area) => (
-                      <Badge key={area} variant="outline">
-                        {area}
-                      </Badge>
-                    ))}
+                    {program.focusAreas && program.focusAreas.length > 0 ? (
+                      program.focusAreas.map((area) => (
+                        <Badge key={area} variant="outline">
+                          {area}
+                        </Badge>
+                      ))
+                    ) : (
+                      <p className="text-sm text-muted-foreground">
+                        No focus areas specified
+                      </p>
+                    )}
                   </div>
                 </div>
               </CardContent>
