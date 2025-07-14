@@ -168,6 +168,7 @@ class ProgramService {
 
   /**
    * Get all programs with filtering
+   * Tries backend first, falls back to local storage
    */
   async getPrograms(filters?: {
     companyId?: string;
@@ -176,8 +177,24 @@ class ProgramService {
     limit?: number;
   }): Promise<Program[]> {
     try {
-      const programs = await this.loadPrograms();
+      // Try backend first
+      try {
+        const backendPrograms = await apiEnhanced.getPrograms(filters);
+        if (backendPrograms.length > 0) {
+          console.log(
+            `✅ Loaded ${backendPrograms.length} programs from backend`,
+          );
+          return backendPrograms;
+        }
+      } catch (backendError) {
+        console.warn(
+          "Backend not available, using local storage:",
+          backendError,
+        );
+      }
 
+      // Fallback to local storage
+      const programs = await this.loadPrograms();
       let filteredPrograms = programs;
 
       // Apply filters
@@ -203,6 +220,9 @@ class ProgramService {
         filteredPrograms = filteredPrograms.slice(0, filters.limit);
       }
 
+      console.log(
+        `✅ Loaded ${filteredPrograms.length} programs from local storage`,
+      );
       return filteredPrograms;
     } catch (error) {
       console.error("Failed to get programs:", error);
