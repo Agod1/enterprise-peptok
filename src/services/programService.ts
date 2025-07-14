@@ -25,6 +25,39 @@ class ProgramService {
   private readonly SESSIONS_STORAGE_KEY = "peptok_program_sessions";
 
   /**
+   * Clear ALL program data completely
+   */
+  clearAllData(): void {
+    try {
+      // Clear all program-related storage
+      localStorage.removeItem(this.STORAGE_KEY);
+      localStorage.removeItem(this.SESSIONS_STORAGE_KEY);
+      localStorage.removeItem("mentorship_requests");
+      localStorage.removeItem("demoMentorshipRequests");
+      localStorage.removeItem("coaching_requests");
+      localStorage.removeItem("peptok_coaching_requests");
+
+      // Clear any user-specific program caches
+      Object.keys(localStorage).forEach((key) => {
+        if (
+          key.includes("program") ||
+          key.includes("session") ||
+          key.includes("coach") ||
+          key.includes("mentor")
+        ) {
+          localStorage.removeItem(key);
+        }
+      });
+
+      console.log("✅ ALL program data cleared - fresh start");
+      toast.success("Complete program data reset - ready for fresh programs");
+    } catch (error) {
+      console.error("Failed to clear all data:", error);
+      toast.error("Failed to perform complete data reset");
+    }
+  }
+
+  /**
    * Clear all dummy/mock program data
    */
   clearDummyData(): void {
