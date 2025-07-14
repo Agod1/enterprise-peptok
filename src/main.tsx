@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
 import { Environment } from "./utils/environment";
+import { dummyDataCleaner } from "./utils/clearDummyData";
 
 // Make React globally available for external libraries
 if (typeof window !== "undefined") {
