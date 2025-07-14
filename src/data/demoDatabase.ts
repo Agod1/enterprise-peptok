@@ -276,8 +276,8 @@ export const demoUsers: DemoUser[] = [
     id: "user_003b",
     email: "admin@techcorp.com",
     password: "tech123",
-    name: "Sarah Johnson",
-    firstName: "Sarah",
+    name: "David Johnson",
+    firstName: "David",
     lastName: "Johnson",
     userType: "company_admin",
     companyId: "comp_001",
@@ -417,14 +417,15 @@ export const demoUsers: DemoUser[] = [
     firstName: "Daniel",
     lastName: "Hayes",
     userType: "coach",
-    picture: "https://images.unsplash.com/photo-1494790108755-2616b612b1-3c?w=150",
+    picture:
+      "https://images.unsplash.com/photo-1494790108755-2616b612b1-3c?w=150",
     provider: "email",
     bio: "Senior marketing strategist and sales consultant with over 10 years of experience in building sales funnels and optimizing customer segmentation.",
     skills: [
       "Marketing",
       "Sales Funnel Optimization",
       "Persuasion and Negotiation",
-      "Customer Segmentation"
+      "Customer Segmentation",
     ],
     experience: 10,
     rating: 4.9,
@@ -442,14 +443,15 @@ export const demoUsers: DemoUser[] = [
     firstName: "John",
     lastName: "Peters",
     userType: "coach",
-    picture: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150",
+    picture:
+      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150",
     provider: "email",
     bio: "Sales and marketing expert with 15 years of experience helping organizations optimize their sales pipelines and improve conversion rates.",
     skills: [
       "Marketing Strategy",
       "Sales Funnel Optimization",
       "Negotiation Tactics",
-      "Customer Segmentation"
+      "Customer Segmentation",
     ],
     experience: 15,
     rating: 4.8,
@@ -467,14 +469,15 @@ export const demoUsers: DemoUser[] = [
     firstName: "Charlotte",
     lastName: "Brooks",
     userType: "coach",
-    picture: "https://images.unsplash.com/photo-1494790108755-2616b612b1-c?w=150",
+    picture:
+      "https://images.unsplash.com/photo-1494790108755-2616b612b1-c?w=150",
     provider: "email",
     bio: "Marketing director and growth hacker with expertise in scaling businesses and optimizing sales funnels through strategic marketing.",
     skills: [
       "Marketing",
       "Sales Funnel Optimization",
       "Persuasion",
-      "Customer Segmentation"
+      "Customer Segmentation",
     ],
     experience: 12,
     rating: 4.7,
@@ -492,14 +495,15 @@ export const demoUsers: DemoUser[] = [
     firstName: "Michael",
     lastName: "Bell",
     userType: "coach",
-    picture: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150",
+    picture:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150",
     provider: "email",
     bio: "Sales consultant with expertise in optimizing sales processes and teaching advanced negotiation techniques to drive conversions.",
     skills: [
       "Sales Funnel Optimization",
       "Persuasion and Negotiation",
       "Marketing Strategy",
-      "Customer Segmentation"
+      "Customer Segmentation",
     ],
     experience: 8,
     rating: 4.8,
@@ -517,14 +521,15 @@ export const demoUsers: DemoUser[] = [
     firstName: "Samantha",
     lastName: "Kelly",
     userType: "coach",
-    picture: "https://images.unsplash.com/photo-1494790108755-2616b612b1-3c?w=150",
+    picture:
+      "https://images.unsplash.com/photo-1494790108755-2616b612b1-3c?w=150",
     provider: "email",
     bio: "Experienced marketing strategist and negotiation coach with a strong track record of improving sales performance and customer acquisition.",
     skills: [
       "Marketing",
       "Sales Funnel Optimization",
       "Persuasion and Negotiation",
-      "Customer Segmentation"
+      "Customer Segmentation",
     ],
     experience: 10,
     rating: 4.9,
@@ -542,14 +547,15 @@ export const demoUsers: DemoUser[] = [
     firstName: "Tom",
     lastName: "Richards",
     userType: "coach",
-    picture: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150",
+    picture:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150",
     provider: "email",
     bio: "Head of marketing and sales operations with 13 years of experience in leading sales teams and optimizing marketing strategies for better results.",
     skills: [
       "Marketing",
       "Sales Funnel Optimization",
       "Persuasion and Negotiation",
-      "Customer Segmentation"
+      "Customer Segmentation",
     ],
     experience: 13,
     rating: 4.7,
@@ -567,14 +573,15 @@ export const demoUsers: DemoUser[] = [
     firstName: "Emily",
     lastName: "Roberts",
     userType: "coach",
-    picture: "https://images.unsplash.com/photo-1494790108755-2616b612b1-c?w=150",
+    picture:
+      "https://images.unsplash.com/photo-1494790108755-2616b612b1-c?w=150",
     provider: "email",
     bio: "Sales and marketing coach focused on sales funnel optimization and customer segmentation for businesses looking to improve their conversion rates.",
     skills: [
       "Sales Funnel Optimization",
       "Customer Segmentation",
       "Marketing Strategy",
-      "Persuasion Coaching"
+      "Persuasion Coaching",
     ],
     experience: 9,
     rating: 4.6,
