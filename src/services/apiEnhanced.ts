@@ -190,6 +190,8 @@ class EnhancedApiService {
         ...options,
       });
 
+      clearTimeout(timeoutId); // Clear the timeout on successful response
+
       const responseTime = Date.now() - startTime;
       analytics.trackPerformance("api_request", responseTime, {
         endpoint,
