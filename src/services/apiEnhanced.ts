@@ -150,7 +150,7 @@ class EnhancedApiService {
       ];
 
       await backendStorage.setItem("mentorship_requests", sampleRequests);
-      console.log("✅ Sample mentorship requests stored in backend database");
+      console.log("��� Sample mentorship requests stored in backend database");
     }
   }
 
@@ -1464,6 +1464,224 @@ class EnhancedApiService {
       };
 
       return cancelledSession;
+    }
+  }
+
+  // ===== PROGRAM MANAGEMENT METHODS =====
+
+  async createProgram(programData: any): Promise<any> {
+    const user = checkAuthorization(["company_admin"]);
+
+    try {
+      const response = await this.request<any>("/programs", {
+        method: "POST",
+        body: JSON.stringify({
+          ...programData,
+          companyId: user.companyId,
+          createdBy: user.id,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        }),
+      });
+
+      analytics.trackAction({
+        action: "program_created",
+        component: "program_management",
+        metadata: {
+          programId: response.data.id,
+          companyId: user.companyId,
+          totalSessions: programData.timeline?.totalSessions,
+        },
+      });
+
+      return response.data;
+    } catch (error) {
+      console.warn("API not available, program will be stored locally:", error);
+      // Fallback to programService for local storage
+      throw error; // Let programService handle it
+    }
+  }
+
+  async getPrograms(filters?: {
+    companyId?: string;
+    coachId?: string;
+    status?: string;
+    limit?: number;
+  }): Promise<any[]> {
+    const user = checkAuthorization();
+
+    try {
+      const queryParams = new URLSearchParams();
+      if (filters?.companyId)
+        queryParams.append("companyId", filters.companyId);
+      if (filters?.coachId) queryParams.append("coachId", filters.coachId);
+      if (filters?.status) queryParams.append("status", filters.status);
+      if (filters?.limit) queryParams.append("limit", filters.limit.toString());
+
+      const response = await this.request<any[]>(
+        `/programs?${queryParams.toString()}`,
+      );
+
+      analytics.trackAction({
+        action: "programs_viewed",
+        component: "program_management",
+        metadata: {
+          filters,
+          resultCount: response.data.length,
+          userType: user.userType,
+        },
+      });
+
+      return response.data;
+    } catch (error) {
+      console.warn("API not available, returning empty programs array:", error);
+      // Return empty array instead of mock data
+      return [];
+    }
+  }
+
+  async getProgramById(programId: string): Promise<any | null> {
+    const user = checkAuthorization();
+
+    try {
+      const response = await this.request<any>(`/programs/${programId}`);
+
+      analytics.trackAction({
+        action: "program_viewed",
+        component: "program_details",
+        metadata: { programId, userType: user.userType },
+      });
+
+      return response.data;
+    } catch (error) {
+      console.warn("API not available for program details:", error);
+      return null;
+    }
+  }
+
+  async updateProgram(programId: string, updates: any): Promise<any> {
+    const user = checkAuthorization(["company_admin", "coach"]);
+
+    try {
+      const response = await this.request<any>(`/programs/${programId}`, {
+        method: "PUT",
+        body: JSON.stringify({
+          ...updates,
+          updatedAt: new Date().toISOString(),
+          lastModifiedBy: user.id,
+        }),
+      });
+
+      analytics.trackAction({
+        action: "program_updated",
+        component: "program_management",
+        metadata: {
+          programId,
+          updateFields: Object.keys(updates),
+          userType: user.userType,
+        },
+      });
+
+      return response.data;
+    } catch (error) {
+      console.warn("API not available, program update will be local:", error);
+      throw error; // Let programService handle it
+    }
+  }
+
+  async respondToProgram(
+    programId: string,
+    response: "accepted" | "rejected",
+    message?: string,
+  ): Promise<any> {
+    const user = checkAuthorization(["coach"]);
+
+    try {
+      const apiResponse = await this.request<any>(
+        `/programs/${programId}/respond`,
+        {
+          method: "POST",
+          body: JSON.stringify({
+            response,
+            message,
+            coachId: user.id,
+            respondedAt: new Date().toISOString(),
+          }),
+        },
+      );
+
+      analytics.trackAction({
+        action: `program_${response}`,
+        component: "coach_dashboard",
+        metadata: {
+          programId,
+          coachId: user.id,
+          hasMessage: !!message,
+        },
+      });
+
+      return apiResponse.data;
+    } catch (error) {
+      console.warn("API not available, program response will be local:", error);
+      throw error; // Let programService handle it
+    }
+  }
+
+  async getProgramSessions(programId: string): Promise<any[]> {
+    const user = checkAuthorization();
+
+    try {
+      const response = await this.request<any[]>(
+        `/programs/${programId}/sessions`,
+      );
+
+      analytics.trackAction({
+        action: "program_sessions_viewed",
+        component: "program_details",
+        metadata: {
+          programId,
+          sessionCount: response.data.length,
+          userType: user.userType,
+        },
+      });
+
+      return response.data;
+    } catch (error) {
+      console.warn("API not available for program sessions:", error);
+      return [];
+    }
+  }
+
+  async updateProgramSession(sessionId: string, updates: any): Promise<any> {
+    const user = checkAuthorization(["coach", "company_admin"]);
+
+    try {
+      const response = await this.request<any>(
+        `/programs/sessions/${sessionId}`,
+        {
+          method: "PUT",
+          body: JSON.stringify({
+            ...updates,
+            updatedAt: new Date().toISOString(),
+            updatedBy: user.id,
+          }),
+        },
+      );
+
+      analytics.trackAction({
+        action: "program_session_updated",
+        component: "session_management",
+        metadata: {
+          sessionId,
+          updateFields: Object.keys(updates),
+          userType: user.userType,
+        },
+      });
+
+      return response.data;
+    } catch (error) {
+      console.warn("API not available, session update will be local:", error);
+      throw error; // Let programService handle it
     }
   }
 
