@@ -14,9 +14,9 @@ export function seedDemoCoachingRequests() {
     {
       id: "coaching_req_001",
       companyId: "comp_001",
-      title: "Leadership Development Program Q1 2024",
+      title: "Executive Coaching Program",
       description:
-        "Comprehensive leadership coaching program focused on developing senior managers into effective leaders. We want to improve team communication, strategic thinking, and decision-making capabilities.",
+        "Professional executive coaching program focused on developing leadership capabilities.",
       goals: [
         {
           id: "goal_001",
