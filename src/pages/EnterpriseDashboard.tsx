@@ -63,9 +63,6 @@ const EnterpriseDashboard = () => {
       try {
         setIsLoading(true);
 
-        // Initialize sample data for testing (this ensures we have data to display)
-        initializeSampleData();
-
         // Fetch coaching requests for the user's company with proper authorization
         const requests = await apiEnhanced.getCoachingRequests();
         console.log("Loaded coaching requests:", requests);
