@@ -31,6 +31,10 @@ export class DummyDataCleaner {
     "mock_companies",
     "demo_companies",
 
+    // Sample data from initializer
+    "team_invitations",
+    "sampleDataInitialized",
+
     // Analytics dummy data
     "demo_analytics",
     "mock_metrics",
