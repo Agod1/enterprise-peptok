@@ -462,22 +462,24 @@ export const ProgramDetails: React.FC<ProgramDetailsProps> = ({
                 <div className="flex justify-between text-sm mb-2">
                   <span>Overall Progress</span>
                   <span className="font-medium">
-                    {program.progress.progressPercentage}%
+                    {program.progress?.progressPercentage || 0}%
                   </span>
                 </div>
-                <Progress value={program.progress.progressPercentage} />
+                <Progress value={program.progress?.progressPercentage || 0} />
               </div>
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
                   <p className="text-muted-foreground">Completed</p>
                   <p className="font-medium">
-                    {program.progress.completedSessions}
+                    {program.progress?.completedSessions || 0}
                   </p>
                 </div>
                 <div>
                   <p className="text-muted-foreground">Total Sessions</p>
                   <p className="font-medium">
-                    {program.progress.totalSessions}
+                    {program.progress?.totalSessions ||
+                      program.timeline?.totalSessions ||
+                      0}
                   </p>
                 </div>
               </div>
