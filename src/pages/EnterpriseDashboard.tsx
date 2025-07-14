@@ -45,7 +45,6 @@ import { MentorshipRequest, Connection } from "@/types";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { toast } from "sonner";
 import { SessionManagement } from "@/components/sessions/SessionManagement";
-import { initializeSampleData } from "@/utils/sampleDataInitializer";
 
 const EnterpriseDashboard = () => {
   const { user } = useAuth();
