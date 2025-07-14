@@ -130,6 +130,39 @@ export const demoUsers: DemoUser[] = [
     lastActive: "2024-03-15T18:00:00Z",
     status: "active",
   },
+  // Michael Rodriguez - Company Admin for InnovateHub Solutions
+  {
+    id: "user_013",
+    email: "admin@innovatehub.com",
+    password: "admin123",
+    name: "Michael Rodriguez",
+    firstName: "Michael",
+    lastName: "Rodriguez",
+    userType: "company_admin",
+    companyId: "comp_002",
+    picture:
+      "https://api.dicebear.com/7.x/avataaars/svg?seed=michael-rodriguez",
+    provider: "email",
+    joinedAt: "2024-02-20T00:00:00Z",
+    lastActive: "2024-03-15T19:30:00Z",
+    status: "active",
+  },
+  // Lisa Chang - Company Admin for GreenLeaf Enterprises
+  {
+    id: "user_014",
+    email: "admin@greenleaf.com",
+    password: "admin123",
+    name: "Lisa Chang",
+    firstName: "Lisa",
+    lastName: "Chang",
+    userType: "company_admin",
+    companyId: "comp_003",
+    picture: "https://api.dicebear.com/7.x/avataaars/svg?seed=lisa-chang",
+    provider: "email",
+    joinedAt: "2024-01-10T00:00:00Z",
+    lastActive: "2024-03-15T17:45:00Z",
+    status: "active",
+  },
   // Daniel Hayes - Coach (98% aligned with Sales and Marketing Development program)
   {
     id: "user_002",
