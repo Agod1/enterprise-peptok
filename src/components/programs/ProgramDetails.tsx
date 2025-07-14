@@ -772,40 +772,52 @@ export const ProgramDetails: React.FC<ProgramDetailsProps> = ({
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Target className="w-5 h-5" />
-                Program Goals ({program.goals.length})
+                Program Goals ({program.goals?.length || 0})
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {program.goals.map((goal) => (
-                  <div key={goal.id} className="border rounded-lg p-4">
-                    <div className="flex items-start justify-between mb-2">
-                      <h4 className="font-medium">{goal.title}</h4>
-                      <div className="flex items-center gap-2">
-                        <Badge
-                          variant={
-                            goal.priority === "high"
-                              ? "destructive"
-                              : goal.priority === "medium"
-                                ? "default"
-                                : "secondary"
-                          }
-                        >
-                          {goal.priority}
-                        </Badge>
-                        {goal.completed && (
-                          <Badge variant="outline" className="text-green-600">
-                            <CheckCircle className="w-3 h-3 mr-1" />
-                            Completed
+                {program.goals && program.goals.length > 0 ? (
+                  program.goals.map((goal) => (
+                    <div key={goal.id} className="border rounded-lg p-4">
+                      <div className="flex items-start justify-between mb-2">
+                        <h4 className="font-medium">{goal.title}</h4>
+                        <div className="flex items-center gap-2">
+                          <Badge
+                            variant={
+                              goal.priority === "high"
+                                ? "destructive"
+                                : goal.priority === "medium"
+                                  ? "default"
+                                  : "secondary"
+                            }
+                          >
+                            {goal.priority}
                           </Badge>
-                        )}
+                          {goal.completed && (
+                            <Badge variant="outline" className="text-green-600">
+                              <CheckCircle className="w-3 h-3 mr-1" />
+                              Completed
+                            </Badge>
+                          )}
+                        </div>
                       </div>
+                      <p className="text-sm text-muted-foreground">
+                        {goal.description}
+                      </p>
                     </div>
-                    <p className="text-sm text-muted-foreground">
-                      {goal.description}
+                  ))
+                ) : (
+                  <div className="text-center py-8">
+                    <Target className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+                    <h3 className="text-lg font-medium mb-2">
+                      No Goals Defined
+                    </h3>
+                    <p className="text-muted-foreground">
+                      Program goals will be displayed here once defined.
                     </p>
                   </div>
-                ))}
+                )}
               </div>
             </CardContent>
           </Card>
