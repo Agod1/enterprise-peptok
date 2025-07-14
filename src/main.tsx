@@ -15,6 +15,9 @@ console.log(`🌍 Environment: ${Environment.getEnvironmentName()}`);
 console.log(`🔗 API Base URL: ${Environment.getApiBaseUrl()}`);
 console.log(`🔌 Should try backend: ${Environment.shouldTryBackend()}`);
 
+// Initialize clean system - clear all dummy data
+dummyDataCleaner.initializeCleanSystem();
+
 // Suppress ResizeObserver loop errors (common with chart libraries like Recharts)
 const resizeObserverErrorHandler = (e: ErrorEvent) => {
   if (
