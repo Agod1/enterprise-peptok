@@ -178,9 +178,8 @@ export default function VideoConference() {
           // Fallback to mock data
           sessionData = {
             id: sessionId,
-            title: "React Development Training Session",
-            description:
-              "Help our team improve their React skills and best practices",
+            title: "Coaching Session",
+            description: "Professional coaching session",
             coach: fallbackCoachData,
             startTime: new Date().toISOString(),
             duration: 60,
