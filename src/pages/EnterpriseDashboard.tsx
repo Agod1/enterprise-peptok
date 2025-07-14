@@ -274,7 +274,9 @@ const EnterpriseDashboard = () => {
                     <p className="text-sm text-gray-600 mb-1">
                       Active Sessions
                     </p>
-                    <p className="text-2xl font-bold text-gray-900">3</p>
+                    <p className="text-2xl font-bold text-gray-900">
+                      {dashboardMetrics.activeSessions}
+                    </p>
                   </div>
                   <div className="bg-blue-100 p-3 rounded-full">
                     <Video className="w-6 h-6 text-blue-600" />
@@ -290,7 +292,9 @@ const EnterpriseDashboard = () => {
                     <p className="text-sm text-gray-600 mb-1">
                       Active Coaching
                     </p>
-                    <p className="text-2xl font-bold text-gray-900">2</p>
+                    <p className="text-2xl font-bold text-gray-900">
+                      {dashboardMetrics.activeCoaching}
+                    </p>
                   </div>
                   <div className="bg-green-100 p-3 rounded-full">
                     <Users className="w-6 h-6 text-green-600" />
@@ -304,7 +308,9 @@ const EnterpriseDashboard = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-gray-600 mb-1">Goals Progress</p>
-                    <p className="text-2xl font-bold text-gray-900">67%</p>
+                    <p className="text-2xl font-bold text-gray-900">
+                      {dashboardMetrics.goalsProgress}%
+                    </p>
                   </div>
                   <div className="bg-purple-100 p-3 rounded-full">
                     <Target className="w-6 h-6 text-purple-600" />
@@ -318,7 +324,9 @@ const EnterpriseDashboard = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-gray-600 mb-1">Total Hours</p>
-                    <p className="text-2xl font-bold text-gray-900">24.5</p>
+                    <p className="text-2xl font-bold text-gray-900">
+                      {dashboardMetrics.totalHours}
+                    </p>
                   </div>
                   <div className="bg-orange-100 p-3 rounded-full">
                     <Clock className="w-6 h-6 text-orange-600" />
