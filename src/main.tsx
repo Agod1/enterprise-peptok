@@ -23,7 +23,7 @@ dummyDataCleaner.initializeCompletelyCleanSystem();
 // Extra cleanup for program data specifically
 dummyDataCleaner.clearAllProgramData();
 
-// Also clear all analytics and session data
+// Also clear all analytics, statistics, and session data
 try {
   // Clear any remaining data that might show on dashboards
   const additionalKeys = [
@@ -34,11 +34,25 @@ try {
     "peptok_analytics_data",
     "peptok_sessions",
     "mock_sessions",
+    "platform_statistics",
+    "company_statistics",
+    "coach_statistics",
+    "user_analytics",
+    "session_analytics",
+    "revenue_data",
+    "engagement_metrics",
+    "performance_metrics",
+    "activity_feed",
+    "recent_activities",
+    "notification_data",
+    "dashboard_cache",
   ];
   additionalKeys.forEach((key) => {
     localStorage.removeItem(key);
   });
-  console.log("✅ Cleared additional dashboard data");
+  console.log(
+    "✅ Cleared all dashboard and analytics data - ready for real data computation",
+  );
 } catch (error) {
   console.warn("Could not clear additional data:", error);
 }
