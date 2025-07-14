@@ -170,9 +170,9 @@ export default function VideoConference() {
                   title: user.title || "Coach",
                 }
               : {
-                  name: "Sarah Johnson",
-                  avatar: "https://avatar.vercel.sh/sarah@example.com",
-                  title: "Senior Leadership Coach",
+                  name: "Professional Coach",
+                  avatar: "https://avatar.vercel.sh/coach@example.com",
+                  title: "Executive Coach",
                 };
 
           // Fallback to mock data
