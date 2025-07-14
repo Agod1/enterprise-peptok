@@ -257,6 +257,19 @@ export class DummyDataCleaner {
   }
 
   /**
+   * Initialize completely clean system - call this on app startup
+   * Performs complete data reset for fresh start
+   */
+  static initializeCompletelyCleanSystem(): void {
+    console.log("🔄 INITIALIZING COMPLETE SYSTEM RESET...");
+
+    // Perform complete data clear
+    this.clearAllData();
+
+    console.log("✅ Complete system reset finished - ready for fresh accounts");
+  }
+
+  /**
    * Initialize clean system - call this on app startup
    */
   static initializeCleanSystem(): void {
