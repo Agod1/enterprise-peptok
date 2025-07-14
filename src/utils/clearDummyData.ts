@@ -208,6 +208,8 @@ export class DummyDataCleaner {
           const hasMockData =
             program.title?.includes("React Development Training") ||
             program.title?.includes("Leadership Development Program Q1 2024") ||
+            program.title?.includes("Sample Coaching Request") ||
+            program.title?.includes("Executive Coaching Program") ||
             program.assignedCoachName?.includes("Sarah Johnson") ||
             program.participants?.some((p: any) =>
               p.name?.includes("Sarah Johnson"),
