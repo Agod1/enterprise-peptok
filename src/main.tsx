@@ -23,6 +23,26 @@ dummyDataCleaner.initializeCompletelyCleanSystem();
 // Extra cleanup for program data specifically
 dummyDataCleaner.clearAllProgramData();
 
+// Also clear all analytics and session data
+try {
+  // Clear any remaining data that might show on dashboards
+  const additionalKeys = [
+    "analytics_data",
+    "dashboard_stats",
+    "recent_activity",
+    "upcoming_sessions",
+    "peptok_analytics_data",
+    "peptok_sessions",
+    "mock_sessions",
+  ];
+  additionalKeys.forEach((key) => {
+    localStorage.removeItem(key);
+  });
+  console.log("✅ Cleared additional dashboard data");
+} catch (error) {
+  console.warn("Could not clear additional data:", error);
+}
+
 // Verify the new accounts are properly set up
 setTimeout(() => {
   accountVerification.performCompleteVerification();
