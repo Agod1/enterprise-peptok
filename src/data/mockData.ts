@@ -225,10 +225,10 @@ export const mockMetrics: MetricDefinition[] = [
 ];
 
 export const mockDashboardStats: DashboardStats = {
-  totalExperts: 150,
-  activeConnections: 342,
-  completedSessions: 1250,
-  averageRating: 4.7,
-  employeeEngagement: 78,
-  skillsImproved: 89,
+  totalExperts: 0,
+  activeConnections: 0,
+  completedSessions: 0,
+  averageRating: 0,
+  employeeEngagement: 0,
+  skillsImproved: 0,
 };
