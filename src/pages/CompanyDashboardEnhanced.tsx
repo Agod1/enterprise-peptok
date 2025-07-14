@@ -184,7 +184,7 @@ export default function CompanyDashboardEnhanced() {
           id: "2",
           type: "program_started",
           title: "New Program Started",
-          description: "React Development Training program initiated",
+          description: "New coaching program initiated",
           timestamp: new Date(Date.now() - 6 * 60 * 60 * 1000),
         },
         {
