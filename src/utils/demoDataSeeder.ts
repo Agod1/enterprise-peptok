@@ -281,23 +281,14 @@ export function seedDemoUsers() {
 }
 
 export function initializeDemoData() {
-  console.log("🚀 Initializing demo data for the application...");
-
-  try {
-    seedDemoCoachingRequests();
-    seedDemoUsers();
-
-    console.log("🎉 Demo data initialization complete!");
-  } catch (error) {
-    console.error("❌ Failed to initialize demo data:", error);
-  }
+  console.log(
+    "🚫 Demo data initialization is DISABLED - system uses clean data only",
+  );
+  // This function is intentionally disabled to maintain clean state
 }
 
-// Auto-initialize on import if in development
-if (import.meta.env.DEV) {
-  // Small delay to ensure localStorage is ready
-  setTimeout(initializeDemoData, 1000);
-}
+// Auto-initialization DISABLED - system now uses only the clean accounts from demoDatabase.ts
+// Previous auto-initialization code has been removed to maintain clean state
 
 export default {
   seedDemoCoachingRequests,
