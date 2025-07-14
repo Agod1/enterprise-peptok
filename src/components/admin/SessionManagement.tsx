@@ -87,8 +87,8 @@ interface SessionManagementProps {
 const mockCoaches: Coach[] = [
   {
     id: "coach1",
-    name: "Sarah Johnson",
-    expertise: ["React", "TypeScript", "Team Leadership"],
+    name: "Professional Coach A",
+    expertise: ["Leadership", "Strategy", "Team Development"],
     hourlyRate: 150,
     rating: 4.9,
     isAvailable: true,
