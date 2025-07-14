@@ -58,8 +58,17 @@ export class DummyDataCleaner {
         }
       });
 
-      // Clear any keys that contain "dummy", "mock", "demo", "sample", "test"
-      const suspiciousPatterns = ["dummy", "mock", "demo", "sample", "test"];
+      // Clear any keys that contain "dummy", "mock", "demo", "sample", "test", "sarah", "react development", "leadership development"
+      const suspiciousPatterns = [
+        "dummy",
+        "mock",
+        "demo",
+        "sample",
+        "test",
+        "sarah",
+        "react development",
+        "leadership development",
+      ];
       const allKeys = Object.keys(localStorage);
 
       allKeys.forEach((key) => {
@@ -70,6 +79,9 @@ export class DummyDataCleaner {
           console.log(`🧹 Cleared suspicious dummy data: ${key}`);
         }
       });
+
+      // Specifically check for and clean program data that contains mock references
+      this.cleanMockProgramData();
 
       if (clearedCount > 0) {
         console.log(
