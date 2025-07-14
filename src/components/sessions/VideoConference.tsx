@@ -113,9 +113,9 @@ export default function VideoConference() {
                     title: user.title || "Coach",
                   }
                 : {
-                    name: "Sarah Johnson", // Placeholder for assigned coach
-                    avatar: "https://avatar.vercel.sh/sarah@example.com",
-                    title: "Senior Leadership Coach",
+                    name: "Professional Coach", // Placeholder for assigned coach
+                    avatar: "https://avatar.vercel.sh/coach@example.com",
+                    title: "Executive Coach",
                   };
 
             sessionData = {
