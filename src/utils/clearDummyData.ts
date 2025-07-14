@@ -43,6 +43,29 @@ export class DummyDataCleaner {
   ];
 
   /**
+   * Clear ALL data from localStorage (complete reset)
+   */
+  static clearAllData(): void {
+    try {
+      const allKeys = Object.keys(localStorage);
+      const totalKeys = allKeys.length;
+
+      // Clear everything
+      localStorage.clear();
+
+      console.log(
+        `🧹 COMPLETE DATA CLEAR: Removed ${totalKeys} items from localStorage`,
+      );
+      console.log("🔄 System reset - ready for fresh data");
+
+      toast.success(`Complete data reset - ${totalKeys} items cleared`);
+    } catch (error) {
+      console.error("Failed to clear all data:", error);
+      toast.error("Failed to perform complete data reset");
+    }
+  }
+
+  /**
    * Clear all dummy data from localStorage
    */
   static clearAllDummyData(): void {
@@ -219,7 +242,7 @@ export class DummyDataCleaner {
           ) {
             delete sessionData[programId];
             cleaned = true;
-            console.log(`🗑�� Removed mock sessions for program: ${programId}`);
+            console.log(`🗑️ Removed mock sessions for program: ${programId}`);
           }
         }
 
