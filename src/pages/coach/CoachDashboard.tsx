@@ -217,17 +217,25 @@ export const CoachDashboard: React.FC = () => {
     try {
       setLoading(true);
 
-      // Load all data in parallel
+      // Load all data in parallel with individual error handling
       const [profileData, statsData, matchesData, sessionsData, activityData] =
-        await Promise.all([
-          apiEnhanced.getCoachProfile(user.id),
-          apiEnhanced.getCoachStats(user.id),
-          apiEnhanced.getCoachMatches(user.id),
-          apiEnhanced.getCoachSessions(user.id, {
-            status: "upcoming",
-            limit: 10,
-          }),
-          apiEnhanced.getCoachActivity(user.id, { limit: 20 }),
+        await Promise.allSettled([
+          apiEnhanced.getCoachProfile(user.id).catch(() => null),
+          apiEnhanced.getCoachStats(user.id).catch(() => null),
+          apiEnhanced.getCoachMatches(user.id).catch(() => []),
+          apiEnhanced
+            .getCoachSessions(user.id, {
+              status: "upcoming",
+              limit: 10,
+            })
+            .catch(() => []),
+          apiEnhanced.getCoachActivity(user.id, { limit: 20 }).catch(() => []),
+        ]).then((results) => [
+          results[0].status === "fulfilled" ? results[0].value : null,
+          results[1].status === "fulfilled" ? results[1].value : null,
+          results[2].status === "fulfilled" ? results[2].value : [],
+          results[3].status === "fulfilled" ? results[3].value : [],
+          results[4].status === "fulfilled" ? results[4].value : [],
         ]);
 
       setProfile(profileData);
