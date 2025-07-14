@@ -389,71 +389,9 @@ class EnhancedApiService {
 
       return response.data;
     } catch (error) {
-      console.warn("API not available, using mock sessions:", error);
-
-      // Return mock sessions
-      const mockSessions = [
-        {
-          id: "session-1",
-          title: "Leadership Development Session",
-          description: "Weekly leadership coaching for senior managers",
-          startTime: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
-          endTime: new Date(Date.now() + 3 * 60 * 60 * 1000).toISOString(),
-          status: "scheduled",
-          participants: [
-            {
-              id: "p1",
-              name: "John Doe",
-              email: "john@company.com",
-              role: "manager",
-            },
-            {
-              id: "p2",
-              name: "Jane Smith",
-              email: "jane@company.com",
-              role: "director",
-            },
-          ],
-          companyName: "TechCorp Inc.",
-          meetingLink: "https://meet.google.com/abc-defg-hij",
-          earnings: 200,
-          currency: "USD",
-        },
-        {
-          id: "session-2",
-          title: "Team Communication Workshop",
-          description: "Improving team communication and collaboration",
-          startTime: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
-          endTime: new Date(Date.now() + 25 * 60 * 60 * 1000).toISOString(),
-          status: "scheduled",
-          participants: [
-            {
-              id: "p3",
-              name: "Mike Wilson",
-              email: "mike@startup.com",
-              role: "team_lead",
-            },
-          ],
-          companyName: "StartupCo",
-          meetingLink: "https://meet.google.com/xyz-uvw-rst",
-          earnings: 150,
-          currency: "USD",
-        },
-      ];
-
-      // Filter by status if provided
-      if (params?.status) {
-        return mockSessions.filter(
-          (session) => session.status === params.status,
-        );
-      }
-
-      // Apply limit if provided
-      if (params?.limit) {
-        return mockSessions.slice(0, params.limit);
-      }
-
-      return mockSessions;
+      console.warn("API not available, returning empty sessions array:", error);
+      // Return empty array instead of mock data
+      return [];
     }
   }
 
