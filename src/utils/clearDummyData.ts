@@ -1,0 +1,170 @@
+import { toast } from "sonner";
+
+/**
+ * Comprehensive utility to clear all dummy/mock data from the system
+ * This ensures the application only shows real data
+ */
+export class DummyDataCleaner {
+  private static readonly DUMMY_DATA_KEYS = [
+    // Program-related dummy data
+    "peptok_programs",
+    "peptok_program_sessions",
+
+    // Legacy dummy data
+    "mentorship_requests",
+    "demoMentorshipRequests",
+    "coaching_requests",
+    "peptok_coaching_requests",
+
+    // Session dummy data
+    "peptok_sessions",
+    "mock_sessions",
+    "demo_sessions",
+
+    // User and company dummy data
+    "dummy_users",
+    "demo_users",
+    "mock_companies",
+    "demo_companies",
+
+    // Analytics dummy data
+    "demo_analytics",
+    "mock_metrics",
+
+    // Other potential dummy keys
+    "sample_data",
+    "test_data",
+    "mock_data",
+    "demo_data",
+  ];
+
+  /**
+   * Clear all dummy data from localStorage
+   */
+  static clearAllDummyData(): void {
+    try {
+      let clearedCount = 0;
+
+      // Clear specific dummy data keys
+      this.DUMMY_DATA_KEYS.forEach((key) => {
+        if (localStorage.getItem(key)) {
+          localStorage.removeItem(key);
+          clearedCount++;
+          console.log(`🧹 Cleared dummy data: ${key}`);
+        }
+      });
+
+      // Clear any keys that contain "dummy", "mock", "demo", "sample", "test"
+      const suspiciousPatterns = ["dummy", "mock", "demo", "sample", "test"];
+      const allKeys = Object.keys(localStorage);
+
+      allKeys.forEach((key) => {
+        const lowerKey = key.toLowerCase();
+        if (suspiciousPatterns.some((pattern) => lowerKey.includes(pattern))) {
+          localStorage.removeItem(key);
+          clearedCount++;
+          console.log(`🧹 Cleared suspicious dummy data: ${key}`);
+        }
+      });
+
+      if (clearedCount > 0) {
+        console.log(
+          `✅ Cleared ${clearedCount} dummy data entries from localStorage`,
+        );
+        toast.success(
+          `System cleaned - removed ${clearedCount} dummy data entries`,
+        );
+      } else {
+        console.log("✅ No dummy data found to clear");
+        toast.info("System is clean - no dummy data found");
+      }
+    } catch (error) {
+      console.error("Failed to clear dummy data:", error);
+      toast.error("Failed to clean system data");
+    }
+  }
+
+  /**
+   * Clear dummy data but preserve user settings and essential data
+   */
+  static clearDummyDataSafely(): void {
+    try {
+      const preserveKeys = [
+        // User preferences
+        "user_preferences",
+        "ui_theme",
+        "language_setting",
+
+        // Authentication
+        "auth_token",
+        "refresh_token",
+        "user_session",
+
+        // Application state
+        "app_settings",
+        "feature_flags",
+
+        // Valid program data (starts with real company IDs)
+        // We'll preserve anything that doesn't match dummy patterns
+      ];
+
+      let clearedCount = 0;
+
+      // Only clear the specific dummy data keys
+      this.DUMMY_DATA_KEYS.forEach((key) => {
+        if (localStorage.getItem(key)) {
+          localStorage.removeItem(key);
+          clearedCount++;
+          console.log(`🧹 Safely cleared dummy data: ${key}`);
+        }
+      });
+
+      if (clearedCount > 0) {
+        console.log(`✅ Safely cleared ${clearedCount} dummy data entries`);
+        toast.success(
+          `System cleaned safely - removed ${clearedCount} dummy entries`,
+        );
+      }
+    } catch (error) {
+      console.error("Failed to safely clear dummy data:", error);
+      toast.error("Failed to clean system data safely");
+    }
+  }
+
+  /**
+   * Check if system has dummy data
+   */
+  static hasDummyData(): boolean {
+    return this.DUMMY_DATA_KEYS.some(
+      (key) => localStorage.getItem(key) !== null,
+    );
+  }
+
+  /**
+   * Get count of dummy data entries
+   */
+  static getDummyDataCount(): number {
+    return this.DUMMY_DATA_KEYS.filter(
+      (key) => localStorage.getItem(key) !== null,
+    ).length;
+  }
+
+  /**
+   * Initialize clean system - call this on app startup
+   */
+  static initializeCleanSystem(): void {
+    console.log("🧹 Initializing clean system...");
+
+    if (this.hasDummyData()) {
+      console.log(
+        `Found ${this.getDummyDataCount()} dummy data entries - cleaning...`,
+      );
+      this.clearDummyDataSafely();
+    } else {
+      console.log("✅ System is already clean");
+    }
+  }
+}
+
+// Export the cleaner instance
+export const dummyDataCleaner = DummyDataCleaner;
