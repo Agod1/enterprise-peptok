@@ -16,11 +16,17 @@ console.log(`🌍 Environment: ${Environment.getEnvironmentName()}`);
 console.log(`🔗 API Base URL: ${Environment.getApiBaseUrl()}`);
 console.log(`🔌 Should try backend: ${Environment.shouldTryBackend()}`);
 
-// Initialize clean system - clear all dummy data
-dummyDataCleaner.initializeCleanSystem();
+// COMPLETE DATA RESET - Clear everything and start fresh
+console.log("🔄 PERFORMING COMPLETE DATA RESET FOR FRESH ACCOUNTS");
+dummyDataCleaner.initializeCompletelyCleanSystem();
 
-// Specific cleanup for TechCorp account to remove Sarah Johnson programs
-techCorpCleanup.performCompleteCleanup();
+// Log the new accounts that will be available
+console.log("👥 Fresh accounts created:");
+console.log(
+  "  👩‍💼 Sarah Johnson (admin@techcorp.com) - TechCorp Industries Admin",
+);
+console.log("  👨‍🏫 Daniel Hayes (coach@marketing.com) - Professional Coach");
+console.log("✅ System ready with clean accounts");
 
 // Suppress ResizeObserver loop errors (common with chart libraries like Recharts)
 const resizeObserverErrorHandler = (e: ErrorEvent) => {
