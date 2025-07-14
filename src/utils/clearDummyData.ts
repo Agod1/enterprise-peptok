@@ -70,6 +70,57 @@ export class DummyDataCleaner {
   }
 
   /**
+   * Clear ALL program-related data specifically
+   */
+  static clearAllProgramData(): void {
+    try {
+      const programKeys = [
+        "peptok_programs",
+        "peptok_program_sessions",
+        "peptok_current_program_id",
+        "mentorship_requests",
+        "demoMentorshipRequests",
+        "coaching_requests",
+        "peptok_coaching_requests",
+        "programs",
+        "sessions",
+        "program_sessions",
+        "current_program",
+      ];
+
+      let clearedCount = 0;
+      programKeys.forEach((key) => {
+        if (localStorage.getItem(key)) {
+          localStorage.removeItem(key);
+          clearedCount++;
+          console.log(`🧹 Cleared program data: ${key}`);
+        }
+      });
+
+      // Also clear any keys that might contain program data
+      const allKeys = Object.keys(localStorage);
+      allKeys.forEach((key) => {
+        const lowerKey = key.toLowerCase();
+        if (
+          lowerKey.includes("program") ||
+          lowerKey.includes("coaching") ||
+          lowerKey.includes("mentor")
+        ) {
+          localStorage.removeItem(key);
+          clearedCount++;
+          console.log(`🧹 Cleared suspicious program data: ${key}`);
+        }
+      });
+
+      console.log(`✅ Cleared ${clearedCount} program-related data entries`);
+      toast.success(`Program data cleared - ${clearedCount} entries removed`);
+    } catch (error) {
+      console.error("Failed to clear program data:", error);
+      toast.error("Failed to clear program data");
+    }
+  }
+
+  /**
    * Clear all dummy data from localStorage
    */
   static clearAllDummyData(): void {
