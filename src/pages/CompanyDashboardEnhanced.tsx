@@ -174,10 +174,10 @@ export default function CompanyDashboardEnhanced() {
           id: "1",
           type: "session_completed",
           title: "Leadership Session Completed",
-          description: "Team session with Sarah Johnson",
+          description: "Team session with professional coach",
           timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),
           employeeName: "Alex Chen",
-          coachName: "Sarah Johnson",
+          coachName: "Professional Coach",
           rating: 5,
         },
         {
