@@ -88,18 +88,10 @@ const EnterpriseDashboard = () => {
 
         // Compute real dashboard metrics from actual data
         const realMetrics = {
-          activeSessions: companyStats.completedSessions || 0, // Currently running sessions
+          activeSessions: companyStats.activeSessions || 0, // Currently running sessions
           activeCoaching: companyStats.activePrograms || 0, // Active coaching programs
-          goalsProgress:
-            companyStats.activePrograms > 0
-              ? Math.round(
-                  (companyStats.completedPrograms /
-                    (companyStats.activePrograms +
-                      companyStats.completedPrograms)) *
-                    100,
-                )
-              : 0,
-          totalHours: companyStats.totalSessions * 1.5 || 0, // Assuming 1.5 hours per session average
+          goalsProgress: companyStats.goalsProgress || 0, // Computed goals progress percentage
+          totalHours: companyStats.totalHours || 0, // Real total hours from program timelines
         };
 
         setDashboardMetrics(realMetrics);
