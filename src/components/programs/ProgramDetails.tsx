@@ -398,6 +398,54 @@ export const ProgramDetails: React.FC<ProgramDetailsProps> = ({
         </Card>
       )}
 
+      {/* Coach Information */}
+      {program.assignedCoachId && program.assignedCoachName && (
+        <Card className="border-blue-200 bg-blue-50">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-blue-800">
+              <Star className="w-5 h-5" />
+              Assigned Coach
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center gap-4">
+              <Avatar className="h-12 w-12">
+                <AvatarFallback className="bg-blue-100 text-blue-800">
+                  {program.assignedCoachName
+                    .split(" ")
+                    .map((n) => n[0])
+                    .join("")}
+                </AvatarFallback>
+              </Avatar>
+              <div>
+                <h4 className="font-medium text-blue-900">
+                  {program.assignedCoachName}
+                </h4>
+                <p className="text-sm text-blue-700">Professional Coach</p>
+                {program.status === "pending_coach_acceptance" && (
+                  <Badge
+                    variant="outline"
+                    className="mt-1 text-yellow-700 border-yellow-300"
+                  >
+                    <AlertCircle className="w-3 h-3 mr-1" />
+                    Awaiting Response
+                  </Badge>
+                )}
+                {program.status === "in_progress" && (
+                  <Badge
+                    variant="outline"
+                    className="mt-1 text-green-700 border-green-300"
+                  >
+                    <CheckCircle className="w-3 h-3 mr-1" />
+                    Active
+                  </Badge>
+                )}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Program Overview */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Progress Card */}
