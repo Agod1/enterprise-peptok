@@ -4,7 +4,7 @@ import App from "./App.tsx";
 import "./index.css";
 import { Environment } from "./utils/environment";
 import { dummyDataCleaner } from "./utils/clearDummyData";
-import { techCorpCleanup } from "./utils/techCorpAccountCleanup";
+import { accountVerification } from "./utils/accountVerification";
 
 // Make React globally available for external libraries
 if (typeof window !== "undefined") {
