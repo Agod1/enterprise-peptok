@@ -167,34 +167,11 @@ const TeamMemberDashboard = () => {
           }));
         }
 
-        const mockPrograms: TeamMemberProgram[] =
-          programsFromInvitations.length > 0
-            ? programsFromInvitations
-            : [
-                {
-                  id: "program-1",
-                  title: user?.programTitle || "Leadership Development Program",
-                  description:
-                    "A comprehensive program focused on building leadership skills and strategic thinking",
-                  coach: {
-                    name: "Sarah Johnson",
-                    title: "Senior Leadership Coach",
-                    avatar: "https://avatar.vercel.sh/sarah@example.com",
-                  },
-                  role:
-                    (user?.role as "participant" | "observer") || "participant",
-                  status: "active",
-                  progress: 60,
-                  totalSessions: 10,
-                  completedSessions: 6,
-                  nextSession: mockSessions.find(
-                    (s) => s.status === "upcoming",
-                  ),
-                },
-              ];
+        // Only use real program data from invitations - no mock data
+        const realPrograms: TeamMemberProgram[] = programsFromInvitations;
 
-        setSessions(mockSessions);
-        setPrograms(mockPrograms);
+        setSessions(realSessions);
+        setPrograms(realPrograms);
 
         // Load pending invitations
         try {
