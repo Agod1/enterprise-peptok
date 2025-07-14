@@ -49,6 +49,7 @@ class ProgramService {
 
   /**
    * Create a new program with auto-generated sessions based on timeline
+   * Tries backend first, falls back to local storage
    */
   async createProgram(request: CreateProgramRequest): Promise<Program> {
     try {
@@ -73,16 +74,29 @@ class ProgramService {
       const sessions = this.generateSessionsFromTimeline(program);
       program.sessions = sessions;
 
-      // Save program
-      await this.saveProgram(program);
+      // Try to create in backend first
+      try {
+        const backendProgram = await apiEnhanced.createProgram(program);
+        console.log(
+          `✅ Program created in backend: ${program.title} (${program.id})`,
+        );
+        toast.success(`Program "${program.title}" created successfully`);
+        return backendProgram;
+      } catch (backendError) {
+        console.warn("Backend not available, saving locally:", backendError);
 
-      // Save sessions separately for easier querying
-      await this.saveProgramSessions(programId, sessions);
+        // Fallback to local storage
+        await this.saveProgram(program);
+        await this.saveProgramSessions(programId, sessions);
 
-      console.log(`✅ Program created: ${program.title} (${program.id})`);
-      toast.success(`Program "${program.title}" created successfully`);
-
-      return program;
+        console.log(
+          `✅ Program created locally: ${program.title} (${program.id})`,
+        );
+        toast.success(
+          `Program "${program.title}" created successfully (saved locally)`,
+        );
+        return program;
+      }
     } catch (error) {
       console.error("Failed to create program:", error);
       toast.error("Failed to create program");
