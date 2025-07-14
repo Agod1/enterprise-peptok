@@ -211,7 +211,7 @@ export default function MentorshipRequestDetails() {
           const mockRequest: MentorshipRequest = {
             id,
             companyId: user?.companyId || "default-company-id",
-            title: "Sample Coaching Request",
+            title: "",
             description: "Professional coaching session request.",
             goals: [
               {

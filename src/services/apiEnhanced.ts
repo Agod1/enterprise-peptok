@@ -120,7 +120,7 @@ class EnhancedApiService {
         {
           id: "sample_request_1",
           companyId: "default-company-id",
-          title: "Sample Coaching Request",
+          title: "",
           description: "Professional coaching session request.",
           goals: [
             {

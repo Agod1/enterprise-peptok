@@ -14,7 +14,7 @@ export function seedDemoCoachingRequests() {
     {
       id: "coaching_req_001",
       companyId: "comp_001",
-      title: "Executive Coaching Program",
+      title: "",
       description:
         "Professional executive coaching program focused on developing leadership capabilities.",
       goals: [
