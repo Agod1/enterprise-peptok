@@ -166,6 +166,74 @@ export class DummyDataCleaner {
   }
 
   /**
+   * Clean mock program data from localStorage
+   */
+  private static cleanMockProgramData(): void {
+    try {
+      // Check for programs in localStorage
+      const programsKey = "peptok_programs";
+      const sessionsKey = "peptok_program_sessions";
+
+      const programs = localStorage.getItem(programsKey);
+      if (programs) {
+        const programList = JSON.parse(programs);
+        const cleanPrograms = programList.filter((program: any) => {
+          const hasMockData =
+            program.title?.includes("React Development Training") ||
+            program.title?.includes("Leadership Development Program Q1 2024") ||
+            program.assignedCoachName?.includes("Sarah Johnson") ||
+            program.participants?.some((p: any) =>
+              p.name?.includes("Sarah Johnson"),
+            );
+
+          if (hasMockData) {
+            console.log(`🗑️ Removing mock program: ${program.title}`);
+            return false;
+          }
+          return true;
+        });
+
+        if (cleanPrograms.length !== programList.length) {
+          localStorage.setItem(programsKey, JSON.stringify(cleanPrograms));
+          console.log(
+            `✅ Cleaned ${programList.length - cleanPrograms.length} mock programs`,
+          );
+        }
+      }
+
+      // Clean sessions as well
+      const sessions = localStorage.getItem(sessionsKey);
+      if (sessions) {
+        const sessionData = JSON.parse(sessions);
+        let cleaned = false;
+
+        for (const programId in sessionData) {
+          const programSessions = sessionData[programId];
+          if (
+            programSessions.some(
+              (s: any) =>
+                s.coachName?.includes("Sarah Johnson") ||
+                s.title?.includes("React Development") ||
+                s.title?.includes("Leadership Development"),
+            )
+          ) {
+            delete sessionData[programId];
+            cleaned = true;
+            console.log(`🗑�� Removed mock sessions for program: ${programId}`);
+          }
+        }
+
+        if (cleaned) {
+          localStorage.setItem(sessionsKey, JSON.stringify(sessionData));
+          console.log("✅ Cleaned mock session data");
+        }
+      }
+    } catch (error) {
+      console.error("Failed to clean mock program data:", error);
+    }
+  }
+
+  /**
    * Initialize clean system - call this on app startup
    */
   static initializeCleanSystem(): void {
@@ -179,6 +247,9 @@ export class DummyDataCleaner {
     } else {
       console.log("✅ System is already clean");
     }
+
+    // Always run mock program data cleanup
+    this.cleanMockProgramData();
   }
 }
 
