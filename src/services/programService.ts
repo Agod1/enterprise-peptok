@@ -39,11 +39,70 @@ class ProgramService {
       localStorage.removeItem("coaching_requests");
       localStorage.removeItem("peptok_coaching_requests");
 
+      // Clear Sarah Johnson specific program data
+      this.clearSarahJohnsonPrograms();
+
       console.log("✅ Dummy program data cleared successfully");
       toast.success("System refreshed - ready for new programs");
     } catch (error) {
       console.error("Failed to clear dummy data:", error);
       toast.error("Failed to clear system data");
+    }
+  }
+
+  /**
+   * Clear Sarah Johnson's coaching programs from TechCorp account
+   */
+  clearSarahJohnsonPrograms(): void {
+    try {
+      // Clear any programs associated with Sarah Johnson for TechCorp
+      const programs = this.loadPrograms();
+
+      // Remove programs that contain Sarah Johnson references or "Leadership Development Program Q1 2024"
+      const filteredPrograms = programs.then((programList) =>
+        programList.filter((program) => {
+          const hasSarahJohnson =
+            program.assignedCoachName?.includes("Sarah Johnson") ||
+            program.participants?.some((p) =>
+              p.name.includes("Sarah Johnson"),
+            ) ||
+            program.title?.includes("Leadership Development Program Q1 2024");
+
+          if (hasSarahJohnson) {
+            console.log(`🗑️ Removing Sarah Johnson program: ${program.title}`);
+            return false;
+          }
+          return true;
+        }),
+      );
+
+      filteredPrograms.then((cleanPrograms) => {
+        this.saveAllPrograms(cleanPrograms);
+        console.log("✅ Sarah Johnson programs cleared from TechCorp account");
+      });
+
+      // Also clear from sessions storage
+      const sessionsData = localStorage.getItem(this.SESSIONS_STORAGE_KEY);
+      if (sessionsData) {
+        const allSessions = JSON.parse(sessionsData);
+        for (const programId in allSessions) {
+          const sessions = allSessions[programId];
+          if (
+            sessions.some((s: any) => s.coachName?.includes("Sarah Johnson"))
+          ) {
+            delete allSessions[programId];
+            console.log(
+              `🗑️ Removed Sarah Johnson sessions for program: ${programId}`,
+            );
+          }
+        }
+        localStorage.setItem(
+          this.SESSIONS_STORAGE_KEY,
+          JSON.stringify(allSessions),
+        );
+      }
+    } catch (error) {
+      console.error("Failed to clear Sarah Johnson programs:", error);
     }
   }
 
