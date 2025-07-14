@@ -23,7 +23,7 @@ dummyDataCleaner.initializeCompletelyCleanSystem();
 // Extra cleanup for program data specifically
 dummyDataCleaner.clearAllProgramData();
 
-// Also clear all analytics, statistics, and session data
+// Also clear all analytics, statistics, session data, and any cached metrics
 try {
   // Clear any remaining data that might show on dashboards
   const additionalKeys = [
@@ -46,12 +46,22 @@ try {
     "recent_activities",
     "notification_data",
     "dashboard_cache",
+    // Session and metrics cache
+    "cached_sessions",
+    "cached_metrics",
+    "dashboard_metrics_cache",
+    "active_sessions",
+    "completed_sessions",
+    "session_outcomes",
+    "goals_progress",
+    "coaching_hours",
+    "session_statistics",
   ];
   additionalKeys.forEach((key) => {
     localStorage.removeItem(key);
   });
   console.log(
-    "✅ Cleared all dashboard and analytics data - ready for real data computation",
+    "✅ Cleared all dashboard, analytics, and session data - metrics will be computed from scratch",
   );
 } catch (error) {
   console.warn("Could not clear additional data:", error);
