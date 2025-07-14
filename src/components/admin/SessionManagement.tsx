@@ -170,39 +170,45 @@ export function SessionManagement({ matches = [] }: SessionManagementProps) {
     };
   };
 
-  // Load existing sessions
+  // Load existing sessions from program service
   useEffect(() => {
-    const loadSessions = () => {
-      // Mock sessions data
-      const mockSessions: Session[] = [
-        {
-          id: "session1",
-          title: "React Best Practices Workshop",
-          description: "Advanced React patterns and performance optimization",
-          coachId: "coach1",
-          coachName: "Sarah Johnson",
-          scheduledAt: new Date(Date.now() + 86400000), // Tomorrow
-          durationMinutes: 90,
-          participantCount: 3,
-          additionalParticipants: 2,
-          status: "scheduled",
-          costs: calculateSessionCosts("coach1", 90, 3)!,
-        },
-        {
-          id: "session2",
-          title: "System Architecture Review",
-          description: "Review and improve current system architecture",
-          coachId: "coach2",
-          coachName: "Michael Chen",
-          scheduledAt: new Date(Date.now() + 172800000), // Day after tomorrow
-          durationMinutes: 120,
-          participantCount: 2,
-          additionalParticipants: 1,
-          status: "confirmed",
-          costs: calculateSessionCosts("coach2", 120, 2)!,
-        },
-      ];
-      setSessions(mockSessions);
+    const loadSessions = async () => {
+      try {
+        // Load real sessions from program service instead of mock data
+        const allPrograms = await programService.getPrograms();
+        const allSessions: Session[] = [];
+
+        for (const program of allPrograms) {
+          const programSessions = await programService.getProgramSessions(
+            program.id,
+          );
+          // Convert ProgramSession to Session format
+          programSessions.forEach((ps) => {
+            allSessions.push({
+              id: ps.id,
+              title: ps.title,
+              description: ps.description || "",
+              coachId: ps.coachId,
+              coachName: ps.coachName,
+              scheduledAt: new Date(ps.scheduledDate + "T" + ps.scheduledTime),
+              durationMinutes: ps.duration,
+              participantCount: ps.participants.length,
+              additionalParticipants: Math.max(0, ps.participants.length - 1),
+              status: ps.status,
+              costs: calculateSessionCosts(
+                ps.coachId,
+                ps.duration,
+                ps.participants.length,
+              )!,
+            });
+          });
+        }
+
+        setSessions(allSessions);
+      } catch (error) {
+        console.error("Failed to load sessions:", error);
+        setSessions([]); // No dummy data fallback
+      }
     };
 
     loadSessions();
