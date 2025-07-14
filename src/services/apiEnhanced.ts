@@ -173,6 +173,11 @@ class EnhancedApiService {
       throw new Error("Backend not available in demo environment");
     }
 
+    // If API_BASE_URL is not properly configured, throw error immediately
+    if (!API_BASE_URL || API_BASE_URL === "http://localhost:3001") {
+      throw new Error("Backend service not available");
+    }
+
     try {
       const response = await fetch(`${API_BASE_URL}${endpoint}`, {
         headers: {
