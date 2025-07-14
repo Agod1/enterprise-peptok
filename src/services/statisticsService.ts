@@ -124,15 +124,27 @@ export class StatisticsService {
 
       // Get company sessions
       let totalSessions = 0;
+      let activeSessions = 0;
       let completedSessions = 0;
       let totalSpent = 0;
+      let totalHours = 0;
 
       for (const program of companyPrograms) {
         const sessions = await programService.getProgramSessions(program.id);
         totalSessions += sessions.length;
+
+        // Count sessions by status
+        activeSessions += sessions.filter(
+          (s) => s.status === "scheduled" || s.status === "in_progress",
+        ).length;
         completedSessions += sessions.filter(
           (s) => s.status === "completed",
         ).length;
+
+        // Calculate total hours from program timeline
+        totalHours +=
+          (program.timeline?.totalSessions || 0) *
+          (program.timeline?.hoursPerSession || 1);
 
         if (program.status === "completed") {
           totalSpent += program.budget?.totalBudget || program.budget?.max || 0;
@@ -144,13 +156,24 @@ export class StatisticsService {
           ? (companyPrograms.length / companyTeamMembers.length) * 100
           : 0;
 
+      // Goals progress calculation
+      const goalsProgress =
+        activePrograms + completedPrograms > 0
+          ? Math.round(
+              (completedPrograms / (activePrograms + completedPrograms)) * 100,
+            )
+          : 0;
+
       return {
         totalEmployees: companyTeamMembers.length,
         activePrograms,
         completedPrograms,
         totalSessions,
+        activeSessions,
         completedSessions,
         totalSpent,
+        totalHours,
+        goalsProgress,
         engagementRate: Math.round(engagementRate),
         averageRating: completedPrograms > 0 ? 4.3 : 0,
         lastUpdated: new Date().toISOString(),
