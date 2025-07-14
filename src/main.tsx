@@ -19,6 +19,9 @@ console.log(`🔌 Should try backend: ${Environment.shouldTryBackend()}`);
 // Initialize clean system - clear all dummy data
 dummyDataCleaner.initializeCleanSystem();
 
+// Specific cleanup for TechCorp account to remove Sarah Johnson programs
+techCorpCleanup.performCompleteCleanup();
+
 // Suppress ResizeObserver loop errors (common with chart libraries like Recharts)
 const resizeObserverErrorHandler = (e: ErrorEvent) => {
   if (
