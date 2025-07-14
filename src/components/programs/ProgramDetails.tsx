@@ -718,37 +718,49 @@ export const ProgramDetails: React.FC<ProgramDetailsProps> = ({
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Users className="w-5 h-5" />
-                Participants ({program.participants.length})
+                Participants ({program.participants?.length || 0})
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {program.participants.map((participant) => (
-                  <div
-                    key={participant.id}
-                    className="flex items-center gap-4 p-4 border rounded-lg"
-                  >
-                    <Avatar>
-                      <AvatarFallback>
-                        {participant.name
-                          .split(" ")
-                          .map((n) => n[0])
-                          .join("")}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1">
-                      <h4 className="font-medium">{participant.name}</h4>
-                      <p className="text-sm text-muted-foreground">
-                        {participant.role}
-                        {participant.department &&
-                          ` • ${participant.department}`}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        {participant.email}
-                      </p>
+                {program.participants && program.participants.length > 0 ? (
+                  program.participants.map((participant) => (
+                    <div
+                      key={participant.id}
+                      className="flex items-center gap-4 p-4 border rounded-lg"
+                    >
+                      <Avatar>
+                        <AvatarFallback>
+                          {participant.name
+                            .split(" ")
+                            .map((n) => n[0])
+                            .join("")}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1">
+                        <h4 className="font-medium">{participant.name}</h4>
+                        <p className="text-sm text-muted-foreground">
+                          {participant.role}
+                          {participant.department &&
+                            ` • ${participant.department}`}
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          {participant.email}
+                        </p>
+                      </div>
                     </div>
+                  ))
+                ) : (
+                  <div className="text-center py-8">
+                    <Users className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+                    <h3 className="text-lg font-medium mb-2">
+                      No Participants Yet
+                    </h3>
+                    <p className="text-muted-foreground">
+                      Participants will be added to this program.
+                    </p>
                   </div>
-                ))}
+                )}
               </div>
             </CardContent>
           </Card>
