@@ -57,6 +57,14 @@ const EnterpriseDashboard = () => {
   const [connections, setConnections] = useState<Connection[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Dashboard metrics computed from real data
+  const [dashboardMetrics, setDashboardMetrics] = useState({
+    activeSessions: 0,
+    activeCoaching: 0,
+    goalsProgress: 0,
+    totalHours: 0,
+  });
+
   // Load data on mount
   useEffect(() => {
     const loadDashboardData = async () => {
