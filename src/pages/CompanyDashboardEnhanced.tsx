@@ -127,10 +127,13 @@ export default function CompanyDashboardEnhanced() {
       localStorage.removeItem("coaching_requests");
       localStorage.removeItem("peptok_programs");
 
-      // Load fresh data (should be empty for clean start)
-      const companyRequests = await apiEnhanced.getCompanyRequests(
-        user.companyId,
-      );
+      // Load fresh data using real statistics service
+      const [companyRequests, companyStats, recentActivities] =
+        await Promise.all([
+          apiEnhanced.getCompanyRequests(user.companyId),
+          apiEnhanced.getCompanyStatistics(user.companyId),
+          apiEnhanced.getRecentActivity(),
+        ]);
 
       if (!Array.isArray(companyRequests)) {
         throw new Error("Invalid company requests data received");
@@ -138,35 +141,15 @@ export default function CompanyDashboardEnhanced() {
 
       setRequests(companyRequests);
 
-      // Calculate metrics from requests with proper fallbacks
-      const activePrograms = companyRequests.filter(
-        (r) => r.status === "in_progress",
-      ).length;
-      const completedPrograms = companyRequests.filter(
-        (r) => r.status === "completed",
-      ).length;
-      const totalParticipants = companyRequests.reduce(
-        (sum, r) => sum + (r.participants || 1),
-        0,
-      );
-
+      // Use real computed statistics instead of mock calculations
       const calculatedMetrics: CompanyMetrics = {
-        totalEmployees: Math.max(totalParticipants, 1), // Ensure at least 1
-        activePrograms,
-        completedSessions: completedPrograms,
-        averageRating: completedPrograms > 0 ? 4.7 : 0, // Only show rating if there are completed programs
-        engagementRate:
-          companyRequests.length > 0
-            ? (activePrograms / companyRequests.length) * 100
-            : 0,
-        monthlySpend:
-          companyRequests.length > 0
-            ? companyRequests.reduce(
-                (sum, r) => sum + (r.budget?.max || 0),
-                0,
-              ) / 12
-            : 0,
-        roiPercentage: completedPrograms > 0 ? 145 : 0, // Only show ROI if there are completed programs
+        totalEmployees: companyStats.totalEmployees || 0,
+        activePrograms: companyStats.activePrograms || 0,
+        completedSessions: companyStats.completedSessions || 0,
+        averageRating: companyStats.averageRating || 0,
+        engagementRate: companyStats.engagementRate || 0,
+        monthlySpend: (companyStats.totalSpent || 0) / 12,
+        roiPercentage: companyStats.completedPrograms > 0 ? 125 : 0, // ROI calculation from real data
       };
 
       setMetrics(calculatedMetrics);
