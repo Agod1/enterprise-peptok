@@ -92,6 +92,11 @@ const PlatformValidationDashboard = React.lazy(
 const DataSyncTestingDashboard = React.lazy(
   () => import("@/pages/DataSyncTestingDashboard"),
 );
+const CoachDashboardTest = React.lazy(() =>
+  import("@/components/testing/CoachDashboardTest").then((module) => ({
+    default: module.CoachDashboardTest,
+  })),
+);
 
 // Loading component for lazy-loaded pages
 const PageLoader = () => (
