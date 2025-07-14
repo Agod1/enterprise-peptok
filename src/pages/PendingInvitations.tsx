@@ -31,7 +31,6 @@ import {
   type TeamInvitation,
 } from "@/services/invitationService";
 import Header from "@/components/layout/Header";
-import { initializeSampleData } from "@/utils/sampleDataInitializer";
 
 export default function PendingInvitations() {
   const navigate = useNavigate();
