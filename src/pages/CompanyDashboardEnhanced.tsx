@@ -154,36 +154,19 @@ export default function CompanyDashboardEnhanced() {
 
       setMetrics(calculatedMetrics);
 
-      // Generate recent activity
-      const activities: RecentActivity[] = [
-        {
-          id: "1",
-          type: "session_completed",
-          title: "Leadership Session Completed",
-          description: "Team session with professional coach",
-          timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),
-          employeeName: "Alex Chen",
-          coachName: "Professional Coach",
-          rating: 5,
-        },
-        {
-          id: "2",
-          type: "program_started",
-          title: "New Program Started",
-          description: "New coaching program initiated",
-          timestamp: new Date(Date.now() - 6 * 60 * 60 * 1000),
-        },
-        {
-          id: "3",
-          type: "rating_received",
-          title: "Excellent Rating Received",
-          description: "5-star rating for communication skills session",
-          timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000),
-          rating: 5,
-        },
-      ];
-
-      setRecentActivity(activities);
+      // Use real recent activity data from statistics service
+      setRecentActivity(
+        recentActivities.map((activity, index) => ({
+          id: activity.id || `activity_${index}`,
+          type: activity.type as any,
+          title: activity.title,
+          description: activity.description,
+          timestamp: new Date(activity.timestamp),
+          employeeName: activity.employeeName,
+          coachName: activity.coachName,
+          rating: activity.rating,
+        })),
+      );
 
       analytics.trackAction({
         action: "company_dashboard_loaded",
