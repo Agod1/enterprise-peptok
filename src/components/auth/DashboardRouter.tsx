@@ -21,7 +21,7 @@ const DashboardRouter = () => {
           navigate("/dashboard", { replace: true });
           break;
         case "coach":
-          navigate("/coach-dashboard", { replace: true });
+          navigate("/coach/dashboard", { replace: true });
           break;
         case "employee":
           navigate("/employee-dashboard", { replace: true });
