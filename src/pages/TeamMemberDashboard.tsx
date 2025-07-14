@@ -133,70 +133,8 @@ const TeamMemberDashboard = () => {
           console.log("API not available, using mock data:", apiError);
         }
 
-        // Use sample data for demo if no API data available
-        const mockSessions: TeamMemberSession[] =
-          transformedSessions.length > 0
-            ? transformedSessions
-            : [
-                {
-                  id: "session-1",
-                  title: "Leadership Fundamentals",
-                  coach: {
-                    name: "Sarah Johnson",
-                    title: "Senior Leadership Coach",
-                    avatar: "https://avatar.vercel.sh/sarah@example.com",
-                  },
-                  date: "2024-02-15T14:00:00Z",
-                  duration: 60,
-                  status: "upcoming",
-                  type: "video",
-                  description:
-                    "Introduction to leadership principles and goal setting",
-                  programTitle: "Leadership Development Program",
-                  role:
-                    (user?.role as "participant" | "observer") || "participant",
-                  hasRated: false,
-                  meetingLink: "https://meet.google.com/abc-defg-hij",
-                },
-                {
-                  id: "session-2",
-                  title: "Communication Skills",
-                  coach: {
-                    name: "Sarah Johnson",
-                    title: "Senior Leadership Coach",
-                    avatar: "https://avatar.vercel.sh/sarah@example.com",
-                  },
-                  date: "2024-02-08T14:00:00Z",
-                  duration: 60,
-                  status: "completed",
-                  type: "video",
-                  description: "Effective communication strategies for leaders",
-                  programTitle: "Leadership Development Program",
-                  role:
-                    (user?.role as "participant" | "observer") || "participant",
-                  hasRated: false,
-                },
-                {
-                  id: "session-3",
-                  title: "Team Management",
-                  coach: {
-                    name: "Sarah Johnson",
-                    title: "Senior Leadership Coach",
-                    avatar: "https://avatar.vercel.sh/sarah@example.com",
-                  },
-                  date: "2024-02-01T14:00:00Z",
-                  duration: 60,
-                  status: "completed",
-                  type: "video",
-                  description: "Building and managing high-performing teams",
-                  programTitle: "Leadership Development Program",
-                  role:
-                    (user?.role as "participant" | "observer") || "participant",
-                  rating: 5,
-                  feedback: "Excellent session with practical insights!",
-                  hasRated: true,
-                },
-              ];
+        // Only use real session data - no mock data
+        const realSessions: TeamMemberSession[] = transformedSessions;
 
         // Load program information from accepted invitations
         let programsFromInvitations: TeamMemberProgram[] = [];
