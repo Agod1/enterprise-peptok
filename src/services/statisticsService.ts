@@ -408,6 +408,7 @@ export class StatisticsService {
       totalCompanies: 0,
       activeCompanies: 0,
       totalSessions: 0,
+      activeSessions: 0,
       completedSessions: 0,
       activePrograms: 0,
       completedPrograms: 0,
