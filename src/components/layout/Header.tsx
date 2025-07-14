@@ -72,7 +72,7 @@ const Header = ({ userType: propUserType }: HeaderProps) => {
       case "platform_admin":
         return "/platform-admin";
       case "coach":
-        return "/coach-dashboard";
+        return "/coach/dashboard";
       case "team_member":
         return "/team-member/dashboard";
       case "company_admin":
