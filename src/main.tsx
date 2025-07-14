@@ -20,13 +20,10 @@ console.log(`🔌 Should try backend: ${Environment.shouldTryBackend()}`);
 console.log("🔄 PERFORMING COMPLETE DATA RESET FOR FRESH ACCOUNTS");
 dummyDataCleaner.initializeCompletelyCleanSystem();
 
-// Log the new accounts that will be available
-console.log("👥 Fresh accounts created:");
-console.log(
-  "  👩‍💼 Sarah Johnson (admin@techcorp.com) - TechCorp Industries Admin",
-);
-console.log("  👨‍🏫 Daniel Hayes (coach@marketing.com) - Professional Coach");
-console.log("✅ System ready with clean accounts");
+// Verify the new accounts are properly set up
+setTimeout(() => {
+  accountVerification.performCompleteVerification();
+}, 1000); // Small delay to ensure cleanup is complete
 
 // Suppress ResizeObserver loop errors (common with chart libraries like Recharts)
 const resizeObserverErrorHandler = (e: ErrorEvent) => {
