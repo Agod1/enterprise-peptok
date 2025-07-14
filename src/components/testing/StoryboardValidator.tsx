@@ -198,7 +198,7 @@ const storyboardScenarios: StoryboardScenario[] = [
         description: "Coach receives and reviews program match details",
         userRole: "coach",
         component: "CoachDashboard",
-        route: "/coach-dashboard",
+        route: "/coach/dashboard",
         duration: 90,
       },
       {
