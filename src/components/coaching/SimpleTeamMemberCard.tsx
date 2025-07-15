@@ -30,7 +30,6 @@ import {
 } from "lucide-react";
 import { TeamMember } from "@/types";
 import { toast } from "sonner";
-import LocalStorageService from "@/services/localStorageService";
 
 interface SimpleTeamMemberCardProps {
   teamMembers: TeamMember[];
@@ -96,16 +95,12 @@ export function SimpleTeamMemberCard({
       const updatedTeamMembers = [...teamMembers, newTeamMember];
       onUpdateTeamMembers(updatedTeamMembers);
 
-      // Save to localStorage for persistence
-      try {
-        LocalStorageService.setTeamMembers(updatedTeamMembers);
-        console.log(
-          "✅ Team members saved to localStorage:",
-          updatedTeamMembers.length,
-        );
-      } catch (error) {
-        console.warn("Failed to save team members to localStorage:", error);
-      }
+      // Note: Team members are now managed only through backend API
+      // No localStorage fallbacks are used - data comes from backend only
+      console.log(
+        "✅ Team members updated (backend-only mode):",
+        updatedTeamMembers.length,
+      );
 
       // Reset form
       setNewMemberEmail("");
@@ -140,12 +135,8 @@ export function SimpleTeamMemberCard({
         (member) => member.id !== memberId,
       );
       onUpdateTeamMembers(updatedTeamMembers);
-      try {
-        LocalStorageService.setTeamMembers(updatedTeamMembers);
-        console.log("✅ Team member removed and saved to localStorage");
-      } catch (error) {
-        console.warn("Failed to save team members to localStorage:", error);
-      }
+      // Note: Team member removal handled through backend API only
+      console.log("✅ Team member removed (backend-only mode)");
       toast.success(`Removed ${member.email} from the program`);
     }
   };
@@ -158,12 +149,8 @@ export function SimpleTeamMemberCard({
       member.id === memberId ? { ...member, role: newRole } : member,
     );
     onUpdateTeamMembers(updatedMembers);
-    try {
-      LocalStorageService.setTeamMembers(updatedMembers);
-      console.log("✅ Team member role updated and saved to localStorage");
-    } catch (error) {
-      console.warn("Failed to save team members to localStorage:", error);
-    }
+    // Note: Team member role updates handled through backend API only
+    console.log("✅ Team member role updated (backend-only mode)");
     toast.success("Team member role updated successfully");
   };
 
