@@ -66,6 +66,13 @@ class DataSyncService {
   }
 
   private async checkBackendHealth(): Promise<boolean> {
+    // Check if we should even attempt backend calls
+    if (!Environment.shouldTryBackend()) {
+      this.backendHealthStatus = false;
+      console.log("🗃️ Backend not configured - using localStorage only mode");
+      return false;
+    }
+
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), this.SYNC_TIMEOUT);
@@ -89,10 +96,24 @@ class DataSyncService {
       return this.backendHealthStatus;
     } catch (error) {
       this.backendHealthStatus = false;
-      console.warn(
-        "🔴 Backend unavailable - using localStorage fallback:",
-        error,
-      );
+
+      // Don't show as error if we're in a cloud environment without backend
+      const isCloudEnvironment =
+        window.location.hostname.includes(".fly.dev") ||
+        window.location.hostname.includes(".vercel.app") ||
+        window.location.hostname.includes(".netlify.app");
+
+      if (isCloudEnvironment && !import.meta.env.VITE_API_URL) {
+        console.log(
+          "🗃️ Demo environment - backend unavailable, using localStorage fallback",
+        );
+      } else {
+        console.warn(
+          "🔴 Backend unavailable - using localStorage fallback:",
+          error instanceof Error ? error.message : "Unknown error",
+        );
+      }
+
       return false;
     }
   }
@@ -118,8 +139,11 @@ class DataSyncService {
   ): Promise<SyncResult<T[]>> {
     console.log(`📥 Getting data for ${config.entity}...`);
 
-    // Try backend first
-    if (await this.checkBackendHealth()) {
+    // Only try backend if configured and healthy
+    const backendHealthy =
+      this.backendHealthStatus && Environment.shouldTryBackend();
+
+    if (backendHealthy && (await this.checkBackendHealth())) {
       try {
         const queryParams = filters
           ? `?${new URLSearchParams(filters).toString()}`
@@ -169,8 +193,11 @@ class DataSyncService {
   ): Promise<SyncOperationResult> {
     console.log(`📝 Creating ${config.entity}...`);
 
-    // Try backend first
-    if (await this.checkBackendHealth()) {
+    // Only try backend if configured and healthy
+    const backendHealthy =
+      this.backendHealthStatus && Environment.shouldTryBackend();
+
+    if (backendHealthy && (await this.checkBackendHealth())) {
       try {
         const response = await this.makeRequest(config.endpoint, "POST", data);
 
@@ -219,8 +246,11 @@ class DataSyncService {
   ): Promise<SyncOperationResult> {
     console.log(`📝 Updating ${config.entity} with id ${id}...`);
 
-    // Try backend first
-    if (await this.checkBackendHealth()) {
+    // Only try backend if configured and healthy
+    const backendHealthy =
+      this.backendHealthStatus && Environment.shouldTryBackend();
+
+    if (backendHealthy && (await this.checkBackendHealth())) {
       try {
         const response = await this.makeRequest(
           `${config.endpoint}/${id}`,
@@ -282,8 +312,11 @@ class DataSyncService {
   ): Promise<SyncOperationResult> {
     console.log(`🗑️ Deleting ${config.entity} with id ${id}...`);
 
-    // Try backend first
-    if (await this.checkBackendHealth()) {
+    // Only try backend if configured and healthy
+    const backendHealthy =
+      this.backendHealthStatus && Environment.shouldTryBackend();
+
+    if (backendHealthy && (await this.checkBackendHealth())) {
       try {
         const response = await this.makeRequest(
           `${config.endpoint}/${id}`,
