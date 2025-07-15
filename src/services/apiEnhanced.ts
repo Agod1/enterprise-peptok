@@ -160,6 +160,11 @@ class EnhancedApiService {
   ): Promise<{ data: T; error?: string }> {
     const startTime = Date.now();
 
+    // Check if backend should be attempted
+    if (!Environment.shouldTryBackend()) {
+      throw new Error("Backend not configured for this environment");
+    }
+
     // Check if we're in a cloud environment without backend
     const isCloudEnvironment =
       window.location.hostname.includes(".fly.dev") ||
@@ -1256,77 +1261,94 @@ class EnhancedApiService {
   }): Promise<CoachingRequest[]> {
     const user = checkAuthorization();
 
-    // Use data sync service with backend-first approach
-    const filters: Record<string, string> = {};
+    try {
+      // Use data sync service with backend-first approach
+      const filters: Record<string, string> = {};
 
-    // Role-based filtering
-    if (user.userType === "coach") {
-      filters.coachId = user.id;
-    } else if (user.userType === "company_admin" && user.companyId) {
-      filters.companyId = user.companyId;
-    }
-
-    // Additional filters
-    if (params?.status) filters.status = params.status;
-    if (params?.companyId && user.userType === "platform_admin") {
-      filters.companyId = params.companyId;
-    }
-    if (params?.coachId && user.userType === "platform_admin") {
-      filters.coachId = params.coachId;
-    }
-    if (params?.limit) filters.limit = params.limit.toString();
-
-    const result = await dataSyncService.getData<CoachingRequest>(
-      DATA_SYNC_CONFIGS.COACHING_REQUESTS,
-      filters,
-    );
-
-    analytics.trackAction({
-      action: "coaching_requests_viewed",
-      component: "dashboard",
-      metadata: {
-        params,
-        userType: user.userType,
-        resultCount: result.data?.length || 0,
-        source: result.source,
-        backendAvailable: result.backendAvailable,
-      },
-    });
-
-    // Apply client-side filtering for localStorage fallback
-    let filteredData = result.data || [];
-
-    if (result.source === "localStorage") {
-      // Apply role-based filtering for localStorage
+      // Role-based filtering
       if (user.userType === "coach") {
-        filteredData = filteredData.filter(
-          (req: CoachingRequest) =>
-            req.assignedCoachId === user.id ||
-            (req.status === "submitted" && !req.assignedCoachId),
-        );
+        filters.coachId = user.id;
       } else if (user.userType === "company_admin" && user.companyId) {
-        filteredData = filteredData.filter(
-          (req: CoachingRequest) => req.companyId === user.companyId,
-        );
+        filters.companyId = user.companyId;
       }
 
-      // Apply additional filters
-      if (params?.status) {
-        filteredData = filteredData.filter(
-          (req: CoachingRequest) => req.status === params.status,
-        );
+      // Additional filters
+      if (params?.status) filters.status = params.status;
+      if (params?.companyId && user.userType === "platform_admin") {
+        filters.companyId = params.companyId;
+      }
+      if (params?.coachId && user.userType === "platform_admin") {
+        filters.coachId = params.coachId;
+      }
+      if (params?.limit) filters.limit = params.limit.toString();
+
+      const result = await dataSyncService.getData<CoachingRequest>(
+        DATA_SYNC_CONFIGS.COACHING_REQUESTS,
+        filters,
+      );
+
+      analytics.trackAction({
+        action: "coaching_requests_viewed",
+        component: "dashboard",
+        metadata: {
+          params,
+          userType: user.userType,
+          resultCount: result.data?.length || 0,
+          source: result.source,
+          backendAvailable: result.backendAvailable,
+        },
+      });
+
+      // Apply client-side filtering for localStorage fallback
+      let filteredData = result.data || [];
+
+      if (result.source === "localStorage") {
+        // Apply role-based filtering for localStorage
+        if (user.userType === "coach") {
+          filteredData = filteredData.filter(
+            (req: CoachingRequest) =>
+              req.assignedCoachId === user.id ||
+              (req.status === "submitted" && !req.assignedCoachId),
+          );
+        } else if (user.userType === "company_admin" && user.companyId) {
+          filteredData = filteredData.filter(
+            (req: CoachingRequest) => req.companyId === user.companyId,
+          );
+        }
+
+        // Apply additional filters
+        if (params?.status) {
+          filteredData = filteredData.filter(
+            (req: CoachingRequest) => req.status === params.status,
+          );
+        }
+
+        if (params?.limit) {
+          filteredData = filteredData.slice(0, params.limit);
+        }
       }
 
-      if (params?.limit) {
-        filteredData = filteredData.slice(0, params.limit);
-      }
+      console.log(
+        `📊 Retrieved ${filteredData.length} coaching requests from ${result.source}`,
+      );
+
+      return filteredData;
+    } catch (error) {
+      console.warn("Error fetching coaching requests:", error);
+
+      // Fallback to empty array with proper analytics tracking
+      analytics.trackAction({
+        action: "coaching_requests_failed",
+        component: "dashboard",
+        metadata: {
+          params,
+          userType: user.userType,
+          error: error instanceof Error ? error.message : "Unknown error",
+        },
+      });
+
+      return [];
     }
-
-    console.log(
-      `📊 Retrieved ${filteredData.length} coaching requests from ${result.source}`,
-    );
-
-    return filteredData;
   }
 
   async getCoachingRequest(id: string): Promise<CoachingRequest | null> {
