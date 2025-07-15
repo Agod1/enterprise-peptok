@@ -2,7 +2,6 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { User, authService } from "@/services/auth";
 import { setCurrentUser } from "@/services/apiEnhanced";
 import { analytics } from "@/services/analytics";
-import LocalStorageService from "@/services/localStorageService";
 
 interface AuthContextType {
   user: User | null;
@@ -28,34 +27,46 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Initialize auth state with comprehensive persistence
+  // Initialize auth state - backend-only mode
   useEffect(() => {
-    const initializeAuth = () => {
+    const initializeAuth = async () => {
       try {
-        // Get user from localStorage service
-        const currentUser =
-          LocalStorageService.getUser() || authService.getCurrentUser();
-        setUser(currentUser);
-        setCurrentUser(currentUser);
+        console.log("🔄 Initializing auth (backend-only mode)...");
+
+        // No localStorage - only check if user is already in memory
+        const currentUser = authService.getCurrentUser();
 
         if (currentUser) {
-          analytics.setUser(currentUser.id, currentUser.userType, {
-            email: currentUser.email,
-            name: currentUser.name,
-          });
+          // Verify with backend that token is still valid
+          const isValid = await authService.isAuthenticated();
 
-          // Ensure user data is persisted in localStorage
-          LocalStorageService.setUser(currentUser);
+          if (isValid) {
+            setUser(currentUser);
+            setCurrentUser(currentUser);
 
-          console.log("✅ User session restored:", {
-            id: currentUser.id,
-            email: currentUser.email,
-            userType: currentUser.userType,
-            companyId: currentUser.companyId,
-          });
+            analytics.setUser(currentUser.id, currentUser.userType, {
+              email: currentUser.email,
+              name: currentUser.name,
+            });
+
+            console.log("✅ Valid user session found:", {
+              id: currentUser.id,
+              email: currentUser.email,
+              userType: currentUser.userType,
+              companyId: currentUser.companyId,
+            });
+          } else {
+            console.log("⚠️ Invalid session - user logged out");
+            setUser(null);
+            setCurrentUser(null);
+          }
+        } else {
+          console.log("ℹ️ No user session found (backend-only mode)");
         }
       } catch (error) {
         console.error("Failed to initialize auth:", error);
+        setUser(null);
+        setCurrentUser(null);
       } finally {
         setIsLoading(false);
       }
@@ -72,18 +83,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setUser(response.user);
         setCurrentUser(response.user);
 
-        // Persist user data across sessions
-        LocalStorageService.setUser(response.user);
-        if (response.token) {
-          LocalStorageService.setToken(response.token);
-        }
-
         analytics.track("user_login", {
           userType: response.user.userType,
           loginMethod: "email",
         });
 
-        console.log("✅ User logged in and data persisted:", {
+        console.log("✅ User logged in (backend-only mode):", {
           id: response.user.id,
           email: response.user.email,
           userType: response.user.userType,
@@ -103,18 +108,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const logout = async () => {
     try {
-      // Clear all persisted data
-      LocalStorageService.clearAuth();
-
       await authService.logout();
       setUser(null);
       setCurrentUser(null);
 
-      console.log("✅ User logged out and all data cleared");
+      console.log("✅ User logged out (backend-only mode)");
     } catch (error) {
       console.error("Logout error:", error);
       // Ensure cleanup even if auth service fails
-      LocalStorageService.clearAuth();
       setUser(null);
       setCurrentUser(null);
     }
@@ -124,10 +125,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setUser(updatedUser);
     setCurrentUser(updatedUser);
 
-    // Persist updated user data
-    LocalStorageService.setUser(updatedUser);
-
-    console.log("✅ User data updated and persisted:", {
+    console.log("✅ User data updated (backend-only mode):", {
       id: updatedUser.id,
       email: updatedUser.email,
       userType: updatedUser.userType,
