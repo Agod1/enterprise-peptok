@@ -198,7 +198,7 @@ class AuthService {
     }
   }
 
-  // Email/Password Signup
+  // Email/Password Signup - Backend Only
   async signupWithEmail(userData: {
     firstName: string;
     lastName: string;
@@ -216,71 +216,78 @@ class AuthService {
     };
   }): Promise<AuthResponse> {
     try {
-      // Simulate API call delay
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      // Check if user already exists
-      const existingUser = demoUsers.find(
-        (u) => u.email.toLowerCase() === userData.email.toLowerCase(),
+      console.log(
+        `🔐 Backend-only signup attempt for email: ${userData.email}`,
       );
 
-      if (existingUser) {
+      // Check backend availability first
+      const isBackendAvailable = await this.checkBackendAvailability();
+      if (!isBackendAvailable) {
         return {
           success: false,
           error:
-            "An account with this email already exists. Please sign in instead.",
+            "Backend service is currently unavailable. Please try again later or contact support.",
         };
       }
 
-      // Validate password
-      if (userData.password.length < 8) {
+      // Backend signup only
+      const response = await fetch(`${API_BASE_URL}/auth/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          firstName: userData.firstName,
+          lastName: userData.lastName,
+          email: userData.email,
+          password: userData.password,
+          userType: userData.userType,
+          businessDetails: userData.businessDetails,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const user: User = {
+          ...data.user,
+          isAuthenticated: true,
+          token: data.access_token,
+          isNewUser: true,
+        };
+
+        console.log(
+          `✅ Backend signup successful for "${userData.email}", user type: ${user.userType}`,
+        );
+
+        // Save authentication in memory only
+        await this.saveUserToMemory(user, data.access_token);
+
+        return {
+          success: true,
+          user,
+          token: data.access_token,
+          isNewUser: true,
+        };
+      } else {
+        const errorData = await response
+          .json()
+          .catch(() => ({ message: "Signup failed" }));
+
+        console.log(
+          `❌ Backend signup failed for "${userData.email}": ${errorData.message}`,
+        );
+
         return {
           success: false,
-          error: "Password must be at least 8 characters long.",
+          error: errorData.message || "Signup failed. Please try again.",
         };
       }
-
-      // Create new user
-      const newUser: User = {
-        id: `user_${Date.now()}`,
-        email: userData.email,
-        name: `${userData.firstName} ${userData.lastName}`,
-        firstName: userData.firstName,
-        lastName: userData.lastName,
-        provider: "email",
-        userType: userData.userType,
-        isNewUser: true,
-        businessDetails: userData.businessDetails,
-      };
-
-      // Save business details to backend database for onboarding reuse
-      if (userData.businessDetails) {
-        await backendStorage.setItem(
-          "peptok_business_details",
-          userData.businessDetails,
-          { userId: newUser.id },
-        );
-      }
-
-      // Save to demo database
-      demoUsers.push(newUser);
-
-      // Generate token
-      const token = `mock_token_${Date.now()}_${newUser.id}`;
-
-      // Save authentication
-      this.saveUserToStorage(newUser, token);
-
-      return {
-        success: true,
-        user: newUser,
-        token,
-        isNewUser: true,
-      };
     } catch (error) {
+      console.error(`💥 Signup error for ${userData.email}:`, error);
       return {
         success: false,
-        error: "Signup failed. Please try again.",
+        error:
+          "Signup failed. Backend service might be unavailable. Please contact support.",
       };
     }
   }
@@ -490,11 +497,26 @@ class AuthService {
     );
   }
 
-  // Logout
+  // Logout - Backend Only
   async logout(): Promise<void> {
     try {
-      // In a real app, you might want to invalidate the token on the server
-      // await fetch('/api/auth/logout', { method: 'POST' });
+      // Invalidate token on backend if user is authenticated
+      if (this.currentUser?.token) {
+        try {
+          await fetch(`${API_BASE_URL}/auth/logout`, {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${this.currentUser.token}`,
+              "Content-Type": "application/json",
+            },
+          });
+        } catch (error) {
+          console.warn(
+            "Backend logout failed, clearing local session anyway:",
+            error,
+          );
+        }
+      }
 
       this.clearAuth();
       toast.success("Successfully signed out");
@@ -505,7 +527,7 @@ class AuthService {
       }, 500);
     } catch (error) {
       console.error("Logout error:", error);
-      // Still clear local auth even if server call fails
+      // Still clear memory auth even if server call fails
       this.clearAuth();
       window.location.href = "/";
     }
