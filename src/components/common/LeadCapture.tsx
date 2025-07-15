@@ -133,31 +133,31 @@ export function LeadCapture({
         createdAt: new Date().toISOString(),
       };
 
-      // Store in localStorage
-      const existingLeads = JSON.parse(
-        localStorage.getItem("peptok_leads") || "[]",
-      );
-      existingLeads.push(leadData);
-      localStorage.setItem("peptok_leads", JSON.stringify(existingLeads));
+      // Backend-only mode: Leads are sent to backend API only
+      // No localStorage storage - all data must be handled by backend
 
-      // Track in analytics
-      const analyticsData = LocalStorageService.getAnalyticsData();
-      const updatedAnalytics = {
-        ...analyticsData,
-        leads: {
-          ...analyticsData.leads,
-          total: (analyticsData.leads?.total || 0) + 1,
-          bySource: {
-            ...analyticsData.leads?.bySource,
-            [source]: (analyticsData.leads?.bySource?.[source] || 0) + 1,
+      try {
+        // Send to backend API
+        const response = await fetch("/api/leads", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
           },
-          recent: [
-            leadData,
-            ...(analyticsData.leads?.recent || []).slice(0, 9),
-          ],
-        },
-      };
-      LocalStorageService.setAnalyticsData(updatedAnalytics);
+          body: JSON.stringify(leadData),
+        });
+
+        if (!response.ok) {
+          throw new Error("Backend lead submission failed");
+        }
+
+        console.log("✅ Lead submitted to backend successfully");
+      } catch (error) {
+        console.error("❌ Backend lead submission failed:", error);
+        toast.error(
+          "Lead submission failed. Backend service unavailable. Please try again later.",
+        );
+        return;
+      }
 
       setIsSubmitted(true);
       toast.success("Thank you! We'll be in touch soon.");
