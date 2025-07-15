@@ -1,59 +1,43 @@
 /**
- * Demo Data Seeder - CLEANED
- * All hardcoded data removed. Data should come from backend API.
+ * ❌ ELIMINATED: Demo data seeding completely removed
+ *
+ * This file previously seeded localStorage with demo data for development.
+ * All data seeding is now handled by the backend-nestjs PostgreSQL database.
+ *
+ * @see USER_CREDENTIALS.md for seeded user login information
+ * @see backend-nestjs/src/database/seeds/run-seed.ts for database seeding
  */
 
-import { CoachingRequest } from "@/types";
-import { analytics } from "@/services/analytics";
+console.log(
+  "🚨 Demo data seeding eliminated - using backend-nestjs PostgreSQL database only",
+);
 
-export const seedDemoCoachingRequests = (): void => {
-  console.warn(
-    "Demo data seeder disabled - all data should come from backend API",
+// Prevent any localStorage seeding
+if (typeof window !== "undefined") {
+  console.log(
+    "✅ Backend-only mode active:",
+    "\n  - No localStorage seeding",
+    "\n  - No demo data fallbacks",
+    "\n  - All data from PostgreSQL database",
+    "\n  - See USER_CREDENTIALS.md for login info",
   );
+}
 
-  // Log that demo data seeding was attempted
-  analytics.trackAction({
-    action: "demo_data_seed_attempted",
-    category: "system",
-    details: {
-      timestamp: new Date().toISOString(),
-      message: "Demo data seeding bypassed - using backend API instead",
-    },
-  });
-};
-
-export const clearDemoData = (): void => {
-  console.warn("Demo data clearing disabled - data managed by backend API");
-};
-
-export const getDemoCoachingRequests = (): CoachingRequest[] => {
+// Export empty functions to prevent errors in existing imports
+export const seedDemoData = () => {
   console.warn(
-    "Demo coaching requests disabled - fetch from backend API instead",
+    "❌ seedDemoData() is eliminated! Use backend-nestjs database seeding instead.",
   );
-  return [];
 };
 
-export const getDemoAnalyticsData = (): any => {
-  console.warn("Demo analytics data disabled - fetch from backend API instead");
-  return {
-    leads: [],
-    statistics: {
-      totalLeads: 0,
-      conversionRate: 0,
-      averageSessionTime: 0,
-      popularPages: [],
-    },
-  };
+export const initializeDemoData = () => {
+  console.warn(
+    "❌ initializeDemoData() is eliminated! Use backend-nestjs database seeding instead.",
+  );
 };
 
-// Export empty arrays for backward compatibility
-export const demoCoachingRequests: CoachingRequest[] = [];
-export const demoAnalyticsData = {
-  leads: [],
-  statistics: {
-    totalLeads: 0,
-    conversionRate: 0,
-    averageSessionTime: 0,
-    popularPages: [],
-  },
+export const clearDemoData = () => {
+  console.warn(
+    "❌ clearDemoData() is eliminated! No localStorage data to clear.",
+  );
 };
