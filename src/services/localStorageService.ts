@@ -1,400 +1,164 @@
-import { User, CoachingRequest, TeamMember, Company, Session } from "@/types";
-
 /**
- * ⚠️  DEPRECATED: Comprehensive localStorage service for Peptok application
+ * ❌ REMOVED: localStorage service completely eliminated
  *
- * WARNING: This service is deprecated and should be phased out in favor of backend API calls.
+ * This service has been completely removed to enforce backend-only data storage.
+ * All data must now come from the backend API.
  *
- * localStorage should only be used for:
- * - User preferences (theme, language)
- * - Temporary UI state
- * - Auth tokens (handled by auth service)
- *
- * All persistent data (users, programs, sessions, etc.) should come from the backend API.
- *
- * This service will be removed in a future cleanup.
- *
- * Provides type-safe storage and retrieval of all app data
+ * For any code still trying to use localStorage, this will throw an error
+ * to make the violation clear.
  */
 
-// Warn when this service is used
-console.warn(
-  "⚠���  WARNING: Using deprecated localStorage service. Please use backend API instead.",
-);
 export class LocalStorageService {
-  private static readonly KEYS = {
-    // Authentication
-    USER: "peptok_user",
-    TOKEN: "peptok_token",
-
-    // Coaching Data
-    COACHING_REQUESTS: "peptok_coaching_requests",
-    COACHING_REQUEST_DRAFT: "peptok_coaching_request_draft",
-    CURRENT_PROGRAM_ID: "peptok_current_program_id",
-
-    // Company & Teams
-    COMPANY_PROFILE: "peptok_company_profile",
-    TEAM_MEMBERS: "peptok_team_members",
-
-    // Sessions & Messaging
-    SESSIONS: "peptok_sessions",
-    MESSAGES: "peptok_messages",
-    MESSAGE_THREADS: "peptok_message_threads",
-
-    // Dashboard Data
-    DASHBOARD_PREFERENCES: "peptok_dashboard_preferences",
-    ANALYTICS_DATA: "peptok_analytics_data",
-    MATCH_SCORES: "peptok_match_scores",
-
-    // Onboarding State
-    ONBOARDING_PROGRESS: "peptok_onboarding_progress",
-
-    // App Settings
-    APP_PREFERENCES: "peptok_app_preferences",
-    FEATURE_FLAGS: "peptok_feature_flags",
-  } as const;
-
-  // Helper method to safely parse JSON
-  private static safeJsonParse<T>(value: string | null, defaultValue: T): T {
-    if (!value) return defaultValue;
-    try {
-      return JSON.parse(value);
-    } catch {
-      return defaultValue;
-    }
-  }
-
-  // Helper method to safely stringify JSON
-  private static safeJsonStringify(value: any): string {
-    try {
-      return JSON.stringify(value);
-    } catch {
-      return "{}";
-    }
-  }
-
-  // Authentication
-  static setUser(user: User): void {
-    localStorage.setItem(this.KEYS.USER, this.safeJsonStringify(user));
-  }
-
-  static getUser(): User | null {
-    return this.safeJsonParse(localStorage.getItem(this.KEYS.USER), null);
-  }
-
-  static setToken(token: string): void {
-    localStorage.setItem(this.KEYS.TOKEN, token);
-  }
-
-  static getToken(): string | null {
-    return localStorage.getItem(this.KEYS.TOKEN);
-  }
-
-  static clearAuth(): void {
-    localStorage.removeItem(this.KEYS.USER);
-    localStorage.removeItem(this.KEYS.TOKEN);
-  }
-
-  // Coaching Requests
-  static setCoachingRequests(requests: CoachingRequest[]): void {
-    localStorage.setItem(
-      this.KEYS.COACHING_REQUESTS,
-      this.safeJsonStringify(requests),
+  private static throwError(method: string): never {
+    throw new Error(
+      `❌ localStorage usage is completely eliminated! ` +
+        `Called: ${method}. ` +
+        `All data must come from backend API. ` +
+        `No localStorage fallbacks allowed.`,
     );
   }
 
-  static getCoachingRequests(): CoachingRequest[] {
-    return this.safeJsonParse(
-      localStorage.getItem(this.KEYS.COACHING_REQUESTS),
-      [],
-    );
+  // Authentication - REMOVED
+  static setUser(): never {
+    this.throwError("setUser");
+  }
+  static getUser(): never {
+    this.throwError("getUser");
+  }
+  static setToken(): never {
+    this.throwError("setToken");
+  }
+  static getToken(): never {
+    this.throwError("getToken");
+  }
+  static clearAuth(): never {
+    this.throwError("clearAuth");
   }
 
-  static addCoachingRequest(request: CoachingRequest): void {
-    const requests = this.getCoachingRequests();
-    requests.unshift(request);
-    this.setCoachingRequests(requests);
+  // All other methods - REMOVED
+  static setCoachingRequests(): never {
+    this.throwError("setCoachingRequests");
   }
-
-  static updateCoachingRequest(
-    id: string,
-    updates: Partial<CoachingRequest>,
-  ): void {
-    const requests = this.getCoachingRequests();
-    const index = requests.findIndex((r) => r.id === id);
-    if (index !== -1) {
-      requests[index] = {
-        ...requests[index],
-        ...updates,
-        updatedAt: new Date().toISOString(),
-      };
-      this.setCoachingRequests(requests);
-    }
+  static getCoachingRequests(): never {
+    this.throwError("getCoachingRequests");
   }
-
-  static getCoachingRequest(id: string): CoachingRequest | null {
-    const requests = this.getCoachingRequests();
-    return requests.find((r) => r.id === id) || null;
+  static addCoachingRequest(): never {
+    this.throwError("addCoachingRequest");
   }
-
-  // Draft Management
-  static setCoachingRequestDraft(draft: any): void {
-    localStorage.setItem(
-      this.KEYS.COACHING_REQUEST_DRAFT,
-      this.safeJsonStringify(draft),
-    );
+  static updateCoachingRequest(): never {
+    this.throwError("updateCoachingRequest");
   }
-
-  static getCoachingRequestDraft(): any | null {
-    return this.safeJsonParse(
-      localStorage.getItem(this.KEYS.COACHING_REQUEST_DRAFT),
-      null,
-    );
+  static getCoachingRequest(): never {
+    this.throwError("getCoachingRequest");
   }
-
-  static clearCoachingRequestDraft(): void {
-    localStorage.removeItem(this.KEYS.COACHING_REQUEST_DRAFT);
-    localStorage.removeItem(this.KEYS.CURRENT_PROGRAM_ID);
+  static setCoachingRequestDraft(): never {
+    this.throwError("setCoachingRequestDraft");
   }
-
-  static setProgramId(programId: string): void {
-    localStorage.setItem(this.KEYS.CURRENT_PROGRAM_ID, programId);
+  static getCoachingRequestDraft(): never {
+    this.throwError("getCoachingRequestDraft");
   }
-
-  static getProgramId(): string | null {
-    return localStorage.getItem(this.KEYS.CURRENT_PROGRAM_ID);
+  static clearCoachingRequestDraft(): never {
+    this.throwError("clearCoachingRequestDraft");
   }
-
-  // Company Data
-  static setCompanyProfile(company: Company): void {
-    localStorage.setItem(
-      this.KEYS.COMPANY_PROFILE,
-      this.safeJsonStringify(company),
-    );
+  static setProgramId(): never {
+    this.throwError("setProgramId");
   }
-
-  static getCompanyProfile(): Company | null {
-    return this.safeJsonParse(
-      localStorage.getItem(this.KEYS.COMPANY_PROFILE),
-      null,
-    );
+  static getProgramId(): never {
+    this.throwError("getProgramId");
   }
-
-  // Team Members
-  static setTeamMembers(members: TeamMember[]): void {
-    localStorage.setItem(
-      this.KEYS.TEAM_MEMBERS,
-      this.safeJsonStringify(members),
-    );
+  static setCompanyProfile(): never {
+    this.throwError("setCompanyProfile");
   }
-
-  static getTeamMembers(): TeamMember[] {
-    return this.safeJsonParse(localStorage.getItem(this.KEYS.TEAM_MEMBERS), []);
+  static getCompanyProfile(): never {
+    this.throwError("getCompanyProfile");
   }
-
-  static addTeamMember(member: TeamMember): void {
-    const members = this.getTeamMembers();
-    members.push(member);
-    this.setTeamMembers(members);
+  static setTeamMembers(): never {
+    this.throwError("setTeamMembers");
   }
-
-  // Sessions
-  static setSessions(sessions: Session[]): void {
-    localStorage.setItem(this.KEYS.SESSIONS, this.safeJsonStringify(sessions));
+  static getTeamMembers(): never {
+    this.throwError("getTeamMembers");
   }
-
-  static getSessions(): Session[] {
-    return this.safeJsonParse(localStorage.getItem(this.KEYS.SESSIONS), []);
+  static addTeamMember(): never {
+    this.throwError("addTeamMember");
   }
-
-  static addSession(session: Session): void {
-    const sessions = this.getSessions();
-    sessions.push(session);
-    this.setSessions(sessions);
+  static setSessions(): never {
+    this.throwError("setSessions");
   }
-
-  // Messages
-  static setMessages(messages: any[]): void {
-    localStorage.setItem(this.KEYS.MESSAGES, this.safeJsonStringify(messages));
+  static getSessions(): never {
+    this.throwError("getSessions");
   }
-
-  static getMessages(): any[] {
-    return this.safeJsonParse(localStorage.getItem(this.KEYS.MESSAGES), []);
+  static addSession(): never {
+    this.throwError("addSession");
   }
-
-  static addMessage(message: any): void {
-    const messages = this.getMessages();
-    messages.push(message);
-    this.setMessages(messages);
+  static setMessages(): never {
+    this.throwError("setMessages");
   }
-
-  // Dashboard Preferences
-  static setDashboardPreferences(preferences: any): void {
-    localStorage.setItem(
-      this.KEYS.DASHBOARD_PREFERENCES,
-      this.safeJsonStringify(preferences),
-    );
+  static getMessages(): never {
+    this.throwError("getMessages");
   }
-
-  static getDashboardPreferences(): any {
-    return this.safeJsonParse(
-      localStorage.getItem(this.KEYS.DASHBOARD_PREFERENCES),
-      {},
-    );
+  static addMessage(): never {
+    this.throwError("addMessage");
   }
-
-  // Analytics Data
-  static setAnalyticsData(data: any): void {
-    localStorage.setItem(
-      this.KEYS.ANALYTICS_DATA,
-      this.safeJsonStringify(data),
-    );
+  static setDashboardPreferences(): never {
+    this.throwError("setDashboardPreferences");
   }
-
-  static getAnalyticsData(): any {
-    return this.safeJsonParse(
-      localStorage.getItem(this.KEYS.ANALYTICS_DATA),
-      {},
-    );
+  static getDashboardPreferences(): never {
+    this.throwError("getDashboardPreferences");
   }
-
-  // Match Scores
-  static setMatchScores(scores: any[]): void {
-    localStorage.setItem(
-      this.KEYS.MATCH_SCORES,
-      this.safeJsonStringify(scores),
-    );
+  static setAnalyticsData(): never {
+    this.throwError("setAnalyticsData");
   }
-
-  static getMatchScores(): any[] {
-    return this.safeJsonParse(localStorage.getItem(this.KEYS.MATCH_SCORES), []);
+  static getAnalyticsData(): never {
+    this.throwError("getAnalyticsData");
   }
-
-  // Onboarding Progress
-  static setOnboardingProgress(progress: any): void {
-    localStorage.setItem(
-      this.KEYS.ONBOARDING_PROGRESS,
-      this.safeJsonStringify(progress),
-    );
+  static setMatchScores(): never {
+    this.throwError("setMatchScores");
   }
-
-  static getOnboardingProgress(): any {
-    return this.safeJsonParse(
-      localStorage.getItem(this.KEYS.ONBOARDING_PROGRESS),
-      {},
-    );
+  static getMatchScores(): never {
+    this.throwError("getMatchScores");
   }
-
-  static clearOnboardingProgress(): void {
-    localStorage.removeItem(this.KEYS.ONBOARDING_PROGRESS);
+  static setOnboardingProgress(): never {
+    this.throwError("setOnboardingProgress");
   }
-
-  // App Preferences
-  static setAppPreferences(preferences: any): void {
-    localStorage.setItem(
-      this.KEYS.APP_PREFERENCES,
-      this.safeJsonStringify(preferences),
-    );
+  static getOnboardingProgress(): never {
+    this.throwError("getOnboardingProgress");
   }
-
-  static getAppPreferences(): any {
-    return this.safeJsonParse(
-      localStorage.getItem(this.KEYS.APP_PREFERENCES),
-      {},
-    );
+  static clearOnboardingProgress(): never {
+    this.throwError("clearOnboardingProgress");
   }
-
-  // Feature Flags
-  static setFeatureFlags(flags: any): void {
-    localStorage.setItem(
-      this.KEYS.FEATURE_FLAGS,
-      this.safeJsonStringify(flags),
-    );
+  static setAppPreferences(): never {
+    this.throwError("setAppPreferences");
   }
-
-  static getFeatureFlags(): any {
-    return this.safeJsonParse(
-      localStorage.getItem(this.KEYS.FEATURE_FLAGS),
-      {},
-    );
+  static getAppPreferences(): never {
+    this.throwError("getAppPreferences");
   }
-
-  // Generic Methods
-  static getItem<T>(key: string, defaultValue?: T): T | null {
-    const value = localStorage.getItem(key);
-    if (!value) return defaultValue || null;
-    return this.safeJsonParse(value, defaultValue || null);
+  static setFeatureFlags(): never {
+    this.throwError("setFeatureFlags");
   }
-
-  static setItem(key: string, value: any): void {
-    localStorage.setItem(key, this.safeJsonStringify(value));
+  static getFeatureFlags(): never {
+    this.throwError("getFeatureFlags");
   }
-
-  static removeItem(key: string): void {
-    localStorage.removeItem(key);
+  static getItem(): never {
+    this.throwError("getItem");
   }
-
-  // Utility Methods
-  static clearAllData(): void {
-    Object.values(this.KEYS).forEach((key) => {
-      localStorage.removeItem(key);
-    });
+  static setItem(): never {
+    this.throwError("setItem");
   }
-
-  static exportData(): any {
-    const data: any = {};
-    Object.entries(this.KEYS).forEach(([name, key]) => {
-      const value = localStorage.getItem(key);
-      if (value) {
-        data[name] = this.safeJsonParse(value, null);
-      }
-    });
-    return data;
+  static removeItem(): never {
+    this.throwError("removeItem");
   }
-
-  static importData(data: any): void {
-    Object.entries(data).forEach(([name, value]) => {
-      const key = this.KEYS[name as keyof typeof this.KEYS];
-      if (key && value !== null) {
-        localStorage.setItem(key, this.safeJsonStringify(value));
-      }
-    });
+  static clearAllData(): never {
+    this.throwError("clearAllData");
   }
-
-  // Legacy Support - Migrate old localStorage keys
-  static migrateOldData(): void {
-    const oldKeys = [
-      "mentorship-request-draft",
-      "current-program-id",
-      "mentorship_requests",
-    ];
-
-    // Migrate old coaching request draft
-    const oldDraft = localStorage.getItem("mentorship-request-draft");
-    if (oldDraft) {
-      localStorage.setItem(this.KEYS.COACHING_REQUEST_DRAFT, oldDraft);
-      localStorage.removeItem("mentorship-request-draft");
-    }
-
-    // Migrate old program ID
-    const oldProgramId = localStorage.getItem("current-program-id");
-    if (oldProgramId) {
-      localStorage.setItem(this.KEYS.CURRENT_PROGRAM_ID, oldProgramId);
-      localStorage.removeItem("current-program-id");
-    }
-
-    // Migrate old requests
-    const oldRequests = localStorage.getItem("mentorship_requests");
-    if (oldRequests) {
-      localStorage.setItem(this.KEYS.COACHING_REQUESTS, oldRequests);
-      localStorage.removeItem("mentorship_requests");
-    }
+  static exportData(): never {
+    this.throwError("exportData");
   }
-}
-
-// Initialize migration on module load
-if (typeof window !== "undefined") {
-  LocalStorageService.migrateOldData();
+  static importData(): never {
+    this.throwError("importData");
+  }
+  static migrateOldData(): never {
+    this.throwError("migrateOldData");
+  }
 }
 
 export default LocalStorageService;
