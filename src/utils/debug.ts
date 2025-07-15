@@ -1,17 +1,26 @@
-// Debug utilities for development
+// Debug utilities for development - Backend-only mode
+export const debugBackendConnection = () => {
+  console.log("=== Backend-Only Mode Debug Info ===");
+  console.log("localStorage usage:", "❌ ELIMINATED");
+  console.log("Demo data:", "❌ ELIMINATED");
+  console.log("Data source:", "✅ Backend-nestjs PostgreSQL only");
+  console.log("Auth method:", "✅ Backend API only");
+  console.log("======================================");
+};
+
+// Legacy function - now shows warning
 export const debugLocalStorage = () => {
-  console.log("=== LocalStorage Debug Info ===");
-  console.log(
-    "mentorship_requests:",
-    localStorage.getItem("mentorship_requests"),
+  console.warn(
+    "❌ localStorage debugging eliminated! Use debugBackendConnection() instead.",
   );
-  console.log("auth_token:", localStorage.getItem("auth_token"));
-  console.log("=====================================");
+  debugBackendConnection();
 };
 
 export const clearMentorshipRequests = () => {
-  localStorage.removeItem("mentorship_requests");
-  console.log("Cleared mentorship requests from localStorage");
+  console.warn(
+    "❌ localStorage usage eliminated! All data comes from backend API.",
+  );
+  console.log("Use backend API endpoints to manage mentorship requests.");
 };
 
 export const addSampleRequest = () => {
@@ -42,16 +51,24 @@ export const addSampleRequest = () => {
     updatedAt: new Date().toISOString(),
   };
 
-  const existing = localStorage.getItem("mentorship_requests");
-  const requests = existing ? JSON.parse(existing) : [];
-  requests.unshift(sampleRequest);
-  localStorage.setItem("mentorship_requests", JSON.stringify(requests));
-  console.log("Added sample request:", sampleRequest);
+  console.warn(
+    "❌ localStorage usage eliminated! Use backend API to create requests.",
+  );
+  console.log("Sample request (for reference only):", sampleRequest);
+  console.log(
+    "To create this request, use the backend API endpoint: POST /api/mentorship-requests",
+  );
 };
 
 // Make functions available globally in development
 if (import.meta.env.DEV) {
-  (window as any).debugLS = debugLocalStorage;
+  (window as any).debugBackend = debugBackendConnection;
+  (window as any).debugLS = debugLocalStorage; // Legacy - shows warning
   (window as any).clearRequests = clearMentorshipRequests;
   (window as any).addSampleRequest = addSampleRequest;
+
+  console.log("✅ Backend-only mode debug functions available:");
+  console.log("  - debugBackend(): Show backend connection info");
+  console.log("  - debugLS(): Legacy function (shows warning)");
+  console.log("❌ localStorage functions eliminated - use backend API instead");
 }
