@@ -1,8 +1,5 @@
 import { toast } from "sonner";
 import { User } from "../types";
-import { demoUsers } from "../data/demoDatabase";
-import { backendStorage } from "./backendStorage";
-import LocalStorageService from "./localStorageService";
 
 // OAuth Configuration
 const OAUTH_CONFIG = {
@@ -40,64 +37,66 @@ const API_BASE_URL =
 class AuthService {
   private currentUser: User | null = null;
 
-  // Initialize auth service
+  // Initialize auth service - no localStorage usage
   constructor() {
-    this.loadUserFromStorage();
+    // No automatic user loading from localStorage
+    console.log("🔐 Auth service initialized - backend-only mode");
   }
 
-  // Load user from localStorage (demo mode)
-  private async loadUserFromStorage() {
+  // Verify backend authentication status
+  private async verifyBackendAuth(token: string): Promise<User | null> {
     try {
-      console.log("🔄 Loading user from localStorage (demo mode)...");
+      const response = await fetch(`${API_BASE_URL}/auth/verify`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
 
-      const user = LocalStorageService.getUser();
-      const token = LocalStorageService.getToken();
-
-      if (user && token) {
-        this.currentUser = {
-          ...user,
+      if (response.ok) {
+        const data = await response.json();
+        return {
+          ...data.user,
           isAuthenticated: true,
+          token,
         };
-
-        console.log(
-          `✅ User loaded from localStorage (demo mode): ${this.currentUser.email} (${this.currentUser.userType})`,
-        );
-      } else {
-        console.log("ℹ️ No valid auth session found in localStorage");
       }
     } catch (error) {
-      console.error("❌ Failed to load user from localStorage:", error);
-      this.clearAuth();
+      console.error("❌ Backend auth verification failed:", error);
     }
+    return null;
   }
 
-  // Save user to localStorage (demo mode)
-  private async saveUserToStorage(user: User, token: string) {
+  // Save user session in memory only (no localStorage)
+  private async saveUserToMemory(user: User, token: string) {
     try {
       console.log(
-        `💾 Saving user to localStorage (demo mode): ${user.email} (${user.userType})`,
+        `💾 Saving user to memory (backend-only mode): ${user.email} (${user.userType})`,
       );
 
-      // Store using localStorage service
-      LocalStorageService.setUser(user);
-      LocalStorageService.setToken(token);
+      this.currentUser = {
+        ...user,
+        isAuthenticated: true,
+        token,
+      };
 
-      this.currentUser = user;
-      console.log(`✅ User saved successfully to localStorage (demo mode)`);
+      console.log(`✅ User saved successfully to memory (backend-only mode)`);
     } catch (error) {
-      console.error("❌ Failed to save user to localStorage:", error);
+      console.error("❌ Failed to save user to memory:", error);
       throw error;
     }
   }
 
-  // Clear authentication data from backend database
+  // Clear authentication data from memory only
   private async clearAuth() {
     try {
-      LocalStorageService.clearAuth();
       this.currentUser = null;
-      console.log("🧹 Authentication data cleared from backend database");
+      console.log(
+        "🧹 Authentication data cleared from memory (backend-only mode)",
+      );
     } catch (error) {
-      console.error("❌ Failed to clear auth from backend database:", error);
+      console.error("❌ Failed to clear auth from memory:", error);
       this.currentUser = null;
     }
   }
@@ -107,154 +106,94 @@ class AuthService {
     return this.currentUser;
   }
 
-  // Debug utility to check available demo accounts
-  getAvailableDemoAccounts(): Array<{ email: string; userType: string }> {
-    console.warn("Demo accounts disabled - use backend authentication instead");
-    return [];
-  }
-
-  // Test specific demo account
-  async testDemoLogin(email: string = "demo@platform.com"): Promise<void> {
-    console.log("🧪 Testing demo login...");
-    console.log("📋 Available accounts:", this.getAvailableDemoAccounts());
-
-    const user = demoUsers.find(
-      (u) => u.email.toLowerCase() === email.toLowerCase(),
-    );
-    console.log(`🔍 Account lookup for ${email}:`, user);
-
-    if (user) {
-      console.log("✅ Demo account found:", {
-        id: user.id,
-        email: user.email,
-        userType: user.userType,
-        name: user.name,
+  // Backend service availability check
+  async checkBackendAvailability(): Promise<boolean> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/health`, {
+        method: "GET",
+        timeout: 5000,
       });
-    } else {
-      console.error(`❌ Demo account ${email} not found!`);
+      return response.ok;
+    } catch (error) {
+      console.error("❌ Backend service unavailable:", error);
+      return false;
     }
   }
 
-  // Check if user is authenticated
+  // Check if user is authenticated - backend only
   async isAuthenticated(): Promise<boolean> {
-    if (this.currentUser !== null) {
-      // Double-check with backend database
-      const session = await backendStorage.getUserSession(this.currentUser.id);
-      return session !== null;
+    if (this.currentUser?.token) {
+      // Verify with backend service
+      const user = await this.verifyBackendAuth(this.currentUser.token);
+      return user !== null;
     }
     return false;
   }
 
-  // Email/Password Login
+  // Email/Password Login - Backend Only
   async loginWithEmail(email: string, password: string): Promise<AuthResponse> {
     try {
-      console.log(`🔐 Login attempt for email: ${email}`);
+      console.log(`🔐 Backend-only login attempt for email: ${email}`);
 
-      // Try backend authentication first
-      try {
-        const response = await fetch(`${API_BASE_URL}/auth/login`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email, password }),
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          const user: User = {
-            ...data.user,
-            isAuthenticated: true,
-            token: data.access_token,
-          };
-
-          console.log(
-            `✅ Backend login successful for "${email}", user type: ${user.userType}`,
-          );
-
-          // Save authentication
-          await this.saveUserToStorage(user, data.access_token);
-
-          return {
-            success: true,
-            user,
-            token: data.access_token,
-          };
-        } else {
-          const errorData = await response
-            .json()
-            .catch(() => ({ message: "Login failed" }));
-          console.log(
-            `❌ Backend login failed for "${email}": ${errorData.message}`,
-          );
-
-          // Fall back to demo mode
-          console.log("🔄 Falling back to demo mode...");
-        }
-      } catch (error) {
-        console.warn("Backend not available, using demo mode:", error);
-      }
-
-      // Fallback to demo mode for development/demo purposes
-      console.log(
-        `🧪 Demo mode login for:`,
-        demoUsers.map((u) => ({
-          email: u.email,
-          id: u.id,
-          userType: u.userType,
-        })),
-      );
-
-      // Simulate API call delay
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      // Normalize email for comparison
-      const normalizedEmail = email.toLowerCase().trim();
-      console.log(`🔄 Normalized email: "${normalizedEmail}"`);
-
-      // Find user with exact email match
-      const user = demoUsers.find(
-        (u) => u.email.toLowerCase().trim() === normalizedEmail,
-      );
-
-      if (!user) {
-        console.error(`❌ No user found for email: "${normalizedEmail}"`);
+      // Check backend availability first
+      const isBackendAvailable = await this.checkBackendAvailability();
+      if (!isBackendAvailable) {
         return {
           success: false,
-          error: `No account found with email "${email}". Available demo accounts: ${demoUsers.map((u) => u.email).join(", ")}`,
+          error:
+            "Backend service is currently unavailable. Please try again later or contact support.",
         };
       }
 
-      // For demo accounts, accept any password with length >= 1
-      const isDemoAccount = user.email.includes("demo@");
-      const minPasswordLength = isDemoAccount ? 1 : 6;
+      // Backend authentication only
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
-      if (password.length < minPasswordLength) {
+      if (response.ok) {
+        const data = await response.json();
+        const user: User = {
+          ...data.user,
+          isAuthenticated: true,
+          token: data.access_token,
+        };
+
+        console.log(
+          `✅ Backend login successful for "${email}", user type: ${user.userType}`,
+        );
+
+        // Save authentication in memory only
+        await this.saveUserToMemory(user, data.access_token);
+
+        return {
+          success: true,
+          user,
+          token: data.access_token,
+        };
+      } else {
+        const errorData = await response
+          .json()
+          .catch(() => ({ message: "Invalid credentials" }));
+
+        console.log(
+          `❌ Backend login failed for "${email}": ${errorData.message}`,
+        );
+
         return {
           success: false,
-          error: `Password must be at least ${minPasswordLength} characters long.`,
+          error: errorData.message || "Invalid email or password.",
         };
       }
-
-      // Generate mock token
-      const token = `demo_token_${Date.now()}_${user.id}`;
-      console.log(
-        `✅ Demo login successful for "${email}", user type: ${user.userType}`,
-      );
-
-      // Save authentication
-      await this.saveUserToStorage(user, token);
-
-      return {
-        success: true,
-        user,
-        token,
-      };
     } catch (error) {
       console.error(`💥 Login error for ${email}:`, error);
       return {
         success: false,
-        error: "Login failed. Please try again.",
+        error:
+          "Login failed. Backend service might be unavailable. Please contact support.",
       };
     }
   }
