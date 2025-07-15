@@ -292,12 +292,19 @@ class AuthService {
     }
   }
 
-  // Google OAuth Login
+  // Google OAuth Login - Backend Only
   async loginWithGoogle(): Promise<void> {
     try {
-      // In a real implementation, you would use Google's OAuth library
-      // For demo purposes, we'll simulate the OAuth flow
+      // Check backend availability first
+      const isBackendAvailable = await this.checkBackendAvailability();
+      if (!isBackendAvailable) {
+        toast.error(
+          "Backend service is currently unavailable. Please try email login or contact support.",
+        );
+        return;
+      }
 
+      // Use backend OAuth flow only
       const params = new URLSearchParams({
         client_id: OAUTH_CONFIG.google.clientId,
         redirect_uri: OAUTH_CONFIG.google.redirectUri,
@@ -306,28 +313,29 @@ class AuthService {
         state: this.generateState(),
       });
 
-      // Store state for validation in backend database
-      await backendStorage.setItem("oauth_state", params.get("state") || "", {
-        expiresAt: new Date(Date.now() + 10 * 60 * 1000).toISOString(), // 10 minutes
-      });
-
-      // In development, simulate OAuth response
-      if (import.meta.env.DEV) {
-        this.simulateOAuthResponse("google");
-        return;
-      }
-
-      // In production, redirect to Google OAuth
+      // Redirect to Google OAuth (backend will handle state validation)
       window.location.href = `${OAUTH_CONFIG.google.authUrl}?${params.toString()}`;
     } catch (error) {
       console.error("Google OAuth error:", error);
-      toast.error("Failed to connect with Google. Please try again.");
+      toast.error(
+        "Backend service unavailable. Please try email login or contact support.",
+      );
     }
   }
 
-  // Microsoft OAuth Login
+  // Microsoft OAuth Login - Backend Only
   async loginWithMicrosoft(): Promise<void> {
     try {
+      // Check backend availability first
+      const isBackendAvailable = await this.checkBackendAvailability();
+      if (!isBackendAvailable) {
+        toast.error(
+          "Backend service is currently unavailable. Please try email login or contact support.",
+        );
+        return;
+      }
+
+      // Use backend OAuth flow only
       const params = new URLSearchParams({
         client_id: OAUTH_CONFIG.microsoft.clientId,
         redirect_uri: OAUTH_CONFIG.microsoft.redirectUri,
@@ -336,155 +344,69 @@ class AuthService {
         state: this.generateState(),
       });
 
-      await backendStorage.setItem("oauth_state", params.get("state") || "", {
-        expiresAt: new Date(Date.now() + 10 * 60 * 1000).toISOString(), // 10 minutes
-      });
-
-      // In development, simulate OAuth response
-      if (import.meta.env.DEV) {
-        this.simulateOAuthResponse("microsoft");
-        return;
-      }
-
-      // In production, redirect to Microsoft OAuth
+      // Redirect to Microsoft OAuth (backend will handle state validation)
       window.location.href = `${OAUTH_CONFIG.microsoft.authUrl}?${params.toString()}`;
     } catch (error) {
       console.error("Microsoft OAuth error:", error);
-      toast.error("Failed to connect with Microsoft. Please try again.");
-    }
-  }
-
-  // Simulate OAuth response for development
-  private async simulateOAuthResponse(provider: "google" | "microsoft") {
-    try {
-      // Show loading state
-      toast.loading(
-        `Connecting with ${provider === "google" ? "Google" : "Microsoft"}...`,
-      );
-
-      // Simulate OAuth flow delay
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      // Mock OAuth user data
-      const oauthUser = {
-        google: {
-          id: "google_123456",
-          email: "user@gmail.com",
-          name: "Google User",
-          firstName: "Google",
-          lastName: "User",
-          picture: "https://lh3.googleusercontent.com/a/default-user",
-          provider: "google" as const,
-        },
-        microsoft: {
-          id: "microsoft_789012",
-          email: "user@outlook.com",
-          name: "Microsoft User",
-          firstName: "Microsoft",
-          lastName: "User",
-          picture: "https://graph.microsoft.com/v1.0/me/photo/$value",
-          provider: "microsoft" as const,
-        },
-      };
-
-      const userData = oauthUser[provider];
-
-      // Check if user exists or create new one
-      let user = demoUsers.find((u) => u.email === userData.email);
-      let isNewUser = false;
-
-      if (!user) {
-        // Create new user from OAuth data
-        user = {
-          ...userData,
-          userType: "company_admin", // Default to company admin, can be changed later
-          isNewUser: true,
-        };
-        demoUsers.push(user);
-        isNewUser = true;
-      }
-
-      // Generate token
-      const token = `mock_token_${Date.now()}_${user.id}`;
-
-      // Save authentication
-      this.saveUserToStorage(user, token);
-
-      // Clear loading toast
-      toast.dismiss();
-
-      // Success message
-      toast.success(
-        `Successfully signed in with ${provider === "google" ? "Google" : "Microsoft"}!`,
-      );
-
-      // Trigger page reload to update UI
-      setTimeout(() => {
-        if (isNewUser) {
-          window.location.href = "/onboarding";
-        } else {
-          // Route to appropriate dashboard based on user type
-          switch (user?.userType) {
-            case "platform_admin":
-              window.location.href = "/platform-admin";
-              break;
-            case "coach":
-              window.location.href = "/coach/dashboard";
-              break;
-            case "company_admin":
-            default:
-              window.location.href = "/dashboard";
-              break;
-          }
-        }
-      }, 1000);
-    } catch (error) {
-      toast.dismiss();
       toast.error(
-        `Failed to connect with ${provider === "google" ? "Google" : "Microsoft"}. Please try again.`,
+        "Backend service unavailable. Please try email login or contact support.",
       );
     }
   }
 
-  // Handle OAuth callback (for production)
+  // Handle OAuth callback - Backend Only
   async handleOAuthCallback(
     provider: string,
     code: string,
     state: string,
   ): Promise<AuthResponse> {
     try {
-      // Validate state parameter from backend database
-      const storedState = await backendStorage.getItem("oauth_state");
-      if (state !== storedState) {
-        throw new Error("Invalid state parameter");
+      // Check backend availability first
+      const isBackendAvailable = await this.checkBackendAvailability();
+      if (!isBackendAvailable) {
+        return {
+          success: false,
+          error: "Backend service is currently unavailable.",
+        };
       }
 
-      // Clean up state after validation
-      await backendStorage.removeItem("oauth_state");
+      // Exchange code for token with backend
+      const response = await fetch(`${API_BASE_URL}/auth/oauth/callback`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ provider, code, state }),
+      });
 
-      // In a real app, exchange code for token with your backend
-      // const response = await fetch('/api/auth/oauth/callback', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ provider, code, state })
-      // });
+      if (response.ok) {
+        const data = await response.json();
+        const user: User = {
+          ...data.user,
+          isAuthenticated: true,
+          token: data.access_token,
+        };
 
-      // For demo, return mock success
-      return {
-        success: true,
-        user: {
-          id: `oauth_${Date.now()}`,
-          email: "oauth@example.com",
-          name: "OAuth User",
-          provider: provider as "google" | "microsoft",
-          userType: "enterprise",
-        },
-        token: `oauth_token_${Date.now()}`,
-      };
+        // Save authentication in memory only
+        await this.saveUserToMemory(user, data.access_token);
+
+        return {
+          success: true,
+          user,
+          token: data.access_token,
+        };
+      } else {
+        const errorData = await response
+          .json()
+          .catch(() => ({ message: "OAuth callback failed" }));
+
+        return {
+          success: false,
+          error: errorData.message || "OAuth authentication failed",
+        };
+      }
     } catch (error) {
       return {
         success: false,
-        error: "OAuth callback failed",
+        error: "OAuth callback failed. Backend service might be unavailable.",
       };
     }
   }
@@ -533,60 +455,94 @@ class AuthService {
     }
   }
 
-  // Get saved business details for onboarding from backend database
+  // Get saved business details for onboarding from backend
   async getSavedBusinessDetails() {
     try {
-      const businessDetails = await backendStorage.getItem(
-        "peptok_business_details",
-        {
-          userId: this.currentUser?.id,
+      if (!this.currentUser?.token) {
+        return null;
+      }
+
+      const response = await fetch(`${API_BASE_URL}/users/business-details`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${this.currentUser.token}`,
+          "Content-Type": "application/json",
         },
-      );
-      return businessDetails ? JSON.parse(businessDetails) : null;
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        return data.businessDetails || null;
+      }
     } catch (error) {
-      console.error(
-        "Failed to load business details from backend database:",
-        error,
-      );
-      return null;
+      console.error("Failed to load business details from backend:", error);
+    }
+    return null;
+  }
+
+  // Clear saved business details after onboarding from backend
+  async clearSavedBusinessDetails() {
+    try {
+      if (!this.currentUser?.token) {
+        return;
+      }
+
+      await fetch(`${API_BASE_URL}/users/business-details`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${this.currentUser.token}`,
+          "Content-Type": "application/json",
+        },
+      });
+    } catch (error) {
+      console.error("Failed to clear business details:", error);
     }
   }
 
-  // Clear saved business details after onboarding from backend database
-  async clearSavedBusinessDetails() {
-    await backendStorage.removeItem("peptok_business_details", {
-      userId: this.currentUser?.id,
-    });
-  }
-
-  // Password reset (email)
+  // Password reset (email) - Backend Only
   async resetPassword(
     email: string,
   ): Promise<{ success: boolean; message: string }> {
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      const user = demoUsers.find(
-        (u) => u.email.toLowerCase() === email.toLowerCase(),
-      );
-
-      if (!user) {
+      // Check backend availability first
+      const isBackendAvailable = await this.checkBackendAvailability();
+      if (!isBackendAvailable) {
         return {
           success: false,
-          message: "No account found with this email address.",
+          message:
+            "Backend service is currently unavailable. Please try again later or contact support.",
         };
       }
 
-      // In a real app, send password reset email
-      return {
-        success: true,
-        message: "Password reset instructions sent to your email.",
-      };
+      const response = await fetch(`${API_BASE_URL}/auth/reset-password`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      if (response.ok) {
+        return {
+          success: true,
+          message: "Password reset instructions sent to your email.",
+        };
+      } else {
+        const errorData = await response
+          .json()
+          .catch(() => ({ message: "Password reset failed" }));
+
+        return {
+          success: false,
+          message:
+            errorData.message || "No account found with this email address.",
+        };
+      }
     } catch (error) {
       return {
         success: false,
-        message: "Failed to send password reset email. Please try again.",
+        message:
+          "Failed to send password reset email. Backend service might be unavailable.",
       };
     }
   }
